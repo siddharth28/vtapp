@@ -1,0 +1,12 @@
+<%# add navigation links to this file %>
+<% if current_user.has_role? :super_admin %>
+  <li><%= link_to 'Company Account', companies_path %></li>
+
+  <li><%= link_to 'Account', edit_user_registration_path %></li>
+  
+  <li><%= link_to 'Create Account', new_company_path %></li>
+
+  <li><%= current_user.name %></li>
+  
+  <li><%= link_to 'Sign out', destroy_user_session_path, :method=>'delete' %></li>
+<% end %>
