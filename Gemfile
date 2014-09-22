@@ -47,10 +47,16 @@ gem 'cancan'
 # Use rolify : without any authorization enforcement supporting scope on resource object
 gem 'rolify'
 
-gem 'byebug', group: [:development, :test]
+gem 'byebug', :group => [:development, :test]
 
 gem 'bootstrap-sass'
 
-gem 'rspec-rails'
+gem 'rspec-rails', :group => [:development, :test]
+
+group :test do
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'guard-rspec'
+end
 
 # gem 'devise_invitable'
