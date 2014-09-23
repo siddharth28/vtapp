@@ -7,6 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 User.delete_all
 Role.delete_all
+Company.delete_all
 Role.create!(name: 'super_admin')
 Role.create!(name: 'account_owner')
 Role.create!(name: 'account_admin')
