@@ -68,6 +68,9 @@ section {
 .authform fieldset {
   @extend .well;
 }
+.authform checkbox {
+  padding-left: 40px;
+}
 #error_explanation {
   @extend .alert;
   @extend .alert-danger;
@@ -79,4 +82,12 @@ section {
   @extend .btn;
   @extend .btn-primary;
   @extend .btn-xs;
+}
+
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox] {
+  margin-left: 0px;
+}
+
+.user_details {
+  margin-left: 250px;
 }
