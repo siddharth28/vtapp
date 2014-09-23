@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  scope :owner, ->(id) { joins(:roles).where(:'roles.name' => 'account_owner').find_by(company_id: id) }
+
   def set_random_password
     self.password = Devise.friendly_token.first(8)
   end
