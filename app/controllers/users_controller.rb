@@ -11,4 +11,10 @@ class UsersController < ApplicationController
       redirect_to :back, :alert => "Access denied."
     end
   end
+
+  def create
+    defaults = { password: User.random_password }
+    params[:user] = defaults.merge(params[:user])
+    @user = User.new(params[:user])
+  end
 end
