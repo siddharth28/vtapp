@@ -60,7 +60,9 @@ gem 'delayed_job_active_record'
 
 group :test do
   gem 'factory_girl_rails'
+  #for simulating user
   gem 'capybara'
+  #for running specs
   gem 'guard-rspec'
 end
 
