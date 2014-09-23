@@ -55,7 +55,9 @@ gem 'rspec-rails', :group => [:development, :test]
 
 group :test do
   gem 'factory_girl_rails'
+  #for simulating user
   gem 'capybara'
+  #for running specs
   gem 'guard-rspec'
 end
 
