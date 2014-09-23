@@ -53,6 +53,11 @@ gem 'bootstrap-sass'
 
 gem 'rspec-rails', :group => [:development, :test]
 
+
+
+gem 'delayed_job_active_record'
+
+
 group :test do
   gem 'factory_girl_rails'
   gem 'capybara'
