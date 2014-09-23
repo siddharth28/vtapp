@@ -11,6 +11,7 @@ class CompaniesController < ApplicationController
 
   def create
     @company = Company.new(params.require(:company).permit!)
+    @company.users.first.add_role(:account_owner)
 
     respond_to do |format|
       if @company.save
