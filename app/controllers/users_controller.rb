@@ -17,4 +17,5 @@ class UsersController < ApplicationController
     params[:user] = defaults.merge(params[:user])
     @user = User.new(params[:user])
   end
+
 end

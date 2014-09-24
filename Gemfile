@@ -58,6 +58,8 @@ gem 'rspec-rails', :group => [:development, :test]
 
 gem 'delayed_job_active_record'
 
+gem 'quiet_assets', group: :development
+
 
 group :test do
   gem 'factory_girl_rails'

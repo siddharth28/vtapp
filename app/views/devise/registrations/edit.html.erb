@@ -10,7 +10,7 @@
     <div>
       <%= f.label :email %>
       <br />
-      <%= f.email_field :email, autofocus: true %>
+      <%= f.email_field :email, autofocus: true, readonly: true %>
     </div>
 
     <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
@@ -22,14 +22,11 @@
     <div>
       <%= f.label :name %>
       <br />
-      <%= f.text_field :name, autofocus: true %>
+      <%= f.text_field :name, readonly: true %>
     </div>
 
     <div>
-      <%= f.label :password %>
-      <i>
-        (leave blank if you don't want to change it)
-      </i>
+      <%= f.label :new_password %>
       <br />
       <%= f.password_field :password, autocomplete: "off" %>
     </div>
@@ -41,16 +38,13 @@
     </div>
 
     <div>
-      <%= f.label :current_password %> 
-      <i>
-        (we need your current password to confirm your changes)
-      </i>
+      <%= f.label :current_password %>
       <br />
       <%= f.password_field :current_password, autocomplete: "off" %>
     </div>
 
     <div>
-      <%= f.submit "Update" %>
+      <%= f.submit "Save" %>
     </div>
   <% end %>
 
