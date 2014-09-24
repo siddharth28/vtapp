@@ -12,10 +12,14 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br>
+    <%= f.label :company_name %><br>
     <%= f.text_field :name %>
   </div>
   <%= f.fields_for(:users) do |u| %>
+    <div class="field">
+      <%= u.label :owner_name %><br>
+      <%= u.text_field :name %>
+    </div>
     <div class="field">
       <%= u.label :email %><br>
       <%= u.email_field :email %>

@@ -15,7 +15,9 @@ class User < ActiveRecord::Base
   end
 
   def send_password_email
-    UserMailer.welcome_email(self).deliver
+    user_email = self.email
+    password = self.password
+    UserMailer.delay.welcome_email(user_email, password)
   end
-  handle_asynchronously :send_password_email
+  # handle_asynchronously :send_password_email
 end
