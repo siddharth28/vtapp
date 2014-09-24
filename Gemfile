@@ -41,6 +41,8 @@ gem 'spring',        group: :development
 # Use devise for signin/signout feature
 gem 'devise'
 
+gem 'devise-async'
+
 # Use cancan : authorization library for Ruby on Rails which restricts what resources a given user is allowed to access
 gem 'cancan'
 
@@ -52,7 +54,6 @@ gem 'byebug', :group => [:development, :test]
 gem 'bootstrap-sass'
 
 gem 'rspec-rails', :group => [:development, :test]
-
 
 
 gem 'delayed_job_active_record'

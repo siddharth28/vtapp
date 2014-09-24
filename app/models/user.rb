@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   after_create :send_password_email
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
   scope :owner, -> { joins(:roles).merge(Role.find_role('account_owner')) }
