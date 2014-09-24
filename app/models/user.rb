@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
   belongs_to :company
+  has_many :mentees, class_name: 'User',foreign_key: "mentor_id"
+  belongs_to :mentor, class_name: 'User'
   rolify
   before_validation :set_random_password, on: :create
   after_create :send_password_email

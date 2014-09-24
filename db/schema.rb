@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140923101804) do
+ActiveRecord::Schema.define(version: 20140924130559) do
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -61,6 +61,9 @@ ActiveRecord::Schema.define(version: 20140923101804) do
     t.datetime "updated_at"
     t.string   "name"
     t.integer  "company_id"
+    t.string   "department"
+    t.boolean  "enabled"
+    t.integer  "mentor_id"
   end
 
   add_index "users", ["company_id"], name: "index_users_on_company_id", using: :btree
