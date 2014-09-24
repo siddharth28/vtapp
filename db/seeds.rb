@@ -15,4 +15,4 @@ Role.create!(name: 'track_owner')
 Role.create!(name: 'task_reviewer')
 Role.create!(name: 'track_runner')
 User.new(name: 'tanmay', email: 'tanmay@vinsol.com', password: 'vinsol123').save(validate: false)
-User.first.add_role 'super_admin'
+User.find_by(email: 'tanmay@vinsol.com').add_role 'super_admin'
