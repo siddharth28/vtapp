@@ -50,6 +50,6 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   # Send email in development mode?
   config.action_mailer.perform_deliveries = true
-  
+
   config.gem "cancan"
 end

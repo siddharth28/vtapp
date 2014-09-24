@@ -6,9 +6,9 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+    :recoverable, :rememberable, :trackable, :validatable
 
-  scope :owner, ->(id) { joins(:roles).where(:'roles.name' => 'account_owner').find_by(company_id: id) }
+  scope :owner, -> { joins(:roles).merge(Role.find_role('account_owner')) }
 
   def set_random_password
     self.password = Devise.friendly_token.first(8)
