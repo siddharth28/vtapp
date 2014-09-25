@@ -1,12 +1,21 @@
 class User < ActiveRecord::Base
-  belongs_to :company
   has_many :mentees, class_name: 'User',foreign_key: "mentor_id"
+  # has_and_belongs_to_many :roles, :join_table => :users_roles
+
+  belongs_to :company
   belongs_to :mentor, class_name: 'User'
-  rolify
+
+  attr_readonly :name, :email, :company_id
+
+  validates :mentor, presence: true
+
+
   before_validation :set_random_password, on: :create
+
+
   after_create :send_password_email
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+
+  rolify
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -21,5 +30,12 @@ class User < ActiveRecord::Base
     password = self.password
     UserMailer.delay.welcome_email(user_email, password)
   end
-  # handle_asynchronously :send_password_email
+
+  def active_for_authentication?
+    if has_role? :super_admin
+      super
+    else
+      super && enabled && company.enabled
+    end
+  end
 end

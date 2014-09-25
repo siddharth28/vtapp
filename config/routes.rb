@@ -64,9 +64,7 @@ Rails.application.routes.draw do
   devise_for :users
   resources :users
   resources :companies
-  # devise_scope :user do
-  #   root to: "devise/sessions#new"
-  # end
+
   devise_scope :user do
     authenticated :user do
       root 'companies#index', as: :authenticated_root
