@@ -4,6 +4,17 @@
     <div class="column">
       <table class="table">
         <tbody>
+          <tr>
+            <th>
+              Company name
+            </th>
+            <th>
+              Email
+            </th>
+            <th>
+              Actions
+            </th>
+          </tr>
           <% @companies.each do |company| %>
             <tr>
               <%= render company %>

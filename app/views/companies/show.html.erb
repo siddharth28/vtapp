@@ -7,9 +7,12 @@
 
 <p>
   <strong>Owner:</strong>
-  <%= @company.users.first.email %>
+  <%= @company.owner_email %>
 </p>
 
+<p>
+  <strong>Account Status:</strong>
+  <%= render partial: 'link_to_enabled', locals: {company: @company} %>
+</p>
 
-<%= link_to 'Edit', edit_company_path(@company) %> |
 <%= link_to 'Back', companies_path %>

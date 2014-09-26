@@ -1,5 +1,7 @@
 class CompaniesController < ApplicationController
 
+  before_action :set_company, only: [:show, :edit, :update, :destroy]
+
   def index
     @companies = Company.all
   end
@@ -25,6 +27,17 @@ class CompaniesController < ApplicationController
   end
 
   def show
+    
+  end
+
+  def update
+  end
+
+  def toggle_enabled
+    @company = Company.find(params[:company_id])
+    @company.toggle!(:enabled)
+  end
+  def set_company
     @company = Company.find(params[:id])
   end
 end

@@ -1,2 +1,7 @@
 <td><%= link_to company.name, company %></td>
 <td><%= link_to company.owner_email, company %></td>
+<td>
+  <%= link_to 'Show', company %>
+  <%= render partial: 'link_to_enabled', locals: {company: company} %>
+
+</td>

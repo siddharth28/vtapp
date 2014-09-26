@@ -1,14 +1,12 @@
 class User < ActiveRecord::Base
-  has_many :mentees, class_name: 'User',foreign_key: "mentor_id"
-  # has_and_belongs_to_many :roles, :join_table => :users_roles
+  has_many :mentees, class_name: 'User', foreign_key: "mentor_id"
 
   belongs_to :company
   belongs_to :mentor, class_name: 'User'
 
   attr_readonly :name, :email, :company_id
 
-  validates :mentor, presence: true
-
+  validates :mentor, presence: true, if: :mentor_id?
 
   before_validation :set_random_password, on: :create
 
