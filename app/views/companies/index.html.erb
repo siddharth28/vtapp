@@ -2,19 +2,21 @@
   <div class="row">
     <h3>Company</h3>
     <div class="column">
-      <table class="table">
-        <tbody>
+      <table class="sortable_table table">
+        <thead>
           <tr>
-            <th>
-              Company name
+            <th class="table-sorter-header">
+              Company Name
             </th>
             <th>
               Email
             </th>
-            <th>
+            <th class="disabled">
               Actions
             </th>
           </tr>
+        </thead>
+        <tbody>
           <% @companies.each do |company| %>
             <tr>
               <%= render company %>

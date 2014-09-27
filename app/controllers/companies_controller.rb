@@ -15,14 +15,10 @@ class CompaniesController < ApplicationController
     @company = Company.new(params.require(:company).permit!)
     @company.users.first.add_role(:account_owner)
 
-    respond_to do |format|
-      if @company.save
-        format.html { redirect_to @company, notice: 'Company was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @company }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @company.errors, status: :unprocessable_entity }
-      end
+    if @company.save
+      redirect_to @company, notice: 'Company was successfully created.'
+    else
+      render action: 'new'
     end
   end
 
@@ -37,7 +33,9 @@ class CompaniesController < ApplicationController
     @company = Company.find(params[:company_id])
     @company.toggle!(:enabled)
   end
+
   def set_company
     @company = Company.find(params[:id])
   end
+
 end

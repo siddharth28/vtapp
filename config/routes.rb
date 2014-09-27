@@ -64,7 +64,6 @@ Rails.application.routes.draw do
   devise_for :users
   resources :users
   resources :companies do
-    put :disable, :enable
     get :toggle_enabled
   end
 
