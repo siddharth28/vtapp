@@ -23,19 +23,20 @@ class CompaniesController < ApplicationController
   end
 
   def show
-    
+
   end
 
   def update
   end
 
-  def toggle_enabled
-    @company = Company.find(params[:company_id])
-    @company.toggle!(:enabled)
-  end
+  private
+    def toggle_enabled
+      @company = Company.find(params[:company_id])
+      @company.toggle!(:enabled)
+    end
 
-  def set_company
-    @company = Company.find(params[:id])
-  end
+    def set_company
+      @company = Company.find(params[:id])
+    end
 
 end
