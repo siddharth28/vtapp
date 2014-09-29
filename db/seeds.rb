@@ -8,7 +8,6 @@
 ## FIXME_NISH Don't delete users, roles etc. Instead use Role.find_or_create_by(name: 'super_admin')
 User.delete_all
 Role.delete_all
-Company.delete_all
 Role.create!(name: 'super_admin')
 Role.create!(name: 'account_owner')
 Role.create!(name: 'account_admin')
