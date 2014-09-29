@@ -19,15 +19,6 @@ class User < ActiveRecord::Base
 
   scope :owner, -> { joins(:roles).merge(Role.find_role('account_owner')) }
 
-  def set_random_password
-    self.password = Devise.friendly_token.first(8)
-  end
-
-  def send_password_email
-    user_email = self.email
-    password = self.password
-    UserMailer.delay.welcome_email(user_email, password)
-  end
 
   def active_for_authentication?
     if has_role? :super_admin
@@ -36,4 +27,16 @@ class User < ActiveRecord::Base
       super && enabled && company.enabled
     end
   end
+
+  private
+    def set_random_password
+      self.password = Devise.friendly_token.first(8)
+    end
+
+    def send_password_email
+      user_email = self.email
+      password = self.password
+      UserMailer.delay.welcome_email(user_email, password)
+    end
+
 end

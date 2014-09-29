@@ -1,5 +1,4 @@
 class CompaniesController < ApplicationController
-  load_and_authorize_resource
 
   before_action :set_company, only: [:show, :edit, :update, :destroy]
 
@@ -13,7 +12,7 @@ class CompaniesController < ApplicationController
   end
 
   def create
-    @company = Company.new(params.require(:company).permit!)
+    @company = Company.new(params.require(:company).permit(:name, users_attributes: [:name, :email]))
     @company.users.first.add_role(:account_owner)
 
     if @company.save
@@ -30,12 +29,12 @@ class CompaniesController < ApplicationController
   def update
   end
 
-  def toggle_enabled
-    @company = Company.find(params[:company_id])
-    @company.toggle!(:enabled)
-  end
-
   private
+    def toggle_enabled
+      @company = Company.find(params[:company_id])
+      @company.toggle!(:enabled)
+    end
+
     def set_company
       @company = Company.find(params[:id])
     end
