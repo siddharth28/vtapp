@@ -1,39 +1,44 @@
 class User < ActiveRecord::Base
+  #FIXED 
+  ## FIXME_NISH Please move the devise and rolify to the top of the model.
+  rolify
+  devise :database_authenticatable, :registerable, :async,
+    :recoverable, :rememberable, :trackable, :validatable
+
+  #FIXED 
   ## FIXME_NISH Please specify dependent condition with associations.
-  has_many :mentees, class_name: 'User', foreign_key: "mentor_id"
+  has_many :mentees, class_name: 'User', foreign_key: "mentor_id", dependent: :destroy
 
   belongs_to :company
   belongs_to :mentor, class_name: 'User'
 
+  #FIXED 
   ## FIXME_NISH Why we have made name as readonly?
-  attr_readonly :name, :email, :company_id
+  attr_readonly :email, :company_id
 
   validates :mentor, presence: true, if: :mentor_id?
 
   before_validation :set_random_password, on: :create
 
+  #FIXED 
   ## FIXME_NISH Please find the correct callback for the method.
-  after_create :send_password_email
-
-  ## FIXME_NISH Please move the devise and rolify to the top of the model.
-
-  rolify
-  devise :database_authenticatable, :registerable, :async,
-    :recoverable, :rememberable, :trackable, :validatable
+  after_commit :send_password_email, on: :create
 
   scope :owner, -> { joins(:roles).merge(Role.find_role('account_owner')) }
 
   def set_random_password
+    #FIXED
     ## FIXME_NISH Also, set self.password_confirmation.
     self.password = Devise.friendly_token.first(8)
+    self.password_confirmation =  Devise.friendly_token.first(8)
   end
 
   def send_password_email
+    #FIXED
     ## FIXME_NISH Refactor this code.
+    #FIXED 
     ## FIXME_NISH Create a lib file to call mailers.
-    user_email = self.email
-    password = self.password
-    UserMailer.delay.welcome_email(user_email, password)
+    Mailer.send_email(self)
   end
 
   def active_for_authentication?
