@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+## FIXME_NISH Please specify versions of the gems used.
+## FIXME_NISH Add methods to groups.
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'
