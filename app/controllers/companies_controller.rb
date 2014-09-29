@@ -1,4 +1,5 @@
 class CompaniesController < ApplicationController
+  load_and_authorize_resource
 
   before_action :set_company, only: [:show, :edit, :update, :destroy]
 
@@ -29,12 +30,12 @@ class CompaniesController < ApplicationController
   def update
   end
 
-  private
-    def toggle_enabled
-      @company = Company.find(params[:company_id])
-      @company.toggle!(:enabled)
-    end
+  def toggle_enabled
+    @company = Company.find(params[:company_id])
+    @company.toggle!(:enabled)
+  end
 
+  private
     def set_company
       @company = Company.find(params[:id])
     end

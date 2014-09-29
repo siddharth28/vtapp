@@ -62,14 +62,13 @@
 
 Rails.application.routes.draw do
   devise_for :users
-  resources :users
-  resources :companies do
-    get :toggle_enabled
-  end
-
   devise_scope :user do
     authenticated :user do
       root 'companies#index', as: :authenticated_root
+      resources :users
+      resources :companies do
+        get :toggle_enabled
+      end
     end
 
     unauthenticated do

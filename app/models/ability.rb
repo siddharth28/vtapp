@@ -5,7 +5,7 @@ class Ability
     # Define abilities for the passed in user here. For example:
 
     user ||= User.new # guest user (not logged in)
-    can :sign_in if user.has_role? :super_admin || user.company.enabled && user.enabled
+    can :sign_in if user.has_role? :super_admin || (user.company.enabled && user.enabled)
     can :manage, user
     if user.has_role? :super_admin
       can :manage, Company
@@ -17,7 +17,7 @@ class Ability
         new_user.company == user.company
       end
     elsif user.has_role? :admin
-      can :manage, user.company
+      can :manage, user.company.users
     end
 
 
