@@ -16,7 +16,7 @@ img {
 // create your own classes
 // to make views framework-neutral
 .column {
-  @extend .col-md-6;
+  @extend .col-md-12;
   @extend .text-center;
   }
 .form {
@@ -33,9 +33,11 @@ img {
   }
 // apply styles to HTML elements
 // to make views framework-neutral
+body {
+  background-color: #eee;
+}
 main {
   @extend .container;
-  background-color: #eee;
   padding-bottom: 80px;
   width: 100%;
   margin-top: 51px; // accommodate the navbar
@@ -90,4 +92,8 @@ section {
 
 .user_details {
   margin-left: 250px;
+}
+
+.table th {
+  text-align: center;
 }
