@@ -5,6 +5,9 @@ class CompaniesController < ApplicationController
   def index
     ## FIXED
     ## FIXME_NISH We don't need to fetch the companies, as load_and_authorize_resource resouce will do it for us.
+    @q = Company.search(params[:q])
+    # @companies = Company.order(:name).page(params[:page]).per(10)
+    @companies = @q.result(distinct: true)
   end
 
   def new

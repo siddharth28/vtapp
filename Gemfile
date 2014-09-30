@@ -51,6 +51,10 @@ gem 'delayed_job_active_record', '4.0.2'
 
 gem 'quiet_assets', '1.0.3', group: :development
 
+gem 'kaminari', '0.16.1'
+
+gem 'ransack', '1.4.1'
+
 group :test do
   gem 'factory_girl_rails', '4.4.1'
   #for simulating user

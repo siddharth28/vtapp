@@ -10,11 +10,9 @@ class Company < ActiveRecord::Base
   after_commit :make_owner, on: :create
   ## FIXED
   ## FIXME_NISH make owner a method and delegate email to owner.
-
   def owner
     users.owner.first
   end
-
   private
     def make_owner
       users.first.add_role(:account_owner)
