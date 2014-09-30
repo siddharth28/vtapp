@@ -45,7 +45,7 @@ class CompaniesController < ApplicationController
   def toggle_enabled
     ## FIXED
     ## FIXME_NISH Use where instead of find.
-    @company = Company.where(id: params[:company_id])
+    @company = Company.where(id: params[:company_id]).first
     @company.toggle!(:enabled)
   end
 

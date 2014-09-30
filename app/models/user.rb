@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
 
   ## FIXED 
   ## FIXME_NISH Please specify dependent condition with associations.
-  has_many :mentees, class_name: 'User', foreign_key: "mentor_id", dependent: :destroy
+  has_many :mentees, class_name: 'User', foreign_key: "mentor_id", dependent: :nullify
 
   belongs_to :company
   belongs_to :mentor, class_name: 'User'
