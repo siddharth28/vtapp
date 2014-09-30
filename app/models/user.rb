@@ -20,19 +20,12 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
 
   before_validation :set_random_password, on: :create
-  before_destroy :do_not_destroy, if: :account_owner?
 
   ## FIXED 
   ## FIXME_NISH Please find the correct callback for the method.
   after_commit :send_password_email, on: :create
 
   scope :owner, -> { joins(:roles).merge(Role.with_name('account_owner')) }
-
-  def set_random_password
-    ## FIXED
-    ## FIXME_NISH Also, set self.password_confirmation.
-    self.password_confirmation = self.password = Devise.friendly_token.first(8)
-  end
 
   def active_for_authentication?
     if has_role? :super_admin
@@ -44,15 +37,12 @@ class User < ActiveRecord::Base
 
   private
     def set_random_password
-      self.password = Devise.friendly_token.first(8)
+      ## FIXED
+      ## FIXME_NISH Also, set self.password_confirmation.
+      self.password_confirmation = self.password = Devise.friendly_token.first(8)
     end
+
     def send_password_email
       Mailer.send_email(self)
-    end
-    def account_owner?
-      has_role? :account_owner
-    end
-    def do_not_destroy
-      return false
     end
 end
