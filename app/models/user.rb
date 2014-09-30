@@ -1,40 +1,37 @@
+require 'mailer'
 class User < ActiveRecord::Base
-  ## FIXME_NISH Please specify dependent condition with associations.
-  has_many :mentees, class_name: 'User', foreign_key: "mentor_id"
-
-  belongs_to :company
-  belongs_to :mentor, class_name: 'User'
-
-  ## FIXME_NISH Why we have made name as readonly?
-  attr_readonly :name, :email, :company_id
-
-  validates :mentor, presence: true, if: :mentor_id?
-
-  before_validation :set_random_password, on: :create
-
-  ## FIXME_NISH Please find the correct callback for the method.
-  after_create :send_password_email
-
+  ## FIXED 
   ## FIXME_NISH Please move the devise and rolify to the top of the model.
-
   rolify
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
-  scope :owner, -> { joins(:roles).merge(Role.find_role('account_owner')) }
+  ## FIXED 
+  ## FIXME_NISH Please specify dependent condition with associations.
+  has_many :mentees, class_name: 'User', foreign_key: "mentor_id", dependent: :destroy
+
+  belongs_to :company
+  belongs_to :mentor, class_name: 'User'
+
+  ## FIXED 
+  ## FIXME_NISH Why we have made name as readonly?
+  attr_readonly :email, :company_id
+
+  validates :mentor, presence: true, if: :mentor_id?
+
+  before_validation :set_random_password, on: :create
+  before_destroy :do_not_destroy, if: :account_owner?
+
+  ## FIXED 
+  ## FIXME_NISH Please find the correct callback for the method.
+  after_commit :send_password_email, on: :create
+
+  scope :owner, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
   def set_random_password
     ## FIXED
     ## FIXME_NISH Also, set self.password_confirmation.
     self.password_confirmation = self.password = Devise.friendly_token.first(8)
-  end
-
-  def send_password_email
-    ## FIXME_NISH Refactor this code.
-    ## FIXME_NISH Create a lib file to call mailers.
-    user_email = self.email
-    password = self.password
-    UserMailer.delay.welcome_email(user_email, password)
   end
 
   def active_for_authentication?
@@ -49,11 +46,13 @@ class User < ActiveRecord::Base
     def set_random_password
       self.password = Devise.friendly_token.first(8)
     end
-
     def send_password_email
-      user_email = self.email
-      password = self.password
-      UserMailer.delay.welcome_email(user_email, password)
+      Mailer.send_email(self)
     end
-
+    def account_owner?
+      has_role? :account_owner
+    end
+    def do_not_destroy
+      return false
+    end
 end

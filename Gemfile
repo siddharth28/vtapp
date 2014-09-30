@@ -72,3 +72,6 @@ group :test do
 end
 
 # gem 'devise_invitable'
+
+# code coverage analysis tool for Ruby
+gem 'simplecov', :require => false, :group => :test

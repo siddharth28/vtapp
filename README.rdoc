@@ -1,28 +1,10 @@
-== README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Training Application
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+Ruby version: ruby 2.1.2p95 (2014-05-08 revision 45877) [x86_64-linux]
+
+Configuration: run 'bundle install'
+
+Database Creation: run 'rake db:setup'
+
+Database initialization: run 'rake db:seed'
