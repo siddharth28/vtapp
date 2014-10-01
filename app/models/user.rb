@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
 
   ## FIXED 
   ## FIXME_NISH Please find the correct callback for the method.
-  after_commit :send_password_email, on: :create
+  after_create :send_password_email
 
   scope :owner, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
