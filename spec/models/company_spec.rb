@@ -25,6 +25,7 @@ RSpec.describe Company, :type => :model do
   describe "#owner" do
     before do
       account_owner_role
+      user
       company.users.first.add_role :account_owner
     end
 
