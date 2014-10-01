@@ -1,5 +1,23 @@
 require 'rails_helper'
 
-RSpec.describe Role, :type => :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe Role do
+
+  describe 'associations' do
+    describe 'has_many association' do
+      it { should have_and_belong_to_many(:users).dependent(:nullify) }
+    end
+
+    describe 'belongs_to' do
+      it { should belong_to(:resource) }
+    end
+  end
+
+  describe 'scope' do
+    describe '#with_name' do
+      let(:super_admin_role) { create(:role) }
+
+      it { expect(Role.with_name('super_admin')).to eq([super_admin_role]) }
+      it { expect(Role.with_name('account_owner')).to be_blank }
+    end
+  end
 end
