@@ -12,7 +12,7 @@ RSpec.describe CompaniesController, :type => :controller do
     allow(controller).to receive(:current_ability).and_return(ability)
     allow(ability).to receive(:authorize!).and_return(true)
   end
-  
+
   describe '#new' do
     before do
       allow(Company).to receive(:new).and_return(company)
@@ -66,11 +66,24 @@ RSpec.describe CompaniesController, :type => :controller do
     end
 
     describe 'expects to receive' do
+
+  describe '#create' do
+    before do
+      allow(Company).to receive(:new).and_return(company)
+      allow(company).to receive(:save).and_return(true)
+    end
+
+    def send_request
+      post :create, company: { name: 'Test Company' }
+    end
+
+    describe 'expects to send' do
       after do
         send_request
       end
 
       it { expect(companies).to receive(:search).and_return(companies) }
+      it { expect(Company).to receive(:new).and_return(company) }
     end
 
     describe 'assigns' do
@@ -103,11 +116,49 @@ RSpec.describe CompaniesController, :type => :controller do
     end
 
     describe 'expects to receive' do
+      it { expect(assigns(:company)).to eq(company) }
+    end
+
+    describe 'response' do
+      context "when response is successfully created" do
+        before do
+          send_request
+        end
+
+        it { expect(response).to redirect_to company_path(company) }
+        it { expect(response).to have_http_status(302) }
+        it { expect(flash[:notice]).to eq("Company #{ company.name } is successfully created.") }
+      end
+
+      context "when message cannot be created" do
+        before do
+          allow(company).to receive(:save).and_return(false)
+          send_request
+        end
+
+        it { expect(response).to render_template 'companies/new' }
+        it { expect(response).to have_http_status(200) }
+        it { expect(flash[:notice]).to be_nil }
+      end
+    end
+  end
+
+  describe '#show' do
+    before do
+      allow(Company).to receive(:find).and_return(company)
+    end
+
+    def send_request
+      get :show, company: { name: 'Test Company' } 
+    end
+
+    describe 'expects to send' do
       after do
         send_request
       end
 
       it { expect(company).to receive(:toggle!).and_return(true) }
+      it { expect(Company).to receive(:find).and_return(company) }
     end
 
     describe 'assigns' do
@@ -124,6 +175,7 @@ RSpec.describe CompaniesController, :type => :controller do
       end
 
       it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template 'companies/show' }
     end
   end
 
