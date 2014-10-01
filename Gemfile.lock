@@ -239,7 +239,7 @@ DEPENDENCIES
   rails (= 4.1.6)
   ransack (= 1.4.1)
   rolify (= 3.4.1)
-  rspec-activemodel-mocks
+  rspec-activemodel-mocks (= 1.0.1)
   rspec-rails (= 3.1.0)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
