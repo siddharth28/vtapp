@@ -21,12 +21,12 @@ gem 'delayed_job_active_record', '4.0.2'
 gem 'kaminari', '0.16.1'
 gem 'ransack', '1.4.1'
 
+
 group :assets do
   gem 'therubyracer', platforms: :ruby
   gem 'uglifier', '>= 1.3.0'
   gem 'sass-rails', '~> 4.0.3'  
 end
-
 group :development do
   gem 'spring', '1.1.3'
 end
@@ -38,7 +38,7 @@ end
 
 group :test do
   gem 'rspec-rails', '3.1.0'
-  gem 'rspec-activemodel-mocks', 1.0.1
+  gem 'rspec-activemodel-mocks', '1.0.1'
   gem 'factory_girl_rails', '4.4.1'
   gem 'guard-rspec', '4.3.1'
   gem 'shoulda-matchers', '2.7.0', require: false

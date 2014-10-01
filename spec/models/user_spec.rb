@@ -7,7 +7,6 @@ RSpec.describe User, :type => :model do
 
   it { should respond_to(:email) }
   it { should respond_to(:name) }
-  it { should respond_to(:company_id) }
 
   it "#email returns a string" do
     expect(@user.email).to match 'user@example.com'

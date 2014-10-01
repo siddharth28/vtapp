@@ -1,11 +1,12 @@
 class Company < ActiveRecord::Base
+  ## FIXED
   ## FIXME_NISH Please specify dependent condition with associations.
   has_many :users, dependent: :destroy
   ## FIXED
   ## FIXME_NISH Divide the validation in two parts presence and uniqueness. And pass allow_blank: true option
   ## with uniqueness
   validates :name, presence: true
-  validates :name, uniqueness: { allow_blank: true }
+  validates :name, uniqueness: true, allow_blank: true
   accepts_nested_attributes_for :users
   after_commit :make_owner, on: :create
   ## FIXED
