@@ -1,16 +1,17 @@
 class Company < ActiveRecord::Base
-  ## FIXED
-  ## FIXME_NISH Please specify dependent condition with associations.
+
   has_many :users, dependent: :destroy
-  ## FIXED
-  ## FIXME_NISH Divide the validation in two parts presence and uniqueness. And pass allow_blank: true option
-  ## with uniqueness
+
   validates :name, presence: true
   validates :name, uniqueness: true, allow_blank: true
+
   accepts_nested_attributes_for :users
+
+  ## FIXME_NISH why this callback is a after_commit?
+  ## FIXME_NISH Please move this callback to user as discussed.
   after_commit :make_owner, on: :create
-  ## FIXED
-  ## FIXME_NISH make owner a method and delegate email to owner.
+
+  ## FIXME_NISH Lets make an association of owner as discussed and also validate that there is always only one owner.
   def owner
     users.owner.first
   end

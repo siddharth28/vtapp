@@ -18,6 +18,7 @@ describe User do
 
     context 'mentor present' do
       it do
+        ## FIXME_NISH Please write only one or two line in spec, move the rest of code in before of this context.
         user.mentor_id = 1
         user.save
         should validate_presence_of(:mentor)
@@ -77,6 +78,7 @@ describe User do
         let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
         let(:user) { company.users.build({ name: 'Vinsol', enabled: true } ) }
         it 'enabled' do
+          ## FIXME_NISH refactor this spec
           user.add_role 'account_owner'
           company.toggle!(:enabled)
           expect(user.active_for_authentication?).to eql(false)
@@ -101,7 +103,7 @@ describe User do
       end
       it 'account_owner' do
         expect(User.owner.first.has_role? :account_owner).to eql(true)
-      end 
+      end ##FIXME_NISH remove the trailing space.
     end
   end
 end

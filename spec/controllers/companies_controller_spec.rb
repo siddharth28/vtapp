@@ -67,6 +67,8 @@ RSpec.describe CompaniesController, :type => :controller do
 
     describe 'expects to receive' do
 
+      ## FIXME_NISH There is something went wrong here while resolving conflict.
+
   describe '#create' do
     before do
       allow(Company).to receive(:new).and_return(company)

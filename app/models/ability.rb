@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    ## FIXME_NISH Please verify abilities.
+    ## FIXME_NISH Refactor the code in ability.
     user ||= User.new # guest user (not logged in)
     can :sign_in if user.has_role? :super_admin || (user.company.enabled && user.enabled)
     can :manage, user
@@ -11,7 +11,5 @@ class Ability
       can :manage, Company
       can :manage, user if user.has_role? :account_owner
     end
-    ## FIXED
-    ## FIXME_NISH Remove the following comments.
   end
 end
