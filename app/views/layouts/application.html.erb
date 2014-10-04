@@ -10,10 +10,10 @@
   </head>
   <body>
     <header>
-      <%= render 'layouts/navigation' if user_signed_in? %>
+      <%= render 'shared/navigation' if user_signed_in? %>
     </header>
     <main role="main">
-       <%= render 'layouts/messages' %>
+       <%= render 'shared/messages' %>
        <%= yield %>
     </main>
   </body>
