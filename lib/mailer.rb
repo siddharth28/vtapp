@@ -1,5 +1,5 @@
 class Mailer
-  
+
   def self.send_email(user)
     email = user.email
     password = user.password

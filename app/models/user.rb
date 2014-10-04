@@ -15,12 +15,12 @@ class User < ActiveRecord::Base
 
   validates :mentor, presence: true, if: :mentor_id?
 
+  accepts_nested_attributes_for :roles
+
   before_validation :set_random_password, on: :create
 
   ## FIXME_NISH Please find the correct callback for the method.
   after_create :send_password_email
-
-  scope :owner, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
   def active_for_authentication?
     if has_role? :super_admin

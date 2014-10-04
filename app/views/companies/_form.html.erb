@@ -1,5 +1,5 @@
 <div class="form-group">
-  <%= form_for(@company) do |f| %>
+  <%= form_for(@company) do |company| %>
     <% if @company.errors.any? %>
       <div id="error_explanation">
         <h2>
@@ -15,21 +15,26 @@
     <% end %>
 
     <div class="field">
-      <%= f.label :company_name %><br>
-      <%= f.text_field :name %>
+      <%= company.label :company_name %><br>
+      <%= company.text_field :name %>
     </div>
-    <%= f.fields_for(:users) do |u| %>
+    <%= company.fields_for(:users) do |user| %>
       <div class="field">
-        <%= u.label :owner_name %><br>
-        <%= u.text_field :name %>
+        <%= user.label :owner_name %><br>
+        <%= user.text_field :name %>
       </div>
       <div class="field">
-        <%= u.label :email %><br>
-        <%= u.email_field :email %>
+        <%= user.label :email %><br>
+        <%= user.email_field :email %>
       </div>
+      <%= user.fields_for(:roles) do |role| %>
+        <div class="field">
+          <%= role.hidden_field 'name', value: 'account_owner' %>
+        </div>
+      <% end %>
     <% end %>
     <div class="actions">
-      <%= f.submit %>
+      <%= company.submit %>
     </div>
   <% end %>
 </div>
