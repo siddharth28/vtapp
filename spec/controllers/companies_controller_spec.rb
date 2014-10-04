@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CompaniesController, :type => :controller do
+describe CompaniesController do
   let(:company) { mock_model(Company) }
   let(:companies) { double(ActiveRecord::Relation) }
   let(:user) { mock_model(User) }
@@ -52,23 +52,6 @@ RSpec.describe CompaniesController, :type => :controller do
     end
   end
 
-
-  describe '#index' do
-    before do
-      allow(Company).to receive(:accessible_by).and_return(companies)
-      allow(companies).to receive(:search).and_return(companies)
-      allow(companies).to receive(:result).and_return(companies)
-      allow(ability).to receive(:has_block?).and_return(false)
-    end
-
-    def send_request
-      get :index
-    end
-
-    describe 'expects to receive' do
-
-      ## FIXME_NISH There is something went wrong here while resolving conflict.
-
   describe '#create' do
     before do
       allow(Company).to receive(:new).and_return(company)
@@ -84,7 +67,6 @@ RSpec.describe CompaniesController, :type => :controller do
         send_request
       end
 
-      it { expect(companies).to receive(:search).and_return(companies) }
       it { expect(Company).to receive(:new).and_return(company) }
     end
 
@@ -93,31 +75,6 @@ RSpec.describe CompaniesController, :type => :controller do
         send_request
       end
 
-      it { expect(assigns(:companies)).to eq(companies) }
-    end
-
-    describe 'response' do
-      before do
-        send_request
-      end
-
-      it { expect(response).to have_http_status(200) }
-      it { expect(response).to render_template 'index' }
-    end
-  end
-
-
-  describe '#toggle_enabled' do
-    before do
-      allow(Company).to receive(:find).and_return(company)
-      allow(company).to receive(:toggle!).and_return(true)
-    end
-
-    def send_request
-      xhr :patch, :toggle_enabled, id: company.id
-    end
-
-    describe 'expects to receive' do
       it { expect(assigns(:company)).to eq(company) }
     end
 
@@ -151,7 +108,7 @@ RSpec.describe CompaniesController, :type => :controller do
     end
 
     def send_request
-      get :show, company: { name: 'Test Company' } 
+      get :show, { company: { name: 'Test Company' }, id: 122 }
     end
 
     describe 'expects to send' do
@@ -159,7 +116,6 @@ RSpec.describe CompaniesController, :type => :controller do
         send_request
       end
 
-      it { expect(company).to receive(:toggle!).and_return(true) }
       it { expect(Company).to receive(:find).and_return(company) }
     end
 
@@ -176,10 +132,81 @@ RSpec.describe CompaniesController, :type => :controller do
         send_request
       end
 
-      it { expect(response).to have_http_status(200) }
       it { expect(response).to render_template 'companies/show' }
     end
   end
 
+  describe '#index' do
+    before do
+      allow(Company).to receive(:accessible_by).and_return(companies)
+      allow(companies).to receive(:search).and_return(companies)
+      allow(companies).to receive(:result).and_return(companies)
+      allow(ability).to receive(:has_block?).and_return(false)
+    end
 
+    def send_request
+      get :index
+    end
+
+    describe 'expects to receive' do
+      after do
+        send_request
+      end
+
+      it { expect(companies).to receive(:search).and_return(companies) }
+    end
+
+    describe 'assigns' do
+      before do
+        send_request
+      end
+
+      it { expect(assigns(:companies)).to eq(companies) }
+    end
+
+    describe 'response' do
+      before do
+        send_request
+      end
+
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template 'index' }
+    end
+  end
+
+
+  describe '#toggle_enabled' do
+    before do
+      allow(Company).to receive(:find).and_return(company)
+      allow(company).to receive(:toggle!).and_return(true)
+    end
+
+    def send_request
+      xhr :patch, :toggle_enabled, id: company.id
+    end
+
+    describe 'expects to receive' do
+      after do
+        send_request
+      end
+
+      it { expect(company).to receive(:toggle!).and_return(true) }
+    end
+
+    describe 'assigns' do
+      before do
+        send_request
+      end
+
+      it { expect(assigns(:company)).to eq(company) }
+    end
+
+    describe 'response' do
+      before do
+        send_request
+      end
+
+      it { expect(response).to have_http_status(200) }
+    end
+  end
 end
