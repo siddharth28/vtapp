@@ -15,20 +15,21 @@ describe User do
   end
 
   describe 'validation' do
-
     context 'mentor present' do
-      it do
-        ## FIXME_NISH Please write only one or two line in spec, move the rest of code in before of this context.
+      before do
         user.mentor_id = 1
         user.save
-        should validate_presence_of(:mentor)
       end
-    end
-
-    context 'mentor not present' do
-      it { should_not validate_presence_of(:mentor) }
+      # FIXED
+      ## FIXME_NISH Please write only one or two line in spec, move the rest of code in before of this context.
+      it { should validate_presence_of(:mentor) }
     end
   end
+
+  context 'mentor not present' do
+    it { should_not validate_presence_of(:mentor) }
+  end
+
 
   describe 'callbacks' do
     let(:user) { build(:user, name: nil, email: nil, password: nil) }
@@ -62,6 +63,8 @@ describe User do
 
   describe 'instance methods' do
     let(:user) { build(:user, name: nil, email: nil, password: nil) }
+    let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
+
     it { expect(user).not_to respond_to(:set_random_password) }
     it { expect(user).not_to respond_to(:send_password_email) }
     it { expect(user).to respond_to(:active_for_authentication?) }
@@ -75,25 +78,27 @@ describe User do
       end
 
       context 'user not super_admin' do
-        let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
-        let(:user) { company.users.build({ name: 'Vinsol', enabled: true } ) }
-        it 'enabled' do
-          ## FIXME_NISH refactor this spec
+        before do
           user.add_role 'account_owner'
           company.toggle!(:enabled)
-          expect(user.active_for_authentication?).to eql(false)
         end
+        let(:user) { company.users.build({ name: 'Vinsol', enabled: true } ) }
+
+
+        ## FIXME_NISH refactor this spec
+        it { expect(user.active_for_authentication?).to eql(false) }
       end
     end
+
 
     describe '#set_random_password' do
       it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
     end
-
-    # describe '#send_password_email' do
-    #   it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
-    # end
   end
+  # describe '#send_password_email' do
+  #   it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
+  # end
+
 
   describe 'scope' do
     describe 'owner' do
@@ -103,7 +108,9 @@ describe User do
       end
       it 'account_owner' do
         expect(User.owner.first.has_role? :account_owner).to eql(true)
-      end##FIXME_NISH remove the trailing space.
+      end
+      # FIXED
+      ##FIXME_NISH remove the trailing space.
     end
   end
 end
