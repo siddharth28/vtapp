@@ -103,11 +103,7 @@ describe User do
       end
       it 'account_owner' do
         expect(User.owner.first.has_role? :account_owner).to eql(true)
-<<<<<<< Updated upstream
-      end ##FIXME_NISH remove the trailing space.
-=======
-      end
->>>>>>> Stashed changes
+      end##FIXME_NISH remove the trailing space.
     end
   end
 end

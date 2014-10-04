@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Company, :type => :model do
+describe Company do
   let(:company) { create(:company) }
   let(:account_owner_role) { create(:account_owner_role) }
   let(:user) { create(:user, company: company) }
