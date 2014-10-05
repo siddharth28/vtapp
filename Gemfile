@@ -20,13 +20,14 @@ gem 'bootstrap-sass', '3.2.0.2'
 gem 'delayed_job_active_record', '4.0.2'
 gem 'kaminari', '0.16.1'
 gem 'ransack', '1.4.1'
-
+gem 'will_paginate', '3.0.7'
 
 group :assets do
   gem 'therubyracer', platforms: :ruby
   gem 'uglifier', '>= 1.3.0'
-  gem 'sass-rails', '~> 4.0.3'  
+  gem 'sass-rails', '~> 4.0.3'
 end
+
 group :development do
   gem 'spring', '1.1.3'
 end
