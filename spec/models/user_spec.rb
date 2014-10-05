@@ -15,21 +15,19 @@ describe User do
   end
 
   describe 'validation' do
+    context 'mentor not present' do
+      it { should_not validate_presence_of(:mentor) }
+    end
+
     context 'mentor present' do
       before do
         user.mentor_id = 1
-        user.save
       end
       # FIXED
       ## FIXME_NISH Please write only one or two line in spec, move the rest of code in before of this context.
       it { should validate_presence_of(:mentor) }
     end
   end
-
-  context 'mentor not present' do
-    it { should_not validate_presence_of(:mentor) }
-  end
-
 
   describe 'callbacks' do
     let(:user) { build(:user, name: nil, email: nil, password: nil) }
@@ -38,10 +36,6 @@ describe User do
       it { expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false) }
     end
 
-    # describe 'after commit' do
-    #   after { run_callbacks(:commit) }
-    #   it { should_receive(:Mail) }
-    # end
   end
 
   describe 'attributes' do
@@ -99,18 +93,4 @@ describe User do
   #   it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
   # end
 
-
-  describe 'scope' do
-    describe 'owner' do
-      before do
-        user.add_role 'account_owner'
-        user.save
-      end
-      it 'account_owner' do
-        expect(User.owner.first.has_role? :account_owner).to eql(true)
-      end
-      # FIXED
-      ##FIXME_NISH remove the trailing space.
-    end
-  end
 end

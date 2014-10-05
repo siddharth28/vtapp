@@ -6,6 +6,8 @@ describe CompaniesController do
   let(:user) { mock_model(User) }
   let(:users) { double(ActiveRecord::Relation) }
   let(:ability) { double(Ability) }
+  let(:roles) { double(ActiveRecord::Relation) }
+  let(:role) { mock_model(Role) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -18,6 +20,8 @@ describe CompaniesController do
       allow(Company).to receive(:new).and_return(company)
       allow(company).to receive(:users).and_return(users)
       allow(users).to receive(:build).and_return(user)
+      allow(user).to receive(:roles).and_return(roles)
+      allow(roles).to receive(:build).and_return(role)
     end
 
     def send_request
@@ -32,6 +36,8 @@ describe CompaniesController do
       it { expect(Company).to receive(:new).and_return(company) }
       it { expect(company).to receive(:users).and_return(users) }
       it { expect(users).to receive(:build).and_return(user) }
+      it { expect(user).to receive(:roles).and_return(roles) }
+      it { expect(roles).to receive(:build).and_return(role) }
     end
 
     describe 'assigns' do
@@ -141,6 +147,9 @@ describe CompaniesController do
       allow(Company).to receive(:accessible_by).and_return(companies)
       allow(companies).to receive(:search).and_return(companies)
       allow(companies).to receive(:result).and_return(companies)
+      allow(companies).to receive(:page).and_return(companies)
+      allow(companies).to receive(:per).and_return(companies)
+
       allow(ability).to receive(:has_block?).and_return(false)
     end
 
@@ -154,6 +163,9 @@ describe CompaniesController do
       end
 
       it { expect(companies).to receive(:search).and_return(companies) }
+      it { expect(companies).to receive(:result).and_return(companies) }
+      it { expect(companies).to receive(:page).and_return(companies) }
+      it { expect(companies).to receive(:per).and_return(companies) }
     end
 
     describe 'assigns' do

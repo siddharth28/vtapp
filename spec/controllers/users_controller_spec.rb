@@ -1,11 +1,16 @@
 require 'rails_helper'
-
 describe UsersController do
-  describe '#show' do
-    let(:user) { mock_model(User) }
+  let(:user) { mock_model(User) }
 
+  before do
+    allow(request.env['warden']).to receive(:authenticate!).and_return(user)
+    allow(controller).to receive(:current_user).and_return(user)
+  end
+
+  describe '#show' do
     before do
       allow(User).to receive(:find).and_return(user)
+      allow(user).to receive(:has_role?).and_return(true)
     end
 
     def send_request
@@ -18,7 +23,7 @@ describe UsersController do
       end
 
       it { expect(User).to receive(:find).and_return(user) }
-    end
+      end
 
     describe 'assigns' do
       before do

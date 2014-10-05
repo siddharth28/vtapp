@@ -18,17 +18,9 @@ describe Company do
     it { should validate_presence_of(:name) }
     it { should validate_uniqueness_of(:name) }
   end
+
   describe "accept_nested_attributes_for" do
     it { should accept_nested_attributes_for(:users) }
   end
 
-  describe "#owner" do
-    before do
-      account_owner_role
-      user
-      company.users.first.add_role :account_owner
-    end
-
-    it { expect(company.owner).to eq(company.users.first) }
-  end
 end
