@@ -1,6 +1,6 @@
 class CompaniesController < ApplicationController
   load_and_authorize_resource
-  skip_load_resource :only => [:index, :create]
+  skip_load_resource only: [:index, :create]
 
   def index
     @companies = Company.load_users
