@@ -11,7 +11,7 @@ class CompaniesController < ApplicationController
   end
 
   def new
-    @company.users.build.roles.build
+    @company.users.build
   end
 
   def create
