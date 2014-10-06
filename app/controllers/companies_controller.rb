@@ -3,7 +3,7 @@ class CompaniesController < ApplicationController
   skip_load_resource :only => [:index, :create]
 
   def index
-    @companies = Company.eager_load(:users).joins(:users => :roles).where('roles.name'=> 'account_owner')
+    @companies = Company.load_users
     @search = @companies.search(params[:q])
     # FIXME_NISH PLEASE add pagination.
     @companies = @search.result
