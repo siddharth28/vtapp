@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 describe User do
-  let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com') }
-  let(:user) { build(:user, mentor_id: mentor.id) }
+  let(:company) { create(:company) }
+  let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
+  let(:user) { build(:user, mentor_id: mentor.id, company: company) }
 
   describe 'associations' do
     describe 'has_many association' do
@@ -16,6 +17,7 @@ describe User do
   end
 
   describe 'validation' do
+    it { should validate_presence_of(:company) }
     it { expect { user.mentor_id = 890 }.to change{ user.valid? }.from(true).to(false) }
   end
 
