@@ -5,7 +5,6 @@ class CompaniesController < ApplicationController
   def index
     @companies = Company.load_users
     @search = @companies.search(params[:q])
-    # FIXME_NISH PLEASE add pagination.
     @companies = @search.result
     @companies = @companies.page(params[:page]).per(2)
   end
