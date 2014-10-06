@@ -1,6 +1,6 @@
 class Company < ActiveRecord::Base
 
-  has_many :users, dependent: :destroy
+  has_many :users, inverse_of: :company, dependent: :destroy
 
   ## FIXME_NISH Lets make an association of owner as discussed and also validate that there is always only one owner.
 

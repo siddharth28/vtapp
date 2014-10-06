@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   attr_readonly :email, :company_id
 
   validates :mentor, presence: true, if: :mentor_id?
+  validates :company, presence: true
   after_destroy :ensure_an_account_owners_and_super_admin_remains
 
   before_validation :set_random_password, on: :create
