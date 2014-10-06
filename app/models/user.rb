@@ -36,8 +36,8 @@ class User < ActiveRecord::Base
     end
 
     def send_password_email
-      email = user.email
-      password = user.password
+      email = self.email
+      password = self.password
       UserMailer.delay.welcome_email(email, password)
     end
 
@@ -58,7 +58,7 @@ class User < ActiveRecord::Base
     end
 
     def add_role_account_owner_if_first_user
-      if company.users.count == 1
+      if company.users.length == 1
         add_role :account_owner
       end
     end
