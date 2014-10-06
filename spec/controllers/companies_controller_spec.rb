@@ -21,8 +21,6 @@ describe CompaniesController do
       allow(Company).to receive(:new).and_return(company)
       allow(company).to receive(:users).and_return(users)
       allow(users).to receive(:build).and_return(user)
-      allow(user).to receive(:roles).and_return(roles)
-      allow(roles).to receive(:build).and_return(role)
     end
 
     def send_request
@@ -37,8 +35,6 @@ describe CompaniesController do
       it { expect(Company).to receive(:new).and_return(company) }
       it { expect(company).to receive(:users).and_return(users) }
       it { expect(users).to receive(:build).and_return(user) }
-      it { expect(user).to receive(:roles).and_return(roles) }
-      it { expect(roles).to receive(:build).and_return(role) }
     end
 
     describe 'assigns' do
@@ -145,12 +141,10 @@ describe CompaniesController do
 
   describe '#index' do
     before do
-      allow(Company).to receive(:accessible_by).and_return(companies)
-      allow(companies).to receive(:search).and_return(companies)
+      allow(Company).to receive(:search).and_return(companies)
       allow(companies).to receive(:result).and_return(companies)
       allow(companies).to receive(:page).and_return(companies)
       allow(companies).to receive(:per).and_return(companies)
-      allow(ability).to receive(:has_block?).and_return(false)
     end
 
     def send_request
@@ -162,7 +156,7 @@ describe CompaniesController do
         send_request
       end
 
-      it { expect(companies).to receive(:search).and_return(companies) }
+      it { expect(Company).to receive(:search).and_return(companies) }
       it { expect(companies).to receive(:result).and_return(companies) }
       it { expect(companies).to receive(:page).and_return(companies) }
       it { expect(companies).to receive(:per).and_return(companies) }

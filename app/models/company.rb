@@ -12,8 +12,4 @@ class Company < ActiveRecord::Base
   def owner
     users.first
   end
-
-  def load_user
-    eager_load(:users).owners
-  end
 end
