@@ -14,12 +14,13 @@ class User < ActiveRecord::Base
 
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true
+
+  ## FIXME Please change its name and use before_destroy
+  ## FIXME Also add validation for account_owner cannot be changed.
   after_destroy :ensure_an_account_owners_and_super_admin_remains
 
   before_validation :set_random_password, on: :create
 
-  # FIXED
-  ## FIXME_NISH Please find the correct callback for the method.
   after_create :send_password_email, :add_role_account_owner_if_first_user
 
   scope :owners, -> { joins(:roles).merge(Role.with_name('account_owner')) }
@@ -43,6 +44,7 @@ class User < ActiveRecord::Base
       UserMailer.delay.welcome_email(email, password)
     end
 
+    ## FIXME We can also call has_role? method without self.
     def ensure_an_account_owners_and_super_admin_remains
       if self.has_role? :super_admin
         raise "Can't delete Super Admin"
