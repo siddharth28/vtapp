@@ -14,11 +14,13 @@ class User < ActiveRecord::Base
   attr_readonly :email, :company_id
 
   validates :mentor, presence: true, if: :mentor_id?
+  after_destroy :ensure_an_account_owners_and_super_admin_remains
 
   accepts_nested_attributes_for :roles
 
   before_validation :set_random_password, on: :create
 
+  # FIXED
   ## FIXME_NISH Please find the correct callback for the method.
   after_create :send_password_email
 
@@ -37,5 +39,13 @@ class User < ActiveRecord::Base
 
     def send_password_email
       Mailer.send_email(self)
+    end
+
+    def ensure_an_account_owners_and_super_admin_remains
+      if self.has_role? :super_admin
+        raise "Can't delete Super Admin"
+      elsif self.has_role? :account_owner
+        raise "Can't delete Account Owner"
+      end
     end
 end
