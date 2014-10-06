@@ -12,6 +12,7 @@ describe Company do
 
   describe "associations" do
     it { should have_many(:users).dependent(:destroy) }
+    it { should have_one(:owner) }
   end
 
   describe "validations" do
