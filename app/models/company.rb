@@ -9,6 +9,8 @@ class Company < ActiveRecord::Base
   validates :name, presence: true
   validates :name, uniqueness: true, allow_blank: true
 
+  scope :load_users, -> { eager_load(:users).joins(users: :roles).merge(Role.with_name('account_owner')) }
+
   def owner
     users.first
   end

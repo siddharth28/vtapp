@@ -3,7 +3,8 @@ class CompaniesController < ApplicationController
   skip_load_resource :only => [:index, :create]
 
   def index
-    @search = Company.includes(:users).search(params[:q])
+    @companies = Company.load_users
+    @search = @companies.search(params[:q])
     @companies = @search.result.page(params[:page]).per(2)
   end
 

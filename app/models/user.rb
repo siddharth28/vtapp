@@ -1,3 +1,4 @@
+# FIXED
 ## FIXME_NISH Please provide an appropriate name for mailer
 ## FIXME_NISH require lib files in application, we don't need to require them separately.
 class User < ActiveRecord::Base
@@ -14,10 +15,9 @@ class User < ActiveRecord::Base
 
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true
-
   ## FIXME Please change its name and use before_destroy
   ## FIXME Also add validation for account_owner cannot be changed.
-  after_destroy :ensure_an_account_owners_and_super_admin_remains
+  before_destroy :ensure_an_account_owners_and_super_admin_remains
 
   before_validation :set_random_password, on: :create
 
@@ -37,16 +37,16 @@ class User < ActiveRecord::Base
     end
 
     def send_password_email
-      email = self.email
       password = self.password
-      UserMailer.delay.welcome_email(email, password)
+      UserMailer.delay.welcome_email(self.email, password)
     end
 
+    # FIXED
     ## FIXME We can also call has_role? method without self.
     def ensure_an_account_owners_and_super_admin_remains
-      if self.has_role? :super_admin
+      if has_role? :super_admin
         raise "Can't delete Super Admin"
-      elsif self.has_role? :account_owner
+      elsif has_role? :account_owner
         raise "Can't delete Account Owner"
       end
     end
