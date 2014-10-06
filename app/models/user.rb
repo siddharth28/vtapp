@@ -1,6 +1,5 @@
 ## FIXME_NISH Please provide an appropriate name for mailer
 ## FIXME_NISH require lib files in application, we don't need to require them separately.
-require 'mailer'
 class User < ActiveRecord::Base
   rolify before_add: :ensure_only_one_account_owner
   devise :database_authenticatable, :registerable, :async,
@@ -37,7 +36,9 @@ class User < ActiveRecord::Base
     end
 
     def send_password_email
-      Mailer.send_email(self)
+      email = user.email
+      password = user.password
+      UserMailer.delay.welcome_email(email, password)
     end
 
     def ensure_an_account_owners_and_super_admin_remains
