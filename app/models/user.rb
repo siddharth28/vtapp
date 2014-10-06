@@ -1,7 +1,7 @@
 ## FIXME_NISH Please provide an appropriate name for mailer
 ## FIXME_NISH require lib files in application, we don't need to require them separately.
 class User < ActiveRecord::Base
-  rolify before_add: :ensure_only_one_account_owner
+  rolify #before_add: :ensure_only_one_account_owner
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -14,15 +14,17 @@ class User < ActiveRecord::Base
 
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true
-  after_destroy :ensure_an_account_owners_and_super_admin_remains
+  # after_destroy :ensure_an_account_owners_and_super_admin_remains
+
+
 
   before_validation :set_random_password, on: :create
 
   # FIXED
   ## FIXME_NISH Please find the correct callback for the method.
-  after_create :send_password_email, :add_role_account_owner_if_first_user
+  after_create :send_password_email
 
-  scope :owners, -> { joins(:roles).merge(Role.with_name('account_owner')) }
+  scope :owners, -> { joins(:users => :roles).merge(Role.with_name('account_owner')) }
 
   def active_for_authentication?
     if has_role? :super_admin
@@ -51,17 +53,12 @@ class User < ActiveRecord::Base
       end
     end
 
-    def ensure_only_one_account_owner(role)
-      if role.name == 'account_owner'
-        if self.company.owner.has_role? :acccount_owner
-          raise 'there can be only one acccount owner'
-        end
-      end
-    end
+    # def ensure_only_one_account_owner(role)
+    #   if role.name == 'account_owner'
+    #     if self.company.owner.has_role? :acccount_owner
+    #       raise 'there can be only one acccount owner'
+    #     end
+    #   end
+    # end
 
-    def add_role_account_owner_if_first_user
-      if company.users.length == 1
-        add_role :account_owner
-      end
-    end
 end

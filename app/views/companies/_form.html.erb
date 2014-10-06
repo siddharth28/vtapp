@@ -18,16 +18,14 @@
       <%= company.label :company_name %><br>
       <%= company.text_field :name %>
     </div>
-    <%= company.fields_for(:users) do |user| %>
-      <div class="field">
-        <%= user.label :owner_name %><br>
-        <%= user.text_field :name %>
-      </div>
-      <div class="field">
-        <%= user.label :email %><br>
-        <%= user.email_field :email %>
-      </div>
-    <% end %>
+    <div class="field">
+      <%= company.label :owner_name %><br>
+      <%= company.text_field :owner_name %>
+    </div>
+    <div class="field">
+      <%= company.label :owner_email %><br>
+      <%= company.text_field :owner_email %>
+    </div>
     <div class="actions">
       <%= company.submit %>
     </div>

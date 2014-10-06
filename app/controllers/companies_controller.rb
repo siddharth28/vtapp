@@ -1,9 +1,9 @@
 class CompaniesController < ApplicationController
   load_and_authorize_resource
-  skip_load_resource :only => [:index, :create]
+  skip_load_resource only: [:index, :create]
 
   def index
-    @companies = Company.load_users
+    @companies = Company.owner
     @search = @companies.search(params[:q])
     # FIXME_NISH PLEASE add pagination.
     @companies = @search.result
@@ -34,6 +34,7 @@ class CompaniesController < ApplicationController
 
   private
     def company_params
-      params.require(:company).permit(:name, users_attributes: [:name, :email, roles_attributes: [:name]])
+      params.require(:company).permit(:name, :owner_name, :owner_email)
     end
+
 end
