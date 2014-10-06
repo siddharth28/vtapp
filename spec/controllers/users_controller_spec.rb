@@ -1,10 +1,15 @@
 require 'rails_helper'
 describe UsersController do
   let(:user) { mock_model(User) }
+  let(:users) { double(ActiveRecord::Relation) }
+  let(:ability) { double(Ability) }
 
   before do
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(controller).to receive(:current_user).and_return(user)
+    allow(controller).to receive(:current_ability).and_return(ability)
+    allow(ability).to receive(:authorize!).and_return(true)
+    allow(ability).to receive(:attributes_for).and_return([])
   end
 
   describe '#show' do
