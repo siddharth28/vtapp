@@ -7,7 +7,7 @@ class CompaniesController < ApplicationController
     @search = @companies.search(params[:q])
     # FIXME_NISH PLEASE add pagination.
     @companies = @search.result
-    @companies = @companies.page(params[:page]).per(10)
+    @companies = @companies.page(params[:page]).per(2)
   end
 
   def new
