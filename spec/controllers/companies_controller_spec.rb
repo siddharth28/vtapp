@@ -13,6 +13,7 @@ describe CompaniesController do
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:current_ability).and_return(ability)
     allow(ability).to receive(:authorize!).and_return(true)
+    allow(ability).to receive(:attributes_for).and_return([])
   end
 
   describe '#new' do
@@ -149,7 +150,6 @@ describe CompaniesController do
       allow(companies).to receive(:result).and_return(companies)
       allow(companies).to receive(:page).and_return(companies)
       allow(companies).to receive(:per).and_return(companies)
-
       allow(ability).to receive(:has_block?).and_return(false)
     end
 

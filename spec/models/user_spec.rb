@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe User do
-  let(:user) { build(:user) }
+  let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com') }
+  let(:user) { build(:user, mentor_id: mentor.id) }
 
   describe 'associations' do
     describe 'has_many association' do
@@ -15,18 +16,7 @@ describe User do
   end
 
   describe 'validation' do
-    context 'mentor not present' do
-      it { should_not validate_presence_of(:mentor) }
-    end
-
-    context 'mentor present' do
-      before do
-        user.mentor_id = 1
-      end
-      # FIXED
-      ## FIXME_NISH Please write only one or two line in spec, move the rest of code in before of this context.
-      it { should validate_presence_of(:mentor) }
-    end
+    it { expect { user.mentor_id = 890 }.to change{ user.valid? }.from(true).to(false) }
   end
 
   describe 'callbacks' do
@@ -35,7 +25,6 @@ describe User do
     describe 'before validation' do
       it { expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false) }
     end
-
   end
 
   describe 'attributes' do
@@ -43,15 +32,8 @@ describe User do
     it { expect(user).to respond_to(:company_id) }
 
     describe 'readonly_attributes' do
-      it 'should not update readonly attribute email' do
-        user.update_attributes email: 'new_test@example.com'
-        expect(user.reload.email).to eql user.email
-      end
-
-      it 'should not update readonly attribute company_id' do
-        user.update_attributes company_id: 1
-        expect(user.reload.company_id).to eql user.company_id
-      end
+      it { should have_readonly_attribute(:email) }
+      it { should have_readonly_attribute(:company_id) }
     end
   end
 
@@ -77,20 +59,14 @@ describe User do
           company.toggle!(:enabled)
         end
         let(:user) { company.users.build({ name: 'Vinsol', enabled: true } ) }
-
-
+        # FIXED
         ## FIXME_NISH refactor this spec
         it { expect(user.active_for_authentication?).to eql(false) }
       end
     end
 
-
     describe '#set_random_password' do
       it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
     end
   end
-  # describe '#send_password_email' do
-  #   it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
-  # end
-
 end
