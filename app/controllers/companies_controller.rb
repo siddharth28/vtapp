@@ -1,8 +1,9 @@
 class CompaniesController < ApplicationController
   load_and_authorize_resource
-  skip_load_resource :only => [:create]
+  skip_load_resource :only => [:index, :create]
 
   def index
+    @companies = Company.eager_load(:users).joins(:users => :roles).where('roles.name'=> 'account_owner')
     @search = @companies.search(params[:q])
     # FIXME_NISH PLEASE add pagination.
     @companies = @search.result
@@ -10,7 +11,7 @@ class CompaniesController < ApplicationController
   end
 
   def new
-    @company.users.build.roles.build
+    @company.users.build
   end
 
   def create

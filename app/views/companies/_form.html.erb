@@ -27,11 +27,6 @@
         <%= user.label :email %><br>
         <%= user.email_field :email %>
       </div>
-      <%= user.fields_for(:roles) do |role| %>
-        <div class="field">
-          <%= role.hidden_field 'name', value: 'account_owner' %>
-        </div>
-      <% end %>
     <% end %>
     <div class="actions">
       <%= company.submit %>
