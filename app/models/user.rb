@@ -2,7 +2,7 @@
 ## FIXME_NISH require lib files in application, we don't need to require them separately.
 require 'mailer'
 class User < ActiveRecord::Base
-  rolify
+  rolify before_add: :ensure_only_one_account_owner
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   attr_readonly :email, :company_id
 
   validates :mentor, presence: true, if: :mentor_id?
+  validates :company, presence: true
   after_destroy :ensure_an_account_owners_and_super_admin_remains
 
   accepts_nested_attributes_for :roles
@@ -46,6 +47,14 @@ class User < ActiveRecord::Base
         raise "Can't delete Super Admin"
       elsif self.has_role? :account_owner
         raise "Can't delete Account Owner"
+      end
+    end
+
+    def ensure_only_one_account_owner(role)
+      if role.name == 'account_owner'
+        if self.company.owner
+          raise 'there can be only one acccount owner'
+        end
       end
     end
 end

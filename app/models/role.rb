@@ -7,7 +7,5 @@ class Role < ActiveRecord::Base
   ## FIXME_NISH do we required this resource association?
   belongs_to :resource, polymorphic: true
 
-  scope :with_name, ->(role_name) { where(name: role_name) }
-
   scopify
 end
