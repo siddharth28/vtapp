@@ -22,8 +22,6 @@ class User < ActiveRecord::Base
   ## FIXME_NISH Please find the correct callback for the method.
   after_create :send_password_email, :add_role_account_owner_if_first_user
 
-  scope :owners, -> { joins(:roles).merge(Role.with_name('account_owner')) }
-
   def active_for_authentication?
     if has_role? :super_admin
       super

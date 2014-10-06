@@ -13,9 +13,6 @@ class Company < ActiveRecord::Base
     users.first
   end
 
-  def load_user
-    eager_load(:users).owners
-  end
   # FIXED
   ## FIXME_NISH why this callback is a after_commit?
   ## FIXME_NISH Please move this callback to user as discussed.
