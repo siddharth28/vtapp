@@ -3,7 +3,7 @@ class CompaniesController < ApplicationController
   skip_load_resource only: [:index, :create]
 
   def index
-    @companies = Company.owner
+    @companies = Company.load_users
     @search = @companies.search(params[:q])
     # FIXME_NISH PLEASE add pagination.
     @companies = @search.result
