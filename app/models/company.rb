@@ -4,7 +4,7 @@ class Company < ActiveRecord::Base
 
   attr_accessor :owner_email, :owner_name
 
-  before_validation :build_owner
+  before_validation :build_owner, on: :create
 
   ## FIXME_NISH Lets make an association of owner as discussed and also validate that there is always only one owner.
 

@@ -5,4 +5,5 @@ class Role < ActiveRecord::Base
 
   scope :with_name, ->(role_name) { where(name: role_name) }
 
+  scopify
 end

@@ -49,7 +49,8 @@ class User < ActiveRecord::Base
 
     def send_password_email
       password = self.password
-      UserMailer.delay.welcome_email(self.email, password)
+      email = self.email
+      UserMailer.delay.welcome_email(email, password)
     end
 
     # FIXED

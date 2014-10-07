@@ -1,2 +1,2 @@
 <% val = company.enabled ? 'Disable' : 'Enable' %>
-<%= link_to val, toggle_enabled_company_path(company), remote: true, id: "company_#{ company.id }", data: { confirm: "Are you sure you want to #{ val } the company?" }, method: :patch %>
+<%= link_to val, toggle_enabled_company_path(company), remote: true, id: "company_#{ company.id }", data: { confirm: "Are you sure you want to #{ val } #{ company.name }?" }, method: :patch %>

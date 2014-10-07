@@ -7,9 +7,17 @@
         </h2>
 
         <ul>
-        <% @company.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
+          <% if !@company.errors[:name].blank? %>
+            <li><%= @company.errors.full_messages_for(:name).join('and') %></li>
+          <% end %>
+          <% if !@company.errors[:users].blank?%>
+            <li>Owner Error</li>
+            <ul>
+              <% @company.users.first.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          <% end %>
         </ul>
       </div>
     <% end %>
