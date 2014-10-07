@@ -1,7 +1,8 @@
+# FIXED
 ## FIXME_NISH Please provide an appropriate name for mailer
 ## FIXME_NISH require lib files in application, we don't need to require them separately.
 class User < ActiveRecord::Base
-  rolify #before_add: :ensure_only_one_account_owner
+  rolify before_add: :ensure_only_one_account_owner
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -14,18 +15,13 @@ class User < ActiveRecord::Base
 
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true
+  ## FIXME Please change its name and use before_destroy
+  ## FIXME Also add validation for account_owner cannot be changed.
+  before_destroy :ensure_an_account_owners_and_super_admin_remains
 
   before_validation :set_random_password, on: :create
 
-  # FIXED
-  ## FIXME_NISH Please find the correct callback for the method.
-  scope :owners, -> { joins(:users => :roles).merge(Role.with_name('account_owner')) }
-
-  ## FIXME Please change its name and use before_destroy
-  ## FIXME Also add validation for account_owner cannot be changed.
-
   after_create :send_password_email, :add_role_account_owner_if_first_user
-
 
   def active_for_authentication?
     if has_role? :super_admin
@@ -41,26 +37,31 @@ class User < ActiveRecord::Base
     end
 
     def send_password_email
-      email = self.email
       password = self.password
-      UserMailer.delay.welcome_email(email, password)
+      UserMailer.delay.welcome_email(self.email, password)
     end
 
+    # FIXED
     ## FIXME We can also call has_role? method without self.
     def ensure_an_account_owners_and_super_admin_remains
-      if self.has_role? :super_admin
+      if has_role? :super_admin
         raise "Can't delete Super Admin"
-      elsif self.has_role? :account_owner
+      elsif has_role? :account_owner
         raise "Can't delete Account Owner"
       end
     end
 
-    # def ensure_only_one_account_owner(role)
-    #   if role.name == 'account_owner'
-    #     if self.company.owner.has_role? :acccount_owner
-    #       raise 'there can be only one acccount owner'
-    #     end
-    #   end
-    # end
+    def ensure_only_one_account_owner(role)
+      if role.name == 'account_owner'
+        if self.company.owner.has_role? :acccount_owner
+          raise 'there can be only one acccount owner'
+        end
+      end
+    end
 
+    def add_role_account_owner_if_first_user
+      if company.users.length == 1
+        add_role :account_owner
+      end
+    end
 end
