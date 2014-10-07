@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
 
   after_create :send_password_email
 
-  scope :find_account_owner, -> { joins(:roles).merge(Role.with_name('account_owner')) }
+  scope :with_account_owner_role, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
   def active_for_authentication?
     if super_admin?

@@ -15,7 +15,7 @@ class Company < ActiveRecord::Base
 
 
   def owner
-    users.find_account_owner.first
+    users.with_account_owner_role.first
   end
 
   private
