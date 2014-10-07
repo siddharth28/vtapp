@@ -1,6 +1,6 @@
 class Company < ActiveRecord::Base
 
-  has_many :users, inverse_of: :company, dependent: :destroy
+  has_many :users, inverse_of: :company, dependent: :restrict_with_exception
 
   attr_accessor :owner_email, :owner_name
 
