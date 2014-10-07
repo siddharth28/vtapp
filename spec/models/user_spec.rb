@@ -18,6 +18,7 @@ describe User do
 
   describe 'validation' do
     it { should validate_presence_of(:company) }
+    it { should validate_presence_of(:name) }
     it { expect { user.mentor_id = 890 }.to change{ user.valid? }.from(true).to(false) }
   end
 

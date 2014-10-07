@@ -14,14 +14,3 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
-
-$(function(){
-  $(".sortable_table").tablesorter( {sortList: [[0,0], [1,0]],
-    headers: {
-      // disable sorting of the first column (we can use zero or the header class name)
-      '.disabled' : {
-        // disable it by setting the property sorter to false
-        sorter: false
-      }
-    }} );
-});

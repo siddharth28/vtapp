@@ -16,16 +16,12 @@ class CompaniesController < ApplicationController
 
   def create
     @company = Company.new(company_params)
-    respond_to do |format|
-      if @company.save
-        format.html { redirect_to @company, notice: "Company #{ @company.name } is successfully created." }
-      else
-        format.html { render action: 'new' }
-      end
+    begin
+      @company.save!
+      redirect_to @company, notice: "Company #{ @company.name } is successfully created."
+    rescue StandardError => e
+      render action: 'new'
     end
-  end
-
-  def show
   end
 
   def toggle_enabled

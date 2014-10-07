@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
 
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
+  validates :name, presence: true
   ## FIXME Please change its name and use before_destroy
   ## FIXME Also add validation for account_owner cannot be changed.
   before_destroy :ensure_an_account_owners_and_super_admin_remains

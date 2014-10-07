@@ -20,7 +20,10 @@ class Company < ActiveRecord::Base
 
   private
     def make_owner
-      User.create!(name: owner_name, email: owner_email, company: self).add_role :account_owner
+      owner = users.create(name: owner_name, email: owner_email)
+      self.errors.add(:user, owner.errors.full_messages.to_sentence) if !owner.persisted?
+      raise if !owner.persisted?
+      owner.add_role :account_owner
     end
 
   # FIXED

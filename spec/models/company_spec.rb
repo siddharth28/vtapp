@@ -41,8 +41,11 @@ describe Company do
   describe 'scopes' do
     describe 'load_with_owners' do
       before do
-        allow(Company).to receive
+        let(:users) { double(ActiveRecord::Relation) }
+        let(:users) { double(ActiveRecord::Relation) }
+        allow(Company).to receive(:eager_load).and_return(:users)
       end
+      it { expect(Company.load_with_owners).to_return}
     end
   end
 
