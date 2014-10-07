@@ -28,9 +28,6 @@ describe User do
       it { expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false) }
     end
 
-    describe 'after create' do
-      it { expect(mentor.has_role?(:account_owner)).to eql(true) }
-    end
   end
 
   describe 'attributes' do

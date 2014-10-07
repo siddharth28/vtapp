@@ -14,21 +14,31 @@ class User < ActiveRecord::Base
   attr_readonly :email, :company_id
 
   validates :mentor, presence: true, if: :mentor_id?
-  validates :company, presence: true
+  validates :company, presence: true, if: -> { !super_admin? }
   ## FIXME Please change its name and use before_destroy
   ## FIXME Also add validation for account_owner cannot be changed.
   before_destroy :ensure_an_account_owners_and_super_admin_remains
 
   before_validation :set_random_password, on: :create
 
-  after_create :send_password_email, :add_role_account_owner_if_first_user
+  after_create :send_password_email
+
+  scope :find_account_owner, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
   def active_for_authentication?
-    if has_role? :super_admin
+    if super_admin?
       super
     else
       super && enabled && company.enabled
     end
+  end
+
+  def super_admin?
+    has_role? :super_admin
+  end
+
+  def account_owner?
+    has_role? :account_owner
   end
 
   private
@@ -44,24 +54,18 @@ class User < ActiveRecord::Base
     # FIXED
     ## FIXME We can also call has_role? method without self.
     def ensure_an_account_owners_and_super_admin_remains
-      if has_role? :super_admin
+      if super_admin?
         raise "Can't delete Super Admin"
-      elsif has_role? :account_owner
+      elsif account_owner?
         raise "Can't delete Account Owner"
       end
     end
 
     def ensure_only_one_account_owner(role)
       if role.name == 'account_owner'
-        if self.company.owner.has_role? :acccount_owner
+        if company.owner
           raise 'there can be only one acccount owner'
         end
-      end
-    end
-
-    def add_role_account_owner_if_first_user
-      if company.users.length == 1
-        add_role :account_owner
       end
     end
 end

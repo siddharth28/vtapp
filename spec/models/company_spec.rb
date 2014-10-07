@@ -12,16 +12,15 @@ describe Company do
 
   describe "associations" do
     it { should have_many(:users).dependent(:destroy) }
-    it { should have_one(:owner) }
   end
 
   describe "validations" do
+    before(:each) do
+      Company.any_instance.stub(:make_owner)
+    end
+
     it { should validate_presence_of(:name) }
     it { should validate_uniqueness_of(:name) }
-  end
-
-  describe "accept_nested_attributes_for" do
-    it { should accept_nested_attributes_for(:users) }
   end
 
 end

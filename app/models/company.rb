@@ -8,16 +8,14 @@ class Company < ActiveRecord::Base
 
   ## FIXME_NISH Lets make an association of owner as discussed and also validate that there is always only one owner.
 
-  scope :owner, -> { eager_load(:users).joins(:roles).where('roles.name' => 'account_owner') }
-
   validates :name, presence: true
   validates :name, uniqueness: true, allow_blank: true
 
-  scope :load_users, -> { eager_load(:users).joins(users: :roles).merge(Role.with_name('account_owner')) }
+  scope :load_with_owners, -> { eager_load(:users).joins(users: :roles).merge(Role.with_name('account_owner')) }
 
 
   def owner
-    users.joins(:roles).merge(Role.with_name('account_owner')).first
+    users.find_account_owner.first
   end
 
   private

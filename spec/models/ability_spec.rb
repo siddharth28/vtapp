@@ -2,14 +2,15 @@ require 'cancan/matchers'
 require 'rails_helper'
 
 describe Ability do
-  let(:user){ create(:user) }
-  let(:super_admin_role) { create(:role) }
   let(:company) { create(:company) }
+  let(:user){ create(:user, company: company) }
+  let(:super_admin_role) { create(:super_admin_role) }
   let(:ability) { Ability.new(user) }
   describe 'User' do
     describe 'super_admin abilities' do
-      before do
+      before(:each) do
         super_admin_role
+        user.instance_variable_set(:@r_map, {})
         user.add_role :super_admin
       end
       it{ expect(ability).to be_able_to(:manage, user) }
