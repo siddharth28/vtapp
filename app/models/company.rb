@@ -4,7 +4,7 @@ class Company < ActiveRecord::Base
 
   attr_accessor :owner_email, :owner_name
 
-  after_create :make_owner
+  before_validation :build_owner
 
   ## FIXME_NISH Lets make an association of owner as discussed and also validate that there is always only one owner.
 
@@ -19,11 +19,8 @@ class Company < ActiveRecord::Base
   end
 
   private
-    def make_owner
-      owner = users.create(name: owner_name, email: owner_email)
-      self.errors.add(:user, owner.errors.full_messages.to_sentence) if !owner.persisted?
-      raise if !owner.persisted?
-      owner.add_role :account_owner
+    def build_owner
+      users.build(name: owner_name, email: owner_email).add_role(:account_owner)
     end
 
   # FIXED

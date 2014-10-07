@@ -16,10 +16,9 @@ class CompaniesController < ApplicationController
 
   def create
     @company = Company.new(company_params)
-    begin
-      @company.save!
+    if @company.save
       redirect_to @company, notice: "Company #{ @company.name } is successfully created."
-    rescue StandardError => e
+    else
       render action: 'new'
     end
   end
