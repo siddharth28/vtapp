@@ -16,10 +16,6 @@ describe Company do
   end
 
   describe 'validations' do
-    before do
-      Company.any_instance.stub(:make_owner)
-    end
-
     it { should validate_presence_of(:name) }
     it { should validate_uniqueness_of(:name) }
   end
@@ -41,8 +37,6 @@ describe Company do
   describe 'scopes' do
     describe 'load_with_owners' do
       before do
-        let(:users) { double(ActiveRecord::Relation) }
-        let(:users) { double(ActiveRecord::Relation) }
         allow(Company).to receive(:eager_load).and_return(:users)
       end
       it { expect(Company.load_with_owners).to_return}
