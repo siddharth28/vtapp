@@ -28,7 +28,7 @@ describe UsersController do
       end
 
       it { expect(User).to receive(:find).and_return(user) }
-      end
+    end
 
     describe 'assigns' do
       before do
