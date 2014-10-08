@@ -19,7 +19,16 @@ describe User do
   describe 'validation' do
     it { should validate_presence_of(:company) }
     it { should validate_presence_of(:name) }
-    it { expect { user.mentor_id = 890 }.to change{ user.valid? }.from(true).to(false) }
+    context 'mentor not present' do
+      it { expect { user.mentor_id = 890 }.to change{ user.valid? }.from(true).to(false) }
+    end
+
+    context 'mentor present' do
+      before do
+        user.mentor_id = 890
+      end
+      it { expect { user.mentor_id = mentor.id }.to change{ user.valid? }.from(false).to(true) }
+    end
   end
 
   describe 'callbacks' do
@@ -31,7 +40,7 @@ describe User do
     end
 
     describe 'before destroy' do
-      context ' when super_admin' do
+      context 'when super_admin' do
         before do
           user.add_role(:super_admin)
         end
@@ -39,7 +48,7 @@ describe User do
         it { expect { user.destroy }.to raise_error }
       end
 
-      context ' when account_owner' do
+      context 'when account_owner' do
         before do
           allow(company).to receive(:owner).and_return(false)
           user.add_role(:account_owner)
@@ -47,6 +56,10 @@ describe User do
 
         it { expect { user.destroy }.to raise_error }
       end
+    end
+
+    describe 'after_commit' do
+      it { expect { user.save }.to change{Delayed::Backend::ActiveRecord::Job.count}.by(1) }
     end
   end
 
