@@ -1,3 +1,4 @@
+#FIXME Write rspecs for missing things.
 class User < ActiveRecord::Base
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
   devise :database_authenticatable, :registerable, :async,
@@ -10,6 +11,7 @@ class User < ActiveRecord::Base
 
   attr_readonly :email, :company_id
 
+  #FIXME Write rspec uisng context.
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true

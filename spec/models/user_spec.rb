@@ -35,10 +35,12 @@ describe User do
     let(:company) { create(:company) }
     let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
 
+    #FIXME Also check password_confirmation and both password and password_confirmation should be equal
     describe 'before validation' do
       it { expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false) }
     end
 
+   #FIXME Write rspec when neither super_admin nor account_owner
     describe 'before destroy' do
       context 'when super_admin' do
         before do
@@ -74,6 +76,7 @@ describe User do
     let(:user) { build(:user, name: nil, email: nil, password: nil) }
     let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
 
+    #FIXME Write rspec when user is not super_admin
     describe '#super_admin?' do
       before do
         user.add_role(:super_admin)
@@ -82,6 +85,7 @@ describe User do
       it { expect(user.super_admin?).to eql(true) }
     end
 
+    #FIXME Write rspec when user is not super_admin
     describe '#account_owner?' do
       let(:company) { create(:company) }
       let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
@@ -94,6 +98,7 @@ describe User do
       it { expect(user.account_owner?).to eql(true) }
     end
 
+    #FIXME Write rspecs for more conditions.
     describe '#active_for_authentication?' do
       context ' when super_admin' do
         before do
@@ -109,17 +114,18 @@ describe User do
           user.add_role(:account_owner)
           company.toggle!(:enabled)
         end
-        # FIXED
-        ## FIXME_NISH refactor this spec
+
         it { expect(user.active_for_authentication?).to eql(false) }
       end
     end
 
+    #FIXME It is not required
     describe '#set_random_password' do
       it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
     end
   end
 
+  #FIXME Check users with account_role should be returned.
   describe 'scope' do
     let(:company) { create(:company) }
     let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
