@@ -30,11 +30,6 @@ describe User do
       it { expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false) }
     end
 
-    describe 'after commit' do
-      it { expect { user.save }.to change{ password.nil? }.from(true).to(false) }
-      it { expect { user.save }.to change{ email.nil? }.from(true).to(false) }
-    end
-
     describe 'before destroy' do
       context ' when super_admin' do
         before do
