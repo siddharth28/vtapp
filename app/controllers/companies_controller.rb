@@ -1,11 +1,8 @@
 class CompaniesController < ResourceController
-  #FIXED
-  #FIXME Move this method in application_controller as it is also used in other controllers.
+  #FIXME Rspecs of this line.
   skip_load_resource only: [:index, :create]
 
   def index
-    #FIXED
-    #FIXME Increase pagination, Also Refactor this method accordingly.
     @search = Company.load_with_owners.search(params[:q])
     @companies = @search.result.page(params[:page]).per(20)
   end
@@ -24,6 +21,7 @@ class CompaniesController < ResourceController
   end
 
   private
+    #FIXME Write rspec for this method.
     def company_params
       params.require(:company).permit(:name, :owner_name, :owner_email)
     end

@@ -4,6 +4,7 @@ describe UsersController do
   let(:users) { double(ActiveRecord::Relation) }
   let(:ability) { double(Ability) }
 
+  #FIXME Stub the calls inside before block.
   before do
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(controller).to receive(:current_user).and_return(user)
