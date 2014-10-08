@@ -5,7 +5,8 @@ Rails.application.routes.draw do
       root 'companies#index', as: :authenticated_root
       resources :users
       resources :companies do
-        patch :toggle_enabled, on: :member
+        patch :enable, on: :member, to: :toggle_enabled
+        patch :disable, on: :member, to: :toggle_enabled
       end
     end
 
