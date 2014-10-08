@@ -16,7 +16,6 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
-  ## FIXME Please change its name and use before_destroy
   ## FIXME Also add validation for account_owner cannot be changed.
   before_destroy :ensure_an_account_owners_and_super_admin_remains
 
@@ -34,6 +33,7 @@ class User < ActiveRecord::Base
     end
   end
 
+  #FIXME Make these methods using meta-programming
   def super_admin?
     has_role? :super_admin
   end
@@ -53,8 +53,6 @@ class User < ActiveRecord::Base
       UserMailer.delay.welcome_email(email, password)
     end
 
-    # FIXED
-    ## FIXME We can also call has_role? method without self.
     def ensure_an_account_owners_and_super_admin_remains
       if super_admin?
         raise "Can't delete Super Admin"
