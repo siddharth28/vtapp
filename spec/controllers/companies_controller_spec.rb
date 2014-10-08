@@ -16,46 +16,8 @@ describe CompaniesController do
     allow(ability).to receive(:attributes_for).and_return([])
   end
 
-  describe '#new' do
-    before do
-      allow(Company).to receive(:new).and_return(company)
-      allow(company).to receive(:users).and_return(users)
-      allow(users).to receive(:build).and_return(user)
-    end
-
-    def send_request
-      get :new
-    end
-
-    describe 'expects to receive' do
-      after do
-        send_request
-      end
-
-      it { expect(Company).to receive(:new).and_return(company) }
-      it { expect(company).to receive(:users).and_return(users) }
-      it { expect(users).to receive(:build).and_return(user) }
-    end
-
-    describe 'assigns' do
-      before do
-        send_request
-      end
-
-      it { expect(assigns(:company)).to eq(company) }
-    end
-
-    describe 'response' do
-      before do
-        send_request
-      end
-
-      it { expect(response).to have_http_status(200) }
-      it { expect(response).to render_template 'companies/new' }
-    end
-  end
-
   describe '#create' do
+    #FIXED Allow works as a stub
     #FIXME Stub the calls inside before block.
     before do
       allow(Company).to receive(:new).and_return(company)
@@ -67,27 +29,18 @@ describe CompaniesController do
     end
 
     describe 'expects to send' do
-      after do
-        send_request
-      end
-
+      after { send_request }
       it { expect(Company).to receive(:new).and_return(company) }
     end
 
     describe 'assigns' do
-      before do
-        send_request
-      end
-
+      before { send_request }
       it { expect(assigns(:company)).to eq(company) }
     end
 
     describe 'response' do
       context "when response is successfully created" do
-        before do
-          send_request
-        end
-
+        before { send_request }
         it { expect(response).to redirect_to company_path(company) }
         it { expect(response).to have_http_status(302) }
         it { expect(flash[:notice]).to eq("Company #{ company.name } is successfully created.") }
@@ -107,78 +60,63 @@ describe CompaniesController do
   end
 
   describe '#show' do
-    before do
-      allow(Company).to receive(:find).and_return(company)
-    end
+    before { allow(Company).to receive(:find).and_return(company) }
 
     def send_request
       get :show, { company: { name: 'Test Company' }, id: 122 }
     end
 
     describe 'expects to send' do
-      after do
-        send_request
-      end
-
+      after { send_request }
       it { expect(Company).to receive(:find).and_return(company) }
     end
 
     describe 'assigns' do
-      before do
-        send_request
-      end
-
+      before { send_request }
       it { expect(assigns(:company)).to eq(company) }
     end
 
     describe 'response' do
-      before do
-        send_request
-      end
-
+      before { send_request }
       it { expect(response).to render_template 'companies/show' }
     end
   end
 
   describe '#index' do
     before do
-      allow(Company).to receive(:search).and_return(companies)
+      allow(Company).to receive(:load_with_owners).and_return(companies)
+      allow(companies).to receive(:search).with('example').and_return(companies)
       allow(companies).to receive(:result).and_return(companies)
-      allow(companies).to receive(:page).and_return(companies)
-      allow(companies).to receive(:per).and_return(companies)
+      allow(companies).to receive(:page).with(nil).and_return(companies)
+      allow(companies).to receive(:per).with(20).and_return(companies)
     end
 
     def send_request
-      get :index
+      get :index, q: 'example'
     end
-
+    #FIXED
     #FIXME Also write rspecs of load_with_owners call.
+    #FIXED
     #FIXME Test call with arguments.
     describe 'expects to receive' do
-      after do
-        send_request
-      end
-
-      it { expect(Company).to receive(:search).and_return(companies) }
+      after { send_request }
+      it { expect(Company).to receive(:load_with_owners).and_return(companies) }
+      it { expect(companies).to receive(:search).with('example').and_return(companies) }
       it { expect(companies).to receive(:result).and_return(companies) }
-      it { expect(companies).to receive(:page).and_return(companies) }
-      it { expect(companies).to receive(:per).and_return(companies) }
+      it { expect(companies).to receive(:page).with(nil).and_return(companies) }
+      it { expect(companies).to receive(:per).with(20).and_return(companies) }
     end
 
+    #FIXED
     #FIXME Check assignment of search instance_variable also.
     describe 'assigns' do
-      before do
-        send_request
-      end
-
+      before { send_request }
+      it { expect(assigns(:search)).to eq(companies) }
       it { expect(assigns(:companies)).to eq(companies) }
     end
 
     describe 'response' do
-      before do
-        send_request
-      end
-
+      before { send_request }
       it { expect(response).to have_http_status(200) }
       it { expect(response).to render_template 'index' }
     end
@@ -186,6 +124,7 @@ describe CompaniesController do
 
 
   describe '#toggle_enabled' do
+    #FIXED
     #FIXME Stub the calls inside before block.
     before do
       allow(Company).to receive(:find).and_return(company)
@@ -197,28 +136,18 @@ describe CompaniesController do
     end
 
     describe 'expects to receive' do
-      after do
-        send_request
-      end
-
+      after { send_request }
       it { expect(company).to receive(:toggle!).and_return(true) }
     end
 
+    #FIXED
     #FIXME IT is not required
-    describe 'assigns' do
-      before do
-        send_request
-      end
-
-      it { expect(assigns(:company)).to eq(company) }
-    end
 
     describe 'response' do
-      before do
-        send_request
-      end
-
+      before { send_request }
+      #FIXED
       #FIXME Also test template rendering.
+      it { expect(response).to render_template 'companies/toggle_enabled' }
       it { expect(response).to have_http_status(200) }
     end
   end

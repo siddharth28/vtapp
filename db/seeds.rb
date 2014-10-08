@@ -6,4 +6,4 @@ roles.each do |role|
 end
 super_admin = User.new(name: 'tanmay', email: 'tanmay@vinsol.com', password: 'vinsol123')
 super_admin.save(validate: false)
-super_admin.add_role 'super_admin'
+super_admin.add_role(:super_admin)

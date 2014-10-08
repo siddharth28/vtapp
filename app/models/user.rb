@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
 
   attr_readonly :email, :company_id
 
+  #FIXED
   #FIXME Write rspec uisng context.
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
