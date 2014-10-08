@@ -56,6 +56,7 @@ describe CompaniesController do
   end
 
   describe '#create' do
+    #FIXME Stub the calls inside before block.
     before do
       allow(Company).to receive(:new).and_return(company)
       allow(company).to receive(:save).and_return(true)
@@ -151,6 +152,8 @@ describe CompaniesController do
       get :index
     end
 
+    #FIXME Also write rspecs of load_with_owners call.
+    #FIXME Test call with arguments.
     describe 'expects to receive' do
       after do
         send_request
@@ -162,6 +165,7 @@ describe CompaniesController do
       it { expect(companies).to receive(:per).and_return(companies) }
     end
 
+    #FIXME Check assignment of search instance_variable also.
     describe 'assigns' do
       before do
         send_request
@@ -182,6 +186,7 @@ describe CompaniesController do
 
 
   describe '#toggle_enabled' do
+    #FIXME Stub the calls inside before block.
     before do
       allow(Company).to receive(:find).and_return(company)
       allow(company).to receive(:toggle!).and_return(true)
@@ -199,6 +204,7 @@ describe CompaniesController do
       it { expect(company).to receive(:toggle!).and_return(true) }
     end
 
+    #FIXME IT is not required
     describe 'assigns' do
       before do
         send_request
@@ -212,6 +218,7 @@ describe CompaniesController do
         send_request
       end
 
+      #FIXME Also test template rendering.
       it { expect(response).to have_http_status(200) }
     end
   end
