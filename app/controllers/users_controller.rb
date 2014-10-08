@@ -1,5 +1,3 @@
-class UsersController < ApplicationController
-  load_and_authorize_resource
-
+class UsersController < ResourceController
   before_action :authenticate_user!
 end

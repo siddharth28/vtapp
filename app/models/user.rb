@@ -1,7 +1,6 @@
 #FIXME Write rspecs for missing things.
-
 class User < ActiveRecord::Base
-  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner
+  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -16,6 +15,7 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
+  ## FIXED
   ## FIXME Also add validation for account_owner cannot be changed.
   before_destroy :ensure_an_account_owners_and_super_admin_remains
 
@@ -32,14 +32,12 @@ class User < ActiveRecord::Base
       super && enabled && company.enabled
     end
   end
-
+  #FIXED
   #FIXME Make these methods using meta-programming
-  def super_admin?
-    has_role? :super_admin
-  end
-
-  def account_owner?
-    has_role? :account_owner
+  ['account_owner', 'super_admin'].each do |method|
+    define_method "#{ method }?" do
+      has_role? "#{ method }"
+    end
   end
 
   private
@@ -60,7 +58,7 @@ class User < ActiveRecord::Base
         raise "Can't delete Account Owner"
       end
     end
-
+    #rolify callback
     def ensure_only_one_account_owner(role)
       if role.name == 'account_owner'
         if company.owner
@@ -68,8 +66,8 @@ class User < ActiveRecord::Base
         end
       end
     end
-
-    def ensure_cannot_remove_account_owner(role)
+    #rolify callback
+    def ensure_cannot_remove_account_owner_role(role)
       if role.name == 'account_owner'
         raise 'Cannot remove account_owner role'
       end

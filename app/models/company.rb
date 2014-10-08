@@ -1,7 +1,7 @@
 class Company < ActiveRecord::Base
-
+  #FIXED
   #FIXME Check whether inverse_of required or not.
-  has_many :users, inverse_of: :company, dependent: :restrict_with_exception
+  has_many :users, dependent: :restrict_with_exception
 
   #FIXME Write rspecs for attr_accessors
   attr_accessor :owner_email, :owner_name
