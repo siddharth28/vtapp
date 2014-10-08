@@ -32,9 +32,6 @@ describe User do
   end
 
   describe 'attributes' do
-    it { expect(user).to respond_to(:email) }
-    it { expect(user).to respond_to(:company_id) }
-
     describe 'readonly_attributes' do
       it { should have_readonly_attribute(:email) }
       it { should have_readonly_attribute(:company_id) }
@@ -50,11 +47,11 @@ describe User do
     it { expect(user).to respond_to(:active_for_authentication?) }
 
     describe '#active_for_authentication?' do
-      context 'user super_admin' do
-        it 'super_admin' do
+      context ' when super_admin' do
+        before do
           user.add_role 'super_admin'
-          expect(user.active_for_authentication?).to eql(true)
         end
+        it { expect(user.active_for_authentication?).to eql(true) }
       end
 
       context 'user not super_admin' do

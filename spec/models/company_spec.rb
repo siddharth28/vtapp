@@ -5,14 +5,6 @@ describe Company do
   let(:user) { create(:user, company: company) }
   let(:companies) { double(ActiveRecord::Relation) }
 
-
-  describe 'attributes' do
-    it { should respond_to(:name) }
-    it { should respond_to(:enabled) }
-    it { should respond_to(:owner_name) }
-    it { should respond_to(:owner_email) }
-  end
-
   describe 'associations' do
     it { should have_many(:users).dependent(:restrict_with_exception) }
   end
@@ -43,10 +35,11 @@ describe Company do
         allow(companies).to receive(:joins).and_return(:companies)
         allow(companies).to receive(:merge).and_return(:companies)
       end
-        it{ expect(Company).to receive(:eager_load).and_return(:companies) }
-        it{ expect(companies).to receive(:joins).and_return(:companies) }
-        it{ expect(companies).to receive(:merge).and_return(:companies) }
-      end
+
+      it{ expect(Company).to receive(:eager_load).and_return(:companies) }
+      it{ expect(companies).to receive(:joins).and_return(:companies) }
+      it{ expect(companies).to receive(:merge).and_return(:companies) }
+    end
   end
 
 end
