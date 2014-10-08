@@ -1,17 +1,18 @@
 class CompaniesController < ApplicationController
+  #FIXME Move this method in application_controller as it is also used in other controllers.
   load_and_authorize_resource
   skip_load_resource only: [:index, :create]
 
   def index
+    #FIXME Increase pagination, Also Refactor this method accordingly.
     @companies = Company.load_with_owners
     @search = @companies.search(params[:q])
-    # FIXED
-    # FIXME_NISH PLEASE add pagination.
     @companies = @search.result
     @companies = @companies.page(params[:page]).per(2)
   end
 
   def new
+    #FIXME Check whether this line is required
     @company.users.build
   end
 
