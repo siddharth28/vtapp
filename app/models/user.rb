@@ -2,7 +2,7 @@
 ## FIXME_NISH Please provide an appropriate name for mailer
 ## FIXME_NISH require lib files in application, we don't need to require them separately.
 class User < ActiveRecord::Base
-  rolify before_add: :ensure_only_one_account_owner
+  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -69,4 +69,9 @@ class User < ActiveRecord::Base
       end
     end
 
+    def ensure_cannot_remove_account_owner(role)
+      if role.name == 'account_owner'
+        raise 'Cannot remove account_owner role'
+      end
+    end
 end
