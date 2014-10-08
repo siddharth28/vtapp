@@ -6,13 +6,6 @@ describe UserMailer do
 
   it { expect(mail.subject).to eq 'Welcome to My Awesome Site' }
   it { expect(mail.to).to eq [user.email] }
-  it { expect(mail.body.raw_source).to eq "Welcome to vtapp.com, #{ user.email }
-===============================================
-
-You have successfully signed up to example.com,
-your username is: #{ user.email }.
-
-To login to the site, enter password: #{ user.password }.
-
-Thanks for joining and have a great day!" }
+  it { expect(mail.body.raw_source.include?(user.email)).to eq true }
+  it { expect(mail.body.raw_source.include?(user.password)).to eq true }
 end
