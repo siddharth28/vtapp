@@ -19,14 +19,13 @@ describe User do
   describe 'validation' do
     it { should validate_presence_of(:company) }
     it { should validate_presence_of(:name) }
+
     context 'mentor not present' do
       it { expect { user.mentor_id = 890 }.to change{ user.valid? }.from(true).to(false) }
     end
 
     context 'mentor present' do
-      before do
-        user.mentor_id = 890
-      end
+      before { user.mentor_id = 890 }
       it { expect { user.mentor_id = mentor.id }.to change{ user.valid? }.from(false).to(true) }
     end
   end
@@ -35,33 +34,34 @@ describe User do
     let(:company) { create(:company) }
     let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
 
+    #FIXED
     #FIXME Also check password_confirmation and both password and password_confirmation should be equal
     describe 'before validation' do
       it { expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false) }
     end
 
+    #FIXED
    #FIXME Write rspec when neither super_admin nor account_owner
     describe 'before destroy' do
       context 'when super_admin' do
-        before do
-          user.add_role(:super_admin)
-        end
-
+        before { user.add_role(:super_admin) }
         it { expect { user.destroy }.to raise_error }
       end
 
       context 'when account_owner' do
         before do
           allow(company).to receive(:owner).and_return(false)
+          user.save
           user.add_role(:account_owner)
         end
 
         it { expect { user.destroy }.to raise_error }
       end
-    end
 
-    describe 'after_commit' do
-      it { expect { user.save }.to change{Delayed::Backend::ActiveRecord::Job.count}.by(1) }
+      context 'neither super_admin nor account_owner' do
+        before { user.add_role(:track_owner) }
+        it { expect { user.destroy }.not_to raise_error }
+      end
     end
   end
 
@@ -76,39 +76,44 @@ describe User do
     let(:user) { build(:user, name: nil, email: nil, password: nil) }
     let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
 
+    #FIXED
     #FIXME Write rspec when user is not super_admin
-    describe '#super_admin?' do
-      before do
-        user.add_role(:super_admin)
+    context 'either super_admin or account_owner' do
+      describe '#super_admin?' do
+        before { user.add_role(:super_admin) }
+        it { expect(user.super_admin?).to eql(true) }
       end
+      #FIXED
+      #FIXME Write rspec when user is not super_admin
+      describe '#account_owner?' do
+        let(:company) { create(:company) }
+        let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
 
-      it { expect(user.super_admin?).to eql(true) }
+        before do
+          allow(company).to receive(:owner).and_return(false)
+          user.add_role(:account_owner)
+        end
+
+        it { expect(user.account_owner?).to eql(true) }
+      end
     end
 
-    #FIXME Write rspec when user is not super_admin
-    describe '#account_owner?' do
-      let(:company) { create(:company) }
-      let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
-
-      before do
-        allow(company).to receive(:owner).and_return(false)
-        user.add_role(:account_owner)
+    context 'neither super_admin nor account_owner' do
+      describe '#super_admin?' do
+        before { user.add_role(:track_owner) }
+        it { expect(user.super_admin?).to eql(false) }
+        it { expect(user.account_owner?).to eql(false) }
       end
-
-      it { expect(user.account_owner?).to eql(true) }
     end
 
     #FIXME Write rspecs for more conditions.
     describe '#active_for_authentication?' do
-      context ' when super_admin' do
-        before do
-          user.add_role(:super_admin)
-        end
-
+      context 'when super_admin' do
+        before { user.add_role(:super_admin) }
         it { expect(user.active_for_authentication?).to eql(true) }
       end
 
-      context 'user not super_admin' do
+      context 'not super_admin' do
         let(:user) { company.users.build({ name: 'Vinsol', enabled: true } ) }
         before do
           user.add_role(:account_owner)
@@ -119,24 +124,38 @@ describe User do
       end
     end
 
+    #FIXED
     #FIXME It is not required
-    describe '#set_random_password' do
-      it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
+    describe '#send_password_email' do
+      before do
+        user.send(:set_random_password)
+        password_length = user.password.length
+        password_confirmation_length = user.password_confirmation.length
+      end
+
+      it { expect (password_length).to eq(password_confirmation_length) }
+    end
+
+    describe '#send_password_email' do
+      it { expect { user.send(:send_password_email) }.to change{Delayed::Backend::ActiveRecord::Job.count}.by(1) }
     end
   end
 
+  #FIXED
   #FIXME Check users with account_role should be returned.
   describe 'scope' do
     let(:company) { create(:company) }
-    let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
+    let(:user) { build(:user, company: company) }
+    let(:user1) { create(:user, company: company) }
 
     describe '#with_account_owner_role' do
       before do
         allow(company).to receive(:owner).and_return(false)
         user.add_role 'account_owner'
+        user1.add_role 'super_admin'
         user.save
       end
-      it { expect(User.with_account_owner_role).not_to be_nil }
+      it { expect(User.with_account_owner_role.all? { |user| user.has_role?(:account_owner)}).to eq(true) }
     end
   end
 end
