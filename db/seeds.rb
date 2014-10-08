@@ -4,4 +4,6 @@ roles = ['super_admin', 'account_owner', 'account_admin', 'track_owner', 'track_
 roles.each do |role|
   Role.find_or_create_by!(name: role)
 end
-User.create!(name: 'tanmay', email: 'tanmay@vinsol.com', password: 'vinsol123').add_role 'super_admin'
+super_admin = User.new(name: 'tanmay', email: 'tanmay@vinsol.com', password: 'vinsol123')
+super_admin.save(validate: false)
+super_admin.add_role 'super_admin'

@@ -8,7 +8,7 @@ class CompaniesController < ApplicationController
     @companies = Company.load_with_owners
     @search = @companies.search(params[:q])
     @companies = @search.result
-    @companies = @companies.page(params[:page]).per(2)
+    @companies = @companies.page(params[:page]).per(20)
   end
 
   def new
