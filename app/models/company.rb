@@ -1,12 +1,11 @@
 class Company < ActiveRecord::Base
 
+  #FIXME Check whether inverse_of required or not.
   has_many :users, inverse_of: :company, dependent: :restrict_with_exception
 
   attr_accessor :owner_email, :owner_name
 
   before_validation :build_owner, on: :create
-
-  ## FIXME_NISH Lets make an association of owner as discussed and also validate that there is always only one owner.
 
   validates :name, presence: true
   validates :name, uniqueness: true, allow_blank: true
@@ -22,8 +21,4 @@ class Company < ActiveRecord::Base
     def build_owner
       users.build(name: owner_name, email: owner_email).add_role(:account_owner)
     end
-
-  # FIXED
-  ## FIXME_NISH why this callback is a after_commit?
-  ## FIXME_NISH Please move this callback to user as discussed.
 end
