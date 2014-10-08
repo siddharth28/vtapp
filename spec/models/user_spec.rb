@@ -23,12 +23,36 @@ describe User do
   end
 
   describe 'callbacks' do
-    let(:user) { build(:user, name: nil, email: nil, password: nil) }
+    let(:company) { create(:company) }
+    let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
 
     describe 'before validation' do
       it { expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false) }
     end
 
+    describe 'after commit' do
+      it { expect { user.save }.to change{ password.nil? }.from(true).to(false) }
+      it { expect { user.save }.to change{ email.nil? }.from(true).to(false) }
+    end
+
+    describe 'before destroy' do
+      context ' when super_admin' do
+        before do
+          user.add_role(:super_admin)
+        end
+
+        it { expect { user.destroy }.to raise_error }
+      end
+
+      context ' when account_owner' do
+        before do
+          allow(company).to receive(:owner).and_return(false)
+          user.add_role(:account_owner)
+        end
+
+        it { expect { user.destroy }.to raise_error }
+      end
+    end
   end
 
   describe 'attributes' do
@@ -42,24 +66,41 @@ describe User do
     let(:user) { build(:user, name: nil, email: nil, password: nil) }
     let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
 
-    it { expect(user).not_to respond_to(:set_random_password) }
-    it { expect(user).not_to respond_to(:send_password_email) }
-    it { expect(user).to respond_to(:active_for_authentication?) }
+    describe '#super_admin?' do
+      before do
+        user.add_role(:super_admin)
+      end
+
+      it { expect(user.super_admin?).to eql(true) }
+    end
+
+    describe '#account_owner?' do
+      let(:company) { create(:company) }
+      let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
+
+      before do
+        allow(company).to receive(:owner).and_return(false)
+        user.add_role(:account_owner)
+      end
+
+      it { expect(user.account_owner?).to eql(true) }
+    end
 
     describe '#active_for_authentication?' do
       context ' when super_admin' do
         before do
-          user.add_role 'super_admin'
+          user.add_role(:super_admin)
         end
+
         it { expect(user.active_for_authentication?).to eql(true) }
       end
 
       context 'user not super_admin' do
+        let(:user) { company.users.build({ name: 'Vinsol', enabled: true } ) }
         before do
-          user.add_role 'account_owner'
+          user.add_role(:account_owner)
           company.toggle!(:enabled)
         end
-        let(:user) { company.users.build({ name: 'Vinsol', enabled: true } ) }
         # FIXED
         ## FIXME_NISH refactor this spec
         it { expect(user.active_for_authentication?).to eql(false) }
@@ -68,6 +109,20 @@ describe User do
 
     describe '#set_random_password' do
       it { expect { user.send(:set_random_password) }.to change{ user.password.nil? }.from(true).to(false) }
+    end
+  end
+
+  describe 'scope' do
+    let(:company) { create(:company) }
+    let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
+
+    describe '#with_account_owner_role' do
+      before do
+        allow(company).to receive(:owner).and_return(false)
+        user.add_role 'account_owner'
+        user.save
+      end
+      it { expect(User.with_account_owner_role).not_to be_nil }
     end
   end
 end
