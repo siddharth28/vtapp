@@ -3,7 +3,9 @@ class Role < ActiveRecord::Base
 
   belongs_to :resource, polymorphic: true
 
+  #FIXME Test case of this scope.
   scope :with_name, ->(role_name) { where(name: role_name) }
 
+  #FIXME Check how can we write test case for this.
   scopify
 end
