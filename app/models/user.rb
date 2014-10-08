@@ -32,14 +32,12 @@ class User < ActiveRecord::Base
       super && enabled && company.enabled
     end
   end
-
+  #FIXED
   #FIXME Make these methods using meta-programming
-  def super_admin?
-    has_role? :super_admin
-  end
-
-  def account_owner?
-    has_role? :account_owner
+  ['account_owner', 'super_admin'].each do |method|
+    define_method "#{ method }?" do
+      has_role? "#{ method }"
+    end
   end
 
   private
