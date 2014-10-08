@@ -1,11 +1,11 @@
 <% if current_user.has_role? :super_admin %>
-  <li><%= link_to 'Company Account', companies_path %></li>
+  <li><%= link_to 'Company Accounts', companies_path %></li>
 
   <li><%= link_to 'Account', edit_user_registration_path %></li>
 
-  <li><%= link_to 'Create Account', new_company_path %></li>
+  <li><%= link_to 'Create Company', new_company_path %></li>
 
-  <li><%= link_to "Currently logged in as : #{ current_user.name }", user_path(current_user), { class: 'user_details' } %></li>
+  <li><%= link_to "Hello, #{ current_user.name }", user_path(current_user), { class: 'user_details' } %></li>
 
   <li><%= link_to 'Sign out', destroy_user_session_path, { method: :delete } %></li>
 <% end %>
