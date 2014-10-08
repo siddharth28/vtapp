@@ -7,4 +7,4 @@ Role.find_or_create_by!(name: 'track_owner')
 Role.find_or_create_by!(name: 'task_reviewer')
 Role.find_or_create_by!(name: 'track_runner')
 User.new(name: 'tanmay', email: 'tanmay@vinsol.com', password: 'vinsol123').save!(validate: false)
-User.find_by(email: 'tanmay@vinsol.com').add_role 'super_admin'
+User.find_by(email: 'tanmay@vinsol.com').add_role(:super_admin)

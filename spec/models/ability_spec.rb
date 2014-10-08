@@ -11,7 +11,7 @@ describe Ability do
       before(:each) do
         super_admin_role
         user.instance_variable_set(:@r_map, {})
-        user.add_role :super_admin
+        user.add_role(:super_admin)
       end
       it{ expect(ability).to be_able_to(:manage, user) }
       it{ expect(ability).to be_able_to(:manage, Company) }
