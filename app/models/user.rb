@@ -1,3 +1,4 @@
+#FIXED
 #FIXME Write rspecs for missing things.
 class User < ActiveRecord::Base
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role

@@ -20,6 +20,12 @@ describe User do
     it { should validate_presence_of(:company) }
     it { should validate_presence_of(:name) }
 
+    context 'not present' do
+      let(:user) { build(:user) }
+      before { user.add_role(:track_owner) }
+      it { expect(user.valid?).to eql(false) }
+    end
+
     context 'mentor not present' do
       it { expect { user.mentor_id = 890 }.to change{ user.valid? }.from(true).to(false) }
     end
@@ -41,7 +47,7 @@ describe User do
     end
 
     #FIXED
-   #FIXME Write rspec when neither super_admin nor account_owner
+    #FIXME Write rspec when neither super_admin nor account_owner
     describe 'before destroy' do
       context 'when super_admin' do
         before { user.add_role(:super_admin) }
@@ -116,28 +122,59 @@ describe User do
       context 'not super_admin' do
         let(:user) { company.users.build({ name: 'Vinsol', enabled: true } ) }
         before do
-          user.add_role(:account_owner)
-          company.toggle!(:enabled)
+          user.add_role(:track_owner)
         end
 
-        it { expect(user.active_for_authentication?).to eql(false) }
+        def status(company, state1, state2)
+          enabled = state1
+          company.enabled = state2
+        end
+
+        context 'disabled, company_enabled' do
+          before { status(company, false, true) }
+          it { expect(user.active_for_authentication?).to eql(true) }
+        end
+
+        context 'enabled, company_enabled' do
+          before { status(company, true, true) }
+          it { expect(user.active_for_authentication?).to eql(true) }
+        end
+
+        context 'enabled, company_disabled' do
+          before { status(company, true, false) }
+          it { expect(user.active_for_authentication?).to eql(false) }
+        end
+
+        context 'disabled, company_disabled' do
+          before { status(company, false, false) }
+          it { expect(user.active_for_authentication?).to eql(false) }
+        end
       end
+
     end
 
     #FIXED
     #FIXME It is not required
-    describe '#send_password_email' do
+    describe '#set_random_password' do
       before do
         user.send(:set_random_password)
-        password_length = user.password.length
-        password_confirmation_length = user.password_confirmation.length
       end
 
-      it { expect (password_length).to eq(password_confirmation_length) }
+      it { expect(user.password).to eq(user.password_confirmation) }
     end
 
     describe '#send_password_email' do
       it { expect { user.send(:send_password_email) }.to change{Delayed::Backend::ActiveRecord::Job.count}.by(1) }
+    end
+
+    describe '#ensure_only_one_account_owner' do
+      it { expect { user.add_role(:account_owner) }.to raise_error }
+    end
+
+    describe 'ensure_cannot_remove_account_owner_role' do
+      let(:company) { create(:company) }
+      let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
+      it { expect { company.owner.destroy }.to raise_error }
     end
   end
 
