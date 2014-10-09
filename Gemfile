@@ -20,6 +20,9 @@ gem 'bootstrap-sass', '3.2.0.2'
 gem 'delayed_job_active_record', '4.0.2'
 gem 'kaminari', '0.16.1'
 gem 'ransack', '1.4.1'
+gem 'capistrano', '~>3.2.0'
+gem 'capistrano-bundler', '~>1.1.3'
+gem 'capistrano-rails', '~>1.1.2'
 
 group :assets do
   gem 'therubyracer', platforms: :ruby
