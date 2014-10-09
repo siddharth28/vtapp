@@ -3,6 +3,7 @@ class Company < ActiveRecord::Base
   #FIXME Check whether inverse_of required or not.
   has_many :users, dependent: :restrict_with_exception
 
+  #FIXED
   #FIXME Write rspecs for attr_accessors
   attr_accessor :owner_email, :owner_name
 
@@ -11,8 +12,8 @@ class Company < ActiveRecord::Base
   validates :name, presence: true
   validates :name, uniqueness: true, allow_blank: true
 
+  #FIXED
   #FIXME Change rspecs of this scope and below methods as discussed.
-
   scope :load_with_owners, -> { eager_load(:users).joins(users: :roles).merge(Role.with_name('account_owner')) }
 
 
