@@ -17,6 +17,3 @@
 /log/*.log
 /tmp
 /coverage
-
-new_key
-new_key.pub
