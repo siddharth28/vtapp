@@ -56,6 +56,11 @@ set :pty, true
 # role :app, "106.185.48.38"                          # This may be the same as your `Web` server
 set :linked_dirs, %w{tmp/pids}
 
+set :linked_files, %w{config/database.yml}
+SSHKit.config.command_map[:rake]  = "bundle exec rake" #8
+SSHKit.config.command_map[:rails] = "bundle exec rails"
+
+
 namespace :deploy do
 
   desc 'Restart application'
@@ -63,7 +68,7 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 5 do
       execute :touch, release_path.join('tmp/restart.txt')
     end
-    invoke 'delayed_job:restart'
+    # invoke 'delayed_job:restart'
   end
   after :publishing, 'deploy:restart'
   after :finishing, 'deploy:cleanup'
