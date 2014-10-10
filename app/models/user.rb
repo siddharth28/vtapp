@@ -12,13 +12,11 @@ class User < ActiveRecord::Base
 
   attr_readonly :email, :company_id
 
-  #FIXED
-  #FIXME Write rspec uisng context.
+  #FIXME Write rspecs of mentor and company using context.
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
-  ## FIXED
-  ## FIXME Also add validation for account_owner cannot be changed.
+
   before_destroy :ensure_an_account_owners_and_super_admin_remains
 
   before_validation :set_random_password, on: :create
@@ -34,8 +32,7 @@ class User < ActiveRecord::Base
       super && enabled && company.enabled
     end
   end
-  #FIXED
-  #FIXME Make these methods using meta-programming
+
   ['account_owner', 'super_admin'].each do |method|
     define_method "#{ method }?" do
       has_role? "#{ method }"

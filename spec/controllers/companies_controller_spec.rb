@@ -18,8 +18,6 @@ describe CompaniesController do
   end
 
   describe '#create' do
-    #FIXED Allow works as a stub
-    #FIXME Stub the calls inside before block.
     before do
       allow(Company).to receive(:new).and_return(company)
       allow(company).to receive(:save).and_return(true)
@@ -96,8 +94,6 @@ describe CompaniesController do
       get :index, { q: 'example' }
     end
     #FIXED
-    #FIXME Also write rspecs of load_with_owners call.
-    #FIXED
     #FIXME Test call with arguments.
     describe 'expects to receive' do
       after { send_request }
@@ -108,8 +104,6 @@ describe CompaniesController do
       it { expect(companies).to receive(:per).with(20).and_return(companies) }
     end
 
-    #FIXED
-    #FIXME Check assignment of search instance_variable also.
     describe 'assigns' do
       before { send_request }
       it { expect(assigns(:search)).to eq(companies) }
@@ -125,8 +119,6 @@ describe CompaniesController do
 
 
   describe '#toggle_enabled' do
-    #FIXED
-    #FIXME Stub the calls inside before block.
     before do
       allow(Company).to receive(:find).and_return(company)
       allow(company).to receive(:toggle!).and_return(true)
@@ -141,13 +133,10 @@ describe CompaniesController do
       it { expect(company).to receive(:toggle!).and_return(true) }
     end
 
-    #FIXED
-    #FIXME IT is not required
-
     describe 'response' do
       before { send_request }
-      #FIXED
-      #FIXME Also test template rendering.
+
+      #FIXME Do not use companies in template rendering and use symbol. Change this thing in other locations also.
       it { expect(response).to render_template 'companies/toggle_enabled' }
       it { expect(response).to have_http_status(200) }
     end
@@ -164,9 +153,8 @@ describe CompaniesController do
     end
   end
 
+  #FIXME Change description
   describe '#create' do
-    #FIXED Allow works as a stub
-    #FIXME Stub the calls inside before block.
     before do
       allow(Company).to receive(:new).with({ name: 'Test Company', owner_name: 'Owner', owner_email: 'Email@email.com' }.with_indifferent_access).and_return(company)
       allow(company).to receive(:save).and_return(true)
