@@ -21,7 +21,6 @@ set :use_sudo, true
 #   Git
 #############################################################
 set :repo_url, 'git@bitbucket.org:tanmay3011/vtapp.git'
-set :deploy_via, :remote_cache
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
@@ -38,14 +37,12 @@ set :deploy_via, :remote_cache
 # set :log_level, :debug
 
 # Default value for :pty is false
-set :pty, true
-
 # Default value for :linked_files is []
 # set :linked_files, %w{config/database.yml}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
-
+set :deploy_via, :remote_cache
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
@@ -68,8 +65,13 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 5 do
       execute :touch, release_path.join('tmp/restart.txt')
     end
-    # invoke 'delayed_job:restart'
+    invoke 'delayed_job:restart'
   end
-  after :publishing, 'deploy:restart'
-  after :finishing, 'deploy:cleanup'
+
+  desc "Run migrations"
+  task :migrations do
+    execute :rake, 'db:migrate', roles: :db
+  end
+  after :publishing, 'deploy:restart'#, 'deploy:delayed_job_restart'
+  after :finishing, 'deploy:cleanup', 'deploy:migrations'
 end
