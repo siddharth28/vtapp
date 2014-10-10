@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
+  #FIXME_AB: as discussed we should not allow to delete user/any_record if it has dependent objects. so use dependent restrict
   has_many :mentees, class_name: 'User', foreign_key: "mentor_id", dependent: :nullify
 
   belongs_to :company
@@ -17,6 +18,7 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
+  #FIXME_AB: no validation on email
   ## FIXED
   ## FIXME Also add validation for account_owner cannot be changed.
   before_destroy :ensure_an_account_owners_and_super_admin_remains
@@ -25,6 +27,7 @@ class User < ActiveRecord::Base
 
   after_commit :send_password_email, on: :create
 
+  #FIXME_AB: Why can't we User.with_role(:account_owner). Rollify already provides this. Why we need custom scope.
   scope :with_account_owner_role, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
   def active_for_authentication?
@@ -61,9 +64,12 @@ class User < ActiveRecord::Base
       end
     end
     #rolify callback
+    #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
+      #FIXME_AB: Lets maintain a constant array of all roles and use that, instead of hard coding roles.
       if role.name == 'account_owner'
         if company.owner
+          #FIXME_AB: WE can avoid this nested if statement.
           raise 'there can be only one account owner'
         end
       end
