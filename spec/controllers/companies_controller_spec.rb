@@ -14,6 +14,7 @@ describe CompaniesController do
     allow(controller).to receive(:current_ability).and_return(ability)
     allow(ability).to receive(:authorize!).and_return(true)
     allow(ability).to receive(:attributes_for).and_return([])
+    allow(ability).to receive(:has_block?).and_return(true)
   end
 
   describe '#create' do
@@ -63,7 +64,7 @@ describe CompaniesController do
     before { allow(Company).to receive(:find).and_return(company) }
 
     def send_request
-      get :show, { company: { name: 'Test Company' }, id: 122 }
+      get :show, { company: { name: 'Test Company' }, id: company.id }
     end
 
     describe 'expects to send' do
@@ -92,7 +93,7 @@ describe CompaniesController do
     end
 
     def send_request
-      get :index, q: 'example'
+      get :index, { q: 'example' }
     end
     #FIXED
     #FIXME Also write rspecs of load_with_owners call.
@@ -149,6 +150,35 @@ describe CompaniesController do
       #FIXME Also test template rendering.
       it { expect(response).to render_template 'companies/toggle_enabled' }
       it { expect(response).to have_http_status(200) }
+    end
+  end
+
+  describe 'index' do
+    def send_request
+      get :index, { q: 'example', extra: 'abcd' }
+    end
+
+    describe '#skip_load_resource' do
+      before { send_request }
+      it { expect(assigns(:companies)).not_to eq(companies) }
+    end
+  end
+
+  describe '#create' do
+    #FIXED Allow works as a stub
+    #FIXME Stub the calls inside before block.
+    before do
+      allow(Company).to receive(:new).with({ name: 'Test Company', owner_name: 'Owner', owner_email: 'Email@email.com' }.with_indifferent_access).and_return(company)
+      allow(company).to receive(:save).and_return(true)
+    end
+
+    def send_request
+      post :create, company: { name: 'Test Company', owner_name: 'Owner', owner_email: 'Email@email.com', enabled: false }
+    end
+
+    describe 'expects to send' do
+      after { send_request }
+      it { expect(Company).to receive(:new).with({ name: 'Test Company', owner_name: 'Owner', owner_email: 'Email@email.com'}.with_indifferent_access).and_return(company) }
     end
   end
 end
