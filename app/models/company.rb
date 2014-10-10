@@ -6,7 +6,7 @@ class Company < ActiveRecord::Base
   before_validation :build_owner, on: :create
 
   validates :name, presence: true
-  validates :name, uniqueness: true, allow_blank: true
+  validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
 
   #FIXME Write rspec for eagerload also.
   scope :load_with_owners, -> { eager_load(:users).joins(users: :roles).merge(Role.with_name('account_owner')) }
