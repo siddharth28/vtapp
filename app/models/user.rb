@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
 
   before_validation :set_random_password, on: :create
 
-  after_commit :send_password_email
+  after_commit :send_password_email, on: :create
 
   scope :with_account_owner_role, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
