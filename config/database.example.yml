@@ -17,5 +17,5 @@ test:
 production:
   <<: *default
   database: vtapp_production
-  username: vtapp
-  password: <%= ENV['DEPOT_DATABASE_PASSWORD'] %>
+  username: root
+  password: vinsol

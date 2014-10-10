@@ -54,15 +54,16 @@ set :pty, true
 
 # role :web, "106.185.48.38"                          # Your HTTP server, Apache/etc
 # role :app, "106.185.48.38"                          # This may be the same as your `Web` server
-
+set :linked_dirs, %w{tmp/pids}
 
 namespace :deploy do
 
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      # execute :touch, release_path.join('tmp/restart.txt')
+      execute :touch, release_path.join('tmp/restart.txt')
     end
+    invoke 'delayed_job:restart'
   end
   after :publishing, 'deploy:restart'
   after :finishing, 'deploy:cleanup'
