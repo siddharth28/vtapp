@@ -1,10 +1,6 @@
 ruby '2.1.2'
 source 'https://rubygems.org'
 
-# FIXED
-## FIXME_NISH Please specify versions of the gems used.
-## FIXME_NISH Add methods to groups.
-
 gem 'rails',                                  '4.1.6'
 gem 'mysql2',                                 '0.3.16'
 gem 'coffee-rails',                           '~> 4.0.0'

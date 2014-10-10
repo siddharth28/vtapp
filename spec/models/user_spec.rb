@@ -12,6 +12,7 @@ describe User do
 
     describe 'belongs_to' do
       it { should belong_to(:company) }
+      #FIXME check class_name also
       it { should belong_to(:mentor) }
     end
   end
@@ -26,6 +27,7 @@ describe User do
       it { expect(user.valid?).to eql(false) }
     end
 
+    #FIXME Change rspec as discussed.
     context 'mentor not present' do
       it { expect { user.mentor_id = 890 }.to change{ user.valid? }.from(true).to(false) }
     end
@@ -40,14 +42,12 @@ describe User do
     let(:company) { create(:company) }
     let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
 
-    #FIXED
-    #FIXME Also check password_confirmation and both password and password_confirmation should be equal
+    #FIXME Change as discussed.
     describe 'before validation' do
       it { expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false) }
     end
 
-    #FIXED
-    #FIXME Write rspec when neither super_admin nor account_owner
+    #FIXME Write method name also in describe block. Check error_messages also.
     describe 'before destroy' do
       context 'when super_admin' do
         before { user.add_role(:super_admin) }
@@ -82,15 +82,13 @@ describe User do
     let(:user) { build(:user, name: nil, email: nil, password: nil) }
     let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
 
-    #FIXED
-    #FIXME Write rspec when user is not super_admin
+    #FIXME Change as discussed
     context 'either super_admin or account_owner' do
       describe '#super_admin?' do
         before { user.add_role(:super_admin) }
         it { expect(user.super_admin?).to eql(true) }
       end
-      #FIXED
-      #FIXME Write rspec when user is not super_admin
+
       describe '#account_owner?' do
         let(:company) { create(:company) }
         let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
@@ -112,8 +110,8 @@ describe User do
       end
     end
 
-    #FIXME Write rspecs for more conditions.
     describe '#active_for_authentication?' do
+      #FIXME Wrong test case. Change as discussed.
       context 'when super_admin' do
         before { user.add_role(:super_admin) }
         it { expect(user.active_for_authentication?).to eql(true) }
@@ -153,8 +151,6 @@ describe User do
 
     end
 
-    #FIXED
-    #FIXME It is not required
     describe '#set_random_password' do
       before do
         user.send(:set_random_password)
@@ -163,14 +159,17 @@ describe User do
       it { expect(user.password).to eq(user.password_confirmation) }
     end
 
+    #FIXME Change as discussed.
     describe '#send_password_email' do
       it { expect { user.send(:send_password_email) }.to change{Delayed::Backend::ActiveRecord::Job.count}.by(1) }
     end
 
+    #FIXME Check error_message also
     describe '#ensure_only_one_account_owner' do
       it { expect { user.add_role(:account_owner) }.to raise_error }
     end
 
+    #FIXME Check error_message also
     describe 'ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
       let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
@@ -178,8 +177,6 @@ describe User do
     end
   end
 
-  #FIXED
-  #FIXME Check users with account_role should be returned.
   describe 'scope' do
     let(:company) { create(:company) }
     let(:user) { build(:user, company: company) }
