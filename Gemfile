@@ -5,6 +5,8 @@ gem 'rails',                                  '4.1.6'
 gem 'mysql2',                                 '0.3.16'
 gem 'coffee-rails',                           '~> 4.0.0'
 gem 'jquery-rails',                           '3.1.2'
+
+#FIXME_AB: Guys please remove turbolinks
 gem 'turbolinks',                             '2.3.0'
 gem 'jbuilder',                               '~> 2.0'
 gem 'devise',                                 '3.3.0'
