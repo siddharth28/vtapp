@@ -7,7 +7,7 @@ class Company < ActiveRecord::Base
 
   validates :name, presence: true
   validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
-
+  #FIXED
   #FIXME Write rspec for eagerload also.
   scope :load_with_owners, -> { eager_load(:users).joins(users: :roles).merge(Role.with_name('account_owner')) }
 

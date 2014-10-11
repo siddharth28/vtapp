@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   belongs_to :mentor, class_name: 'User'
 
   attr_readonly :email, :company_id
-
+  #FIXED
   #FIXME Write rspecs of mentor and company using context.
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
@@ -61,7 +61,7 @@ class User < ActiveRecord::Base
     def ensure_only_one_account_owner(role)
       if role.name == 'account_owner'
         if company.owner
-          raise 'there can be only one account owner'
+          raise 'There can be only one account owner'
         end
       end
     end
