@@ -15,7 +15,7 @@ describe Company do
 
   describe 'callbacks' do
     describe 'after_create' do
-      describe 'make_owner' do
+      describe 'build_owner' do
         it { expect(company.owner).not_to eql(nil) }
       end
     end
@@ -23,14 +23,14 @@ describe Company do
 
   describe 'instance methods' do
     describe '#owner' do
-      it { expect(company.owner.has_role?(:account_owner)).to eql(true)}
-      it { expect(company.owner.name).to eql('Test Owner')}
+      it { expect(company.owner.all? { |user| user.has_role?(:account_owner) }).to eql(true)}
+      it { expect(company.owner.first.name).to eql('Test Owner')}
     end
 
     describe '#build_owner' do
       let(:company) { build(:company) }
       before { company.save }
-      it { expect(company.owner.name).to eql('Test Owner') }
+      it { expect(company.owner.first.name).to eql('Test Owner') }
     end
 
     describe 'attr_accessor' do
@@ -79,5 +79,4 @@ describe Company do
       it { expect(Company.enabled.include?(disabled_company)).to eq(false) }
     end
   end
-
 end
