@@ -10,13 +10,13 @@ set :application, 'vtapp'
 # set :user, 'deploy'
 # set :scm_passphrase, 'vinsol'
 set :use_sudo, true
- 
+
 # set :ssh_options, { :forward_agent => true }
- 
+
 # set :domain, "106.185.48.38"
 # server domain, :app, :web
 # role :db, domain, :primary => true
- 
+
 #############################################################
 #   Git
 #############################################################
