@@ -1,5 +1,4 @@
 class CompaniesController < ResourceController
-  #FIXED
   #FIXME Rspecs of this line.
   skip_load_resource only: [:index, :create]
 
@@ -22,8 +21,6 @@ class CompaniesController < ResourceController
   end
 
   private
-    #FIXED
-    #FIXME Write rspec for this method.
     def company_params
       params.require(:company).permit(:name, :owner_name, :owner_email)
     end

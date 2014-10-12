@@ -85,6 +85,9 @@ section {
   @extend .btn-primary;
   @extend .btn-xs;
 }
+.inline-block {
+  display: inline-block;
+}
 
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox] {
   margin-left: 0px;

@@ -1,15 +1,11 @@
 ruby '2.1.2'
 source 'https://rubygems.org'
 
-# FIXED
-## FIXME_NISH Please specify versions of the gems used.
-## FIXME_NISH Add methods to groups.
-
 gem 'rails',                                  '4.1.6'
 gem 'mysql2',                                 '0.3.16'
-gem 'coffee-rails',                           '~> 4.0.0'
 gem 'jquery-rails',                           '3.1.2'
-gem 'turbolinks',                             '2.3.0'
+#FIXED
+#FIXME_AB: Guys please remove turbolinks
 gem 'jbuilder',                               '~> 2.0'
 gem 'devise',                                 '3.3.0'
 gem 'devise-async',                           '0.9.0'
@@ -28,6 +24,7 @@ group :assets do
   gem 'therubyracer',                         '0.12.1', platforms: :ruby
   gem 'uglifier',                             '>= 1.3.0'
   gem 'sass-rails',                           '~> 4.0.3'
+  gem 'coffee-rails',                         '~> 4.0.0'
 end
 
 group :development do

@@ -18,10 +18,8 @@ role :db,  %w{106.185.48.38}
 set :stage, :production
 
 # Replace 127.0.0.1 with your server's IP address!
-# server '106.185.48.38', user: 'deploy', roles: %w{web app db}
 
-set :password, ask('Server password', nil)
-server '106.185.48.38', user: 'deploy', port: 22, password: fetch(:password), roles: %w{web app db}
+server '106.185.48.38', user: 'deploy', port: 22, roles: %w{web app db}
 
 
 # server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
