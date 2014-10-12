@@ -6,7 +6,6 @@ class User < ActiveRecord::Base
     :recoverable, :rememberable, :trackable, :validatable
 
   ROLES = [ 'super_admin', 'account_owner' ]
-
   #FIXED with specs:10
   #FIXME_AB: as discussed we should not allow to delete user/any_record if it has dependent objects. so use dependent restrict
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
