@@ -5,26 +5,28 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :mentees, class_name: 'User', foreign_key: "mentor_id", dependent: :nullify
+  has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :nullify
 
   belongs_to :company
-  belongs_to :mentor, class_name: 'User'
+  belongs_to :mentor, class_name: User
 
   attr_readonly :email, :company_id
 
-  #FIXED
-  #FIXME Write rspec uisng context.
+  #FIXME Write rspecs of mentor and company using context.
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
+  #FIXME_AB: no validation on email
   ## FIXED
   ## FIXME Also add validation for account_owner cannot be changed.
+
   before_destroy :ensure_an_account_owners_and_super_admin_remains
 
   before_validation :set_random_password, on: :create
 
-  after_commit :send_password_email
+  after_commit :send_password_email, on: :create
 
+  #FIXME_AB: Why can't we User.with_role(:account_owner). Rollify already provides this. Why we need custom scope.
   scope :with_account_owner_role, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
   def active_for_authentication?
@@ -34,8 +36,7 @@ class User < ActiveRecord::Base
       super && enabled && company.enabled
     end
   end
-  #FIXED
-  #FIXME Make these methods using meta-programming
+
   ['account_owner', 'super_admin'].each do |method|
     define_method "#{ method }?" do
       has_role? "#{ method }"
@@ -55,15 +56,18 @@ class User < ActiveRecord::Base
 
     def ensure_an_account_owners_and_super_admin_remains
       if super_admin?
-        raise "Can't delete Super Admin"
+        raise 'Can\'t delete Super Admin'
       elsif account_owner?
-        raise "Can't delete Account Owner"
+        raise 'Can\'t delete Account Owner'
       end
     end
     #rolify callback
+    #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
+      #FIXME_AB: Lets maintain a constant array of all roles and use that, instead of hard coding roles.
       if role.name == 'account_owner'
         if company.owner
+          #FIXME_AB: WE can avoid this nested if statement.
           raise 'there can be only one account owner'
         end
       end
