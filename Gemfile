@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 gem 'rails',                                  '4.1.6'
 gem 'mysql2',                                 '0.3.16'
 gem 'jquery-rails',                           '3.1.2'
+gem 'jquery-ui-rails',                        '5.0.0'
+
 #FIXED
 #FIXME_AB: Guys please remove turbolinks
 gem 'jbuilder',                               '~> 2.0'
@@ -19,12 +21,13 @@ gem 'capistrano',                             '~>3.2.0'
 gem 'capistrano-bundler',                     '~>1.1.3'
 gem 'capistrano-rails',                       '~>1.1.2'
 gem 'daemons',                                '1.1.9'
+gem 'ckeditor',                               '4.1.0'
+gem 'rails4-autocomplete',                    '1.1.1'
 
 group :assets do
   gem 'therubyracer',                         '0.12.1', platforms: :ruby
   gem 'uglifier',                             '>= 1.3.0'
   gem 'sass-rails',                           '~> 4.0.3'
-  gem 'coffee-rails',                         '~> 4.0.0'
 end
 
 group :development do
