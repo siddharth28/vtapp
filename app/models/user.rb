@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   belongs_to :mentor, class_name: User
 
   attr_readonly :email, :company_id
-
+  #FIXED
   #FIXME Write rspecs of mentor and company using context.
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
@@ -28,8 +28,8 @@ class User < ActiveRecord::Base
   before_validation :set_random_password, on: :create
   after_commit :send_password_email, on: :create
 
+  #FIXED
   #FIXME_AB: Why can't we User.with_role(:account_owner). Rollify already provides this. Why we need custom scope.
-  scope :with_account_owner_role, -> { joins(:roles).merge(Role.with_name('account_owner')) }
 
   def active_for_authentication?
     if super_admin?
@@ -64,19 +64,22 @@ class User < ActiveRecord::Base
       end
     end
     #rolify callback
-    #FIXED
+    #FIXED because this functionality is only for console view it's not in app so it won't occur in view
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
       #FIXED
       #FIXME_AB: Lets maintain a constant array of all roles and use that, instead of hard coding roles.
       if role.name == ROLES[1]
-        !!(company.owner.first)
-        #FIXED
-        #FIXME_AB: WE can avoid this nested if statement.
+        if company.owner.first
+          #FIXME_AB: WE can avoid this nested if statement.
+          raise 'There can be only one account owner'
+        end
       end
     end
     #rolify callback
     def ensure_cannot_remove_account_owner_role(role)
-      role.name == ROLES[1]
+      if role.name == ROLES[1]
+        raise 'Cannot remove account_owner role'
+      end
     end
 end
