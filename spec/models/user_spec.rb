@@ -7,7 +7,7 @@ describe User do
 
   describe 'associations' do
     describe 'has_many association' do
-      it { should have_many(:mentees).with_foreign_key(:mentor_id).dependent(:nullify) }
+      it { should have_many(:mentees).with_foreign_key(:mentor_id).dependent(:restrict_with_error) }
     end
 
     describe 'belongs_to' do

@@ -68,5 +68,12 @@ describe Company do
         it { expect(Company.load_with_owners.eager_load(:users).find(company).users.include?(user)).to eq(false) }
       end
     end
+
+    describe 'enabled' do
+      let(:disabled_company) { create(:company, enabled: false) }
+      it { expect(Company.enabled.include?(company)).to eq(true) }
+      it { expect(Company.enabled.include?(disabled_company)).to eq(false) }
+    end
   end
+
 end

@@ -7,14 +7,15 @@ class Company < ActiveRecord::Base
 
   validates :name, presence: true
 
-  #FIXME_AB: we would also need a scope :enabled
   #FIXED
   #FIXME Change rspecs of this scope and below methods as discussed.
   validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
 
   #FIXME Write rspec for eagerload also.
   scope :load_with_owners, -> { eager_load(:users).joins(users: :roles).merge(Role.with_name('account_owner')) }
-
+  #FIXED with rspec : 72
+  #FIXME_AB: we would also need a scope :enabled
+  scope :enabled { where(enabled: true) }
 
   def owner
     #FIXME_AB: should not use .first here, return the arel object
@@ -23,7 +24,9 @@ class Company < ActiveRecord::Base
 
   private
     def build_owner
+      #FIXED
       #FIXME_AB: This is wrong, when you are building the owner you should pass a second argument to the add_role. For example user.add_role(:account_owner, @company) so that user would be owner of the current company not a global owner for all company.
-      users.build(name: owner_name, email: owner_email).add_role(:account_owner)
+      user = self.users.build(name: owner_name, email: owner_email)
+      user.add_role(:account_owner, self)
     end
 end
