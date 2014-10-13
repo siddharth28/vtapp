@@ -10,7 +10,9 @@ Rails.application.routes.draw do
         post 'users' => 'users#create'
       end
       root 'roles#home_page', as: :authenticated_root
-      resources :users
+      resources :users do
+        get :autocomplete_mentor_name, :on => :collection
+      end
 
       resources :tracks do
         get :autocomplete_user_name, :on => :collection

@@ -1,13 +1,14 @@
 class UsersController < ResourceController
   skip_load_resource only: [:index, :create]
   before_action :authenticate_user!
+  autocomplete :mentor, :name
   def show
   end
   def new
     @user = User.new
   end
   def create
-    @user = User.new(user_params)
+    @user = current_user.company.users.build(user_params)
     if @user.save
       redirect_to @user, notice: "user #{ @user.name } is successfully created."
     else

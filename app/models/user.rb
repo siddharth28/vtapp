@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
   belongs_to :mentor, class_name: User
 
   attr_readonly :email, :company_id
+  attr_accessor :admin
 
   #FIXED
   #FIXME Write rspecs of mentor and company using context.
@@ -26,6 +27,7 @@ class User < ActiveRecord::Base
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
   after_commit :send_password_email, on: :create
+  after_create :make_admin if :admin
 
   def active_for_authentication?
     if super_admin?
@@ -80,5 +82,9 @@ class User < ActiveRecord::Base
 
     def display_track_owner_details
       "#{ self.name } :#{ self.email }"
+    end
+
+    def make_admin
+      add_role :admin
     end
 end

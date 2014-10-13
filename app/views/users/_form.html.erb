@@ -18,7 +18,7 @@
     </div>
     <div class="field">
       <%= user.label :user_mentor %><br>
-      <%= user.text_field :mentor %>
+      <%= user.autocomplete_field :mentor, autocomplete_mentor_name_users_path %>
     </div>
     <% if current_user.has_role? :account_owner %>
       <div class="field">
