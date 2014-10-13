@@ -16,7 +16,7 @@ class CompaniesController < ResourceController
       render action: 'new'
     end
   end
-
+  # Sir why do we need seperate actions for this when we will be doing the same thing in both the actions.
   #FIXME_AB: You should have two actions for this one enable, other disable
   def toggle_enabled
     @company.toggle!(:enabled)
