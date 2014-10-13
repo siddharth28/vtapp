@@ -5,14 +5,14 @@ class Track < ActiveRecord::Base
   validates :description, presence: true
   validates :instructions, presence: true
 
-  attr_accessor :owner
+  attr_accessor :track_owner
 
   after_create :assign_track_owner_role
 
   private
     def assign_track_owner_role
       if track_owner
-        company.users.find(owner.split(':')[1]).add_role(:track_owner, @track)
+        company.users.find(track_owner.split(':')[1]).add_role(:track_owner, @track)
       else
         company.users.find(company.owner.first).add_role(:track_owner, @track)
       end

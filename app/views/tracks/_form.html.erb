@@ -1,28 +1,28 @@
 <div class="form-group col-md-8">
   <%= form_for(@track) do |track| %>
     <div class="field">
-      <%= track.label :name %><br>
+      <%= track.label :name %>
       <%= track.text_field :name %>
     </div>
 
     <div class="field">
-      <%= track.label :description %><br>
+      <%= track.label :description %>
       <%= track.cktext_area :description %>
     </div>
 
     <div class="field">
-      <%= track.label :instructions %><br>
+      <%= track.label :instructions %>
       <%= track.cktext_area :instructions %>
     </div>
 
     <div class="field">
-      <%= track.label :references %><br>
+      <%= track.label :references %>
       <%= track.cktext_area :references %>
     </div>
 
     <div class="field">
-      <%= track.label :track_owner %><br>
-      <%= track.autocomplete_field :owner, autocomplete_user_name_tracks_path %>
+      <%= track.label :track_owner %>
+      <%= track.autocomplete_field :track_owner, autocomplete_user_name_tracks_path %>
     </div>
 
     <div class="field">
