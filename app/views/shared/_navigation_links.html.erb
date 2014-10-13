@@ -5,7 +5,7 @@
 
   <li><%= link_to 'Create Company', new_company_path %></li>
 
-  <li><%= link_to "Hello, #{ current_user.name }", user_path(current_user), { class: 'user_details' } %></li>
+  <li class='user_display'><%= "Hello, #{ current_user.name }" %></li>
 
   <li><%= link_to 'Sign out', destroy_user_session_path, { method: :delete } %></li>
 <% end %>
