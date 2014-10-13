@@ -3,9 +3,9 @@ class CompaniesController < ResourceController
   skip_load_resource only: [:index, :create]
 
   def index
-    @search = Company.load_with_owners.search(params[:q])
+    #No we do not need this variable it's just to increase the readability
     #FIXME_AB: Do we need this instance variable @search, do we need this in views
-    @companies = @search.result.page(params[:page]).per(20)
+    @companies = Company.load_with_owners.search(params[:q]).result.page(params[:page]).per(20)
   end
 
   def create
