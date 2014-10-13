@@ -5,9 +5,13 @@ describe User do
   let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
   let(:user) { build(:user, mentor_id: mentor.id, company: company) }
 
+  describe 'constants' do
+    it { User.should have_constant(:ROLES) }
+  end
+
   describe 'associations' do
     describe 'has_many association' do
-      it { should have_many(:mentees).with_foreign_key(:mentor_id).dependent(:nullify) }
+      it { should have_many(:mentees).with_foreign_key(:mentor_id).dependent(:restrict_with_error) }
     end
 
     describe 'belongs_to' do
@@ -49,6 +53,13 @@ describe User do
       end
 
     end
+    describe 'on: update validations' do
+      let(:user) { create(:user, company: company) }
+      context 'only password present' do
+        it { expect { user.update(password: 'new password') }.to change{ user.errors[:current_password].present? }.from(false).to(true) }
+        it { expect { user.update(password: 'new password') }.to change{ user.errors[:password_confirmation].present? }.from(false).to(true) }
+      end
+    end
   end
 
   describe 'callbacks' do
@@ -71,33 +82,13 @@ describe User do
       end
 
       context 'when account_owner' do
-        before do
-          allow(company).to receive(:owner).and_return(false)
-          user.save
-          user.add_role(:account_owner)
-        end
-
-        it { expect { user.destroy }.to raise_error("Can't delete Account Owner") }
+        it { expect { company.owner.first.destroy }.to raise_error("Can't delete Account Owner") }
       end
 
       context 'neither super_admin nor account_owner' do
         before { user.add_role(:track_owner) }
         it { expect { user.destroy }.not_to raise_error }
       end
-    end
-
-    # unable to test after_commit callback
-    # describe 'after_commit' do
-    #   let(:user) { build(:user, company: company) }
-    #   it { expect(user).to receive(:send_password_email) }
-    #   after { user.save! }
-    # end
-  end
-
-  describe 'attributes' do
-    describe 'readonly_attributes' do
-      it { should have_readonly_attribute(:email) }
-      it { should have_readonly_attribute(:company_id) }
     end
   end
 
@@ -120,11 +111,7 @@ describe User do
       context 'is an account_owner' do
         let(:company) { create(:company) }
         let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
-        before do
-          allow(company).to receive(:owner).and_return(false)
-          user.add_role(:account_owner)
-        end
-        it { expect(user.account_owner?).to eql(true) }
+        it { expect(company.owner.first.account_owner?).to eql(true) }
       end
       context 'not an account_owner' do
         it { expect(user.account_owner?).to eql(false) }
@@ -183,9 +170,7 @@ describe User do
       end
       it { expect(UserMailer).to receive(:delay).and_return(delayed_job) }
       it { expect(delayed_job).to receive(:welcome_email).and_return(delayed_job) }
-      after do
-        user.send(:send_password_email)
-      end
+      after { user.send(:send_password_email) }
     end
     #FIXED
     #FIXME Check error_message also
@@ -197,23 +182,7 @@ describe User do
     #FIXME Check error_message also
     describe 'ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
-      it { expect { company.owner.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
-    end
-  end
-
-  describe 'scope' do
-    let(:company) { create(:company) }
-    let(:user) { build(:user, company: company) }
-    let(:user1) { create(:user, company: company) }
-
-    describe '#with_account_owner_role' do
-      before do
-        allow(company).to receive(:owner).and_return(false)
-        user.add_role 'account_owner'
-        user1.add_role 'super_admin'
-        user.save
-      end
-      it { expect(User.with_account_owner_role.all? { |user| user.has_role?(:account_owner)}).to eq(true) }
+      it { expect { company.owner.first.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
     end
   end
 end
