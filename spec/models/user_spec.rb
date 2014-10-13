@@ -53,13 +53,6 @@ describe User do
       end
 
     end
-    describe 'on: update validations' do
-      let(:user) { create(:user, company: company) }
-      context 'only password present' do
-        it { expect { user.update(password: 'new password') }.to change{ user.errors[:current_password].present? }.from(false).to(true) }
-        it { expect { user.update(password: 'new password') }.to change{ user.errors[:password_confirmation].present? }.from(false).to(true) }
-      end
-    end
   end
 
   describe 'callbacks' do
