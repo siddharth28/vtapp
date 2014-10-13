@@ -18,7 +18,8 @@
     </div>
     <div class="field">
       <%= user.label :user_mentor %><br>
-      <%= user.autocomplete_field :mentor, autocomplete_user_name_users_path %>
+      <%= user.hidden_field :mentor_id %>
+      <%= user.autocomplete_field :mentor, autocomplete_user_name_users_path, id_element: '#user_mentor_id' %>
     </div><br><br>
     <% if current_user.has_role? :account_owner %>
       <div class="field">

@@ -27,7 +27,7 @@ class UsersController < ResourceController
 
   private
     def user_params
-      params.require(:user).permit(:name, :email, :department, :mentor, :admin, :enabled)
+      params.require(:user).permit(:name, :email, :department, :mentor_id, :admin, :enabled)
     end
     def edit_user_params
       params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
