@@ -2,13 +2,13 @@
   <li><%= link_to 'Company Accounts', companies_path %></li>
 
   <li><%= link_to 'Create Company', new_company_path %></li>
-<% end %>
 
-<% if current_user.has_role? :account_owner %>
-  <li><%= link_to 'Users' %></li>
-  <li><%= link_to 'Create User', new_user_path %></li>
-<% end %>
-<li><%= link_to 'Account', edit_user_registration_path %></li>
-<li><%= link_to "Hello, #{ current_user.name }", user_path(current_user), { class: 'user_details' } %></li>
+  <% if current_user.has_role? :account_owner %>
+    <li><%= link_to 'Users' %></li>
+    <li><%= link_to 'Create User', new_user_path %></li>
+  <% end %>
+  <li><%= link_to 'Account', edit_user_registration_path %></li>
+  <li  class='user_display'><%= "Hello, #{ current_user.name }" %></li>
 
-<li><%= link_to 'Sign out', destroy_user_session_path, { method: :delete } %></li>
+  <li><%= link_to 'Sign out', destroy_user_session_path, { method: :delete } %></li>
+<% end %>
