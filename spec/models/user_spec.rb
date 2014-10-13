@@ -53,6 +53,13 @@ describe User do
       end
 
     end
+    describe 'on: update validations' do
+      let(:user) { create(:user, company: company) }
+      context 'only password present' do
+        it { expect { user.update(password: 'new password') }.to change{ user.errors[:current_password].present? }.from(false).to(true) }
+        it { expect { user.update(password: 'new password') }.to change{ user.errors[:password_confirmation].present? }.from(false).to(true) }
+      end
+    end
   end
 
   describe 'callbacks' do
@@ -82,13 +89,6 @@ describe User do
         before { user.add_role(:track_owner) }
         it { expect { user.destroy }.not_to raise_error }
       end
-    end
-  end
-
-  describe 'attributes' do
-    describe 'readonly_attributes' do
-      it { should have_readonly_attribute(:email) }
-      it { should have_readonly_attribute(:company_id) }
     end
   end
 

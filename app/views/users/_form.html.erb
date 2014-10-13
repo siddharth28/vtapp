@@ -1,0 +1,39 @@
+<div class="form-group">
+  <%= form_for(@user) do |user| %>
+    <!-- FIXED -->
+    <!-- FIXME Move this error_message thing in different partial -->
+    <%= render partial: 'errors', locals: { object_with_errors: @user } if @user.errors.any? %>
+
+    <div class="field">
+      <%= user.label :user_name %><br>
+      <%= user.text_field :name %>
+    </div>
+    <div class="field">
+      <%= user.label :user_email %><br>
+      <%= user.text_field :email %>
+    </div>
+    <div class="field">
+      <%= user.label :user_department %><br>
+      <%= user.text_field :department %>
+    </div>
+    <div class="field">
+      <%= user.label :user_mentor %><br>
+      <%= user.text_field :mentor %>
+    </div>
+    <% if current_user.has_role? :account_owner %>
+      <div class="field">
+        <%= user.label :is_admin? %>
+        <%= user.check_box :admin %>
+      </div>
+    <% end %>
+    <div class="field">
+      <%= user.label :enabled? %>
+      <%= user.check_box :enabled %>
+    </div>
+    
+    
+    <div class="actions">
+      <%= user.submit %>
+    </div>
+  <% end %>
+</div>

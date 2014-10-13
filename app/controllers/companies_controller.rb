@@ -4,6 +4,7 @@ class CompaniesController < ResourceController
 
   def index
     @search = Company.load_with_owners.search(params[:q])
+    #FIXME_AB: Do we need this instance variable @search, do we need this in views
     @companies = @search.result.page(params[:page]).per(20)
   end
 
@@ -16,6 +17,7 @@ class CompaniesController < ResourceController
     end
   end
 
+  #FIXME_AB: You should have two actions for this one enable, other disable
   def toggle_enabled
     @company.toggle!(:enabled)
   end

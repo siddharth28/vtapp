@@ -2,6 +2,7 @@ class TracksController < ResourceController
   autocomplete :user, :name, { full: true, extra_data: [:email] }
 
   def create
+    #FIXME_AB: should always use scoping like company.tracks.build
     @track = Track.new(track_params)
     if @track.save
       redirect_to @track, notice: "Track #{ @track.name } is successfully created."

@@ -1,4 +1,5 @@
 <td><%= link_to company.name, company %></td>
+<% #FIXME_AB: Why displaying first user's email? any specific reason -%>
 <td><%= link_to company.users.first.email, company %></td>
 <td>
   <%= link_to 'Show', company %>

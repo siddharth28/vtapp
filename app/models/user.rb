@@ -18,8 +18,10 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
+  validates :password, presence: true, on: :update
+  validates :password_confirmation, presence: true, on: :update
+  #FIXME_AB: no validation on email
 
-  before_destroy :ensure_an_account_owners_and_super_admin_remains
   ## FIXED
   ## FIXME Also add validation for account_owner cannot be changed.
   before_destroy :ensure_an_account_owners_and_super_admin_remains

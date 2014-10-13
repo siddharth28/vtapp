@@ -1,17 +1,20 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, :skip => [:registrations]
   mount Ckeditor::Engine => '/ckeditor'
   devise_scope :user do
     authenticated :user do
-      root 'companies#index', as: :authenticated_root
+      as :user do
+        get 'users/edit' => 'devise/registrations#edit', as: 'edit_user_registration'
+        put 'users' => 'devise/registrations#update', as: 'user_registration'
+        get 'users/new' => 'users#new', as: 'new_user'
+        post 'users' => 'users#create'
+      end
+      root 'roles#home_page', as: :authenticated_root
+      resources :users
 
       resources :tracks do
         get :autocomplete_user_name, :on => :collection
       end
-
-      #FIXED
-      #FIXME Add routes for those actions only which are in use.
-      resources :users, only: [:show, :edit]
       resources :companies, except: [:edit, :update, :destroy] do
         patch :enable, on: :member, to: :toggle_enabled
         patch :disable, on: :member, to: :toggle_enabled
