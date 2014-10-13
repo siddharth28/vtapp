@@ -6,8 +6,6 @@ class User < ActiveRecord::Base
     :recoverable, :rememberable, :trackable, :validatable
 
   ROLES = [ 'super_admin', 'account_owner' ]
-  #FIXED with specs:10
-  #FIXME_AB: as discussed we should not allow to delete user/any_record if it has dependent objects. so use dependent restrict
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
@@ -18,17 +16,12 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
-  #FIXED Devise creates validation for email field
-  #FIXME_AB: no validation on email
   ## FIXED
   ## FIXME Also add validation for account_owner cannot be changed.
 
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
   after_commit :send_password_email, on: :create
-
-  #FIXED
-  #FIXME_AB: Why can't we User.with_role(:account_owner). Rollify already provides this. Why we need custom scope.
 
   def active_for_authentication?
     if super_admin?
@@ -64,10 +57,10 @@ class User < ActiveRecord::Base
     end
     #rolify callback
     #FIXED because this functionality is only for console view it's not in app so it won't occur in view
+    #FIXME_AB: I could not get you by console view, Please elaborate 
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
-      #FIXED
-      #FIXME_AB: Lets maintain a constant array of all roles and use that, instead of hard coding roles.
+      #FIXME_AB: Instead of indexes use keys like ROLES[:account_owner] would be more intuitive
       if role.name == ROLES[1]
         if company.owner.first
           #FIXME_AB: WE can avoid this nested if statement.

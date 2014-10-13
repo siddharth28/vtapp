@@ -4,8 +4,6 @@ source 'https://rubygems.org'
 gem 'rails',                                  '4.1.6'
 gem 'mysql2',                                 '0.3.16'
 gem 'jquery-rails',                           '3.1.2'
-#FIXED
-#FIXME_AB: Guys please remove turbolinks
 gem 'jbuilder',                               '~> 2.0'
 gem 'devise',                                 '3.3.0'
 gem 'devise-async',                           '0.9.0'
