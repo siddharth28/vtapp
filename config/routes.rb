@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, :skip => [:registrations]
-
-
+  mount Ckeditor::Engine => '/ckeditor'
   devise_scope :user do
     authenticated :user do
       as :user do
@@ -12,6 +11,10 @@ Rails.application.routes.draw do
       end
       root 'roles#home_page', as: :authenticated_root
       resources :users
+
+      resources :tracks do
+        get :autocomplete_user_name, :on => :collection
+      end
       resources :companies, except: [:edit, :update, :destroy] do
         patch :enable, on: :member, to: :toggle_enabled
         patch :disable, on: :member, to: :toggle_enabled
