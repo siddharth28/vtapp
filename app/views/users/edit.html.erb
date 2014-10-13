@@ -1,0 +1,45 @@
+<div class="authform">
+
+  <h2>
+    Edit User
+  </h2>
+
+  <%= form_for(@user, method: :put ) do |f| %>
+    <%= render partial: 'errors', locals: { object_with_errors: @user } if @user.errors.any? %>
+
+    <div>
+      <%= f.label :email %>
+      <br />
+      <%= f.email_field :email, readonly: true %>
+    </div>
+
+    <div>
+      <%= f.label :name %>
+      <br />
+      <%= f.text_field :name, readonly: true %>
+    </div>
+
+    <div>
+      <%= f.label :new_password %>
+      <br />
+      <%= f.password_field :password, autocomplete: "off" %>
+    </div>
+
+    <div>
+      <%= f.label :password_confirmation %>
+      <br />
+      <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    </div>
+
+    <div>
+      <%= f.label :current_password %>
+      <br />
+      <%= f.password_field :current_password, autocomplete: "off" %>
+    </div>
+
+    <div>
+      <%= f.submit "Save" %>
+    </div>
+  <% end %>
+
+</div>
