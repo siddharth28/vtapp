@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
+  validates :password, :password_confirmation, :current_password, presence: true, on: :update
   #FIXME_AB: no validation on email
   ## FIXED
   ## FIXME Also add validation for account_owner cannot be changed.
