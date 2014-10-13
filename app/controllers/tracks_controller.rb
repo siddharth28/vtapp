@@ -1,5 +1,5 @@
 class TracksController < ResourceController
-  autocomplete :user, :name, { full: true, extra_data: [:email] }
+  autocomplete :user, :name, extra_data: [:email],  display_value: :display_track_owner_details
 
   def create
     @track = Track.new(track_params)
@@ -10,12 +10,8 @@ class TracksController < ResourceController
     end
   end
 
-  def display
-    "#{ self.name } \n #{ self.email }"
-  end
-
   private
     def track_params
-      params.require(:track).permit(:name, :description, :instructions, :references, :enabled)
+      params.require(:track).permit(:name, :description, :instructions, :references, :enabled, :track_owner)
     end
 end
