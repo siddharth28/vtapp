@@ -100,3 +100,26 @@ section {
 .table th {
   text-align: center;
 }
+
+.track_form {
+  padding-top: 30px;
+  margin: 0 auto;
+}
+.track_form form {
+  @extend .well;
+  @extend .well-lg;
+  padding-bottom: 40px;
+}
+.track_form .right {
+  float: right !important;
+}
+.track_form .button {
+  @extend .btn;
+  @extend .btn-primary;
+}
+.track_form fieldset {
+  @extend .well;
+}
+.track_form checkbox {
+  padding-left: 40px;
+}
