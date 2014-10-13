@@ -1,7 +1,7 @@
 class UsersController < ResourceController
   skip_load_resource only: [:index, :create]
   before_action :authenticate_user!
-  autocomplete :mentor, :name
+  autocomplete :user, :name
   def show
   end
   def new
@@ -27,7 +27,7 @@ class UsersController < ResourceController
 
   private
     def user_params
-      params.require(:user).permit(:name, :email, :department, :admin, :enabled)
+      params.require(:user).permit(:name, :email, :department, :mentor, :admin, :enabled)
     end
     def edit_user_params
       params.require(:user).permit(:email, :password, :password_confirmation, :current_password)

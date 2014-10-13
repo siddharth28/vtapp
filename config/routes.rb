@@ -11,7 +11,7 @@ Rails.application.routes.draw do
       end
       root 'roles#home_page', as: :authenticated_root
       resources :users do
-        get :autocomplete_mentor_name, :on => :collection
+        get :autocomplete_user_name, :on => :collection
       end
 
       resources :tracks do
