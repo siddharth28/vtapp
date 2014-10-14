@@ -28,6 +28,7 @@ class User < ActiveRecord::Base
   before_validation :set_random_password, on: :create
   after_commit :send_password_email, on: :create
   after_create :make_admin if :admin
+  scope :abc,-> { debugger }
 
   def active_for_authentication?
     if super_admin?

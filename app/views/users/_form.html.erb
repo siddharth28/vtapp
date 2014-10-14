@@ -1,7 +1,5 @@
 <div class="form-group">
   <%= form_for(@user) do |user| %>
-    <!-- FIXED -->
-    <!-- FIXME Move this error_message thing in different partial -->
     <%= render partial: 'errors', locals: { object_with_errors: @user } if @user.errors.any? %>
 
     <div class="field">
@@ -14,7 +12,7 @@
     </div>
     <div class="field">
       <%= user.label :user_department %><br>
-      <%= user.text_field :department %>
+      <%= user.autocomplete_field :department, autocomplete_user_department_users_path %>
     </div>
     <div class="field">
       <%= user.label :user_mentor %><br>
