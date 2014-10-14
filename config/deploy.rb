@@ -56,6 +56,14 @@ set :linked_dirs, %w{tmp/pids}
 set :linked_files, %w{config/database.yml}
 SSHKit.config.command_map[:rake]  = "bundle exec rake" #8
 SSHKit.config.command_map[:rails] = "bundle exec rails"
+namespace :bundle do
+
+  desc "run bundle install and ensure all gem requirements are met"
+  task :install do
+    run "cd #{current_path} && bundle install  --without=test --no-update-sources"
+  end
+
+end
 
 
 namespace :deploy do
@@ -72,9 +80,7 @@ namespace :deploy do
   task :migrations do
     execute :rake, 'db:migrate', roles: :db
   end
-  task :bundler do
-    execute :bundle, 'install'
-  end
   after :publishing, 'deploy:restart'
-  after :finishing, 'deploy:cleanup', 'deploy:bundler', 'deploy:migrations'
+  before "deploy:restart", "bundle:install"
+  after :finishing, 'deploy:cleanup', 'deploy:migrations'
 end
