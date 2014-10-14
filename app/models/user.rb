@@ -5,11 +5,8 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :nullify
+  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner' }
 
-  ROLES = [ 'super_admin', 'account_owner' ]
-  #FIXED with specs:10
-  #FIXME_AB: as discussed we should not allow to delete user/any_record if it has dependent objects. so use dependent restrict
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
@@ -21,25 +18,15 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
+  validates :password, presence: true, on: :update
+  validates :password_confirmation, presence: true, on: :update
   #FIXME_AB: no validation on email
+
   ## FIXED
   ## FIXME Also add validation for account_owner cannot be changed.
-
-  before_destroy :ensure_an_account_owners_and_super_admin_remains
-  #FIXED Devise creates validation for email field
-  #FIXME_AB: no validation on email
-  ## FIXED
-  ## FIXME Also add validation for account_owner cannot be changed.
-
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
   after_commit :send_password_email, on: :create
-
-  after_commit :send_password_email, on: :create
-  #FIXED
-  #FIXME_AB: Why can't we User.with_role(:account_owner). Rollify already provides this. Why we need custom scope.
-  #FIXED
-  #FIXME_AB: Why can't we User.with_role(:account_owner). Rollify already provides this. Why we need custom scope.
 
   def active_for_authentication?
     if super_admin?
@@ -49,7 +36,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  ROLES.each do |method|
+  ROLES.each do |key, method|
     define_method "#{ method }?" do
       has_role? "#{ method }"
     end
@@ -75,11 +62,10 @@ class User < ActiveRecord::Base
     end
     #rolify callback
     #FIXED because this functionality is only for console view it's not in app so it won't occur in view
+    #FIXME_AB: I could not get you by console view, Please elaborate
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
-      #FIXED
-      #FIXME_AB: Lets maintain a constant array of all roles and use that, instead of hard coding roles.
-      if role.name == ROLES[1]
+      if role.name == ROLES[:account_owner]
         if company.owner.first
           #FIXME_AB: WE can avoid this nested if statement.
           raise 'There can be only one account owner'
@@ -88,8 +74,12 @@ class User < ActiveRecord::Base
     end
     #rolify callback
     def ensure_cannot_remove_account_owner_role(role)
-      if role.name == ROLES[1]
+      if role.name == ROLES[:account_owner]
         raise 'Cannot remove account_owner role'
       end
+    end
+
+    def display_user_details
+      "#{ self.name } :#{ self.email }"
     end
 end
