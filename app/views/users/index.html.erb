@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="row">
+    <h3>Users</h3>
+    <div class="column">
+
+      <table class="sortable_table table table-bordered table-striped ">
+        <thead>
+          <tr>
+            <%= content_tag :th, sort_link(@search, :name, 'Name', default_order: :desc) %>
+            <%= content_tag :th, sort_link(@search, :email, 'Email') %>
+
+            <th>
+              Department
+            </th>
+            <th>
+              Roles
+            </th>
+            <th>
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <%= render user %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <%= paginate @users %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<td><%= link_to user.name, user %></td>
+<td><%= link_to user.email, user %></td>
+<td><%= user.department %></td>
+<td>
+  <% if user.has_role? :account_owner %>
+    <%= 'Account Owner' %>
+  <% elsif user.has_role? :account_admin %>
+    <%= 'Admin' %>
+  <% else %>
+    <%= '-' %>
+  <% end %>
+</td>
+<td>
+  <%= link_to 'Show', user %>
+  <%= link_to 'Edit', edit_user_path(user) %>
+  <%= link_to 'Progress' %>
+</td>

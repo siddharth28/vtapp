@@ -1,11 +1,13 @@
 class UsersController < ResourceController
   skip_load_resource only: [:index, :create]
   before_action :authenticate_user!
-  autocomplete :user, :name
+  before_filter :check_mentor_field, only: :create
+  autocomplete :user, :name, full: true
   autocomplete :user, :department
 
   def index
-    @users = current_user.company.users
+    @search = current_user.company.users.search(params[:q])
+    @users = @search.result.page(params[:page]).per(20)
   end
 
   def new
@@ -16,9 +18,11 @@ class UsersController < ResourceController
     if @user.save
       redirect_to @user, notice: "user #{ @user.name } is successfully created."
     else
+      debugger
       render action: 'new'
     end
   end
+
   def update
     if @user.update(user_params)
       redirect_to @user, notice: "user #{ @user.name } is successfully updated."
@@ -35,10 +39,12 @@ class UsersController < ResourceController
         params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled)
       end
     end
-    def edit_user_params
-      params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
-    end
     def get_autocomplete_items(parameters)
-      super(parameters).where(company_id: current_user.company_id)
+      super(parameters).where(company_id: current_user.company_id).distinct
+    end
+    def check_mentor_field
+      if params[:user][:mentor].present? && params[:user][:mentor_id].blank?
+        flash[:error] = 'Mentor not present in the list'
+      end
     end
 end

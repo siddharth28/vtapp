@@ -1,5 +1,9 @@
 <div class="authform">
-  <h3>User</h3>
-  <p>Name: <%= @user.name if @user.name %></p>
-  <p>Email: <%= @user.email if @user.email %></p>
+  <h3>User</h3><%= link_to 'Edit', edit_user_path(@user) %>
+  <p>Name: <%= @user.name %></p>
+  <p>Email: <%= @user.email %></p>
+  <p>Department: <%= @user.email if @user.department %></p>
+  <p>Mentor: <%= @user.mentor.name if @user.mentor %></p>
+  <p>Is Admin?: <%= @user.has_role?(:account_admin) ? 'Yes' : 'No' %></p>
+  <p>Status: <%= @user.enabled ? 'Enabled' : 'Disabled' %></p>
 </div>

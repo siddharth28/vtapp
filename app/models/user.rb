@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
+  has_many :tracks
 
   attr_readonly :email, :company_id
   attr_accessor :admin
@@ -86,6 +87,6 @@ class User < ActiveRecord::Base
     end
 
     def make_admin
-      add_role :admin
+      add_role :account_admin
     end
 end
