@@ -1,5 +1,8 @@
 <div class="form-group col-md-8">
   <%= form_for(@track) do |track| %>
+
+    <%= render partial: 'errors', locals: { object_with_errors: @track } if @track.errors.any? %>
+
     <div class="field">
       <%= track.label :name %>
       <%= track.text_field :name %>
@@ -22,7 +25,8 @@
 
     <div class="field">
       <%= track.label :track_owner %>
-      <%= track.autocomplete_field :track_owner, autocomplete_user_name_tracks_path %>
+      <%= track.autocomplete_field :owner_name, autocomplete_user_name_tracks_path %>
+      <%= track.hidden_field :owner_email, value: :owner_email, class:"owner_email" %>
     </div>
 
     <div class="field">
