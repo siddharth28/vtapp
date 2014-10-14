@@ -156,7 +156,6 @@ describe User do
           end
         end
       end
-
     end
 
     #FIXED
@@ -180,9 +179,13 @@ describe User do
     end
     #FIXED
     #FIXME Check error_message also
-    describe 'ensure_cannot_remove_account_owner_role' do
+    describe '#ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
       it { expect { company.owner.first.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
+    end
+
+    describe '#display_user_details' do
+      it { expect(user.send(:display_user_details)).to eql("#{ user.name } :#{ user.email }") }
     end
   end
 end

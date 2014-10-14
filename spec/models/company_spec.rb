@@ -6,6 +6,7 @@ describe Company do
 
   describe 'associations' do
     it { should have_many(:users).dependent(:restrict_with_exception) }
+    it { should have_many(:tracks).dependent(:restrict_with_exception) }
   end
 
   describe 'validations' do
