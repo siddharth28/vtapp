@@ -53,13 +53,6 @@ describe User do
       end
 
     end
-    describe 'on: update validations' do
-      let(:user) { create(:user, company: company) }
-      context 'only password present' do
-        it { expect { user.update(password: 'new password') }.to change{ user.errors[:current_password].present? }.from(false).to(true) }
-        it { expect { user.update(password: 'new password') }.to change{ user.errors[:password_confirmation].present? }.from(false).to(true) }
-      end
-    end
   end
 
   describe 'callbacks' do
@@ -88,6 +81,26 @@ describe User do
       context 'neither super_admin nor account_owner' do
         before { user.add_role(:track_owner) }
         it { expect { user.destroy }.not_to raise_error }
+      end
+    end
+    describe 'after_create #make_admin' do
+      let(:user) { build(:user, company: company)}
+      context 'is admin' do
+        before { user.admin = true }
+        it { expect(user).to receive(:make_admin) }
+        after { user.save! }
+      end
+      context 'not an admin' do
+        before { user.admin = false }
+        it { expect(user).not_to receive(:make_admin) }
+        after { user.save! }
+      end
+      describe '#make_admin' do
+        before do
+          user.admin = true
+          user.save
+        end
+        it { expect(user.has_role? :account_admin).to eql(true) }
       end
     end
   end

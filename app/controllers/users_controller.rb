@@ -1,7 +1,7 @@
 class UsersController < ResourceController
   skip_load_resource only: [:index, :create]
   before_action :authenticate_user!
-  before_filter :check_mentor_field, only: :create
+  before_filter :check_mentor_field, only: [:create, :update]
   autocomplete :user, :name, full: true
   autocomplete :user, :department
 
@@ -10,15 +10,11 @@ class UsersController < ResourceController
     @users = @search.result.page(params[:page]).per(20)
   end
 
-  def new
-    @user = current_user.company.users.build
-  end
   def create
     @user = current_user.company.users.build(user_params)
     if @user.save
       redirect_to @user, notice: "user #{ @user.name } is successfully created."
     else
-      debugger
       render action: 'new'
     end
   end
@@ -44,7 +40,11 @@ class UsersController < ResourceController
     end
     def check_mentor_field
       if params[:user][:mentor].present? && params[:user][:mentor_id].blank?
-        flash[:error] = 'Mentor not present in the list'
+        @user = current_user.company.users.build(user_params)
+        @user.valid?
+        @user.errors[:mentor] = 'not present in the list'
+        render action: :new
+        false
       end
     end
 end

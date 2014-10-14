@@ -10,7 +10,6 @@ class User < ActiveRecord::Base
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
-  has_many :tracks
 
   attr_readonly :email, :company_id
   attr_accessor :admin
@@ -20,7 +19,6 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
-  validates :password, :password_confirmation, :current_password, presence: true, on: :update
   #FIXME_AB: no validation on email
 
   ## FIXED
@@ -28,8 +26,8 @@ class User < ActiveRecord::Base
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
   after_commit :send_password_email, on: :create
-  after_create :make_admin if :admin
-  scope :abc,-> { debugger }
+  after_create :make_admin, if: :admin
+
 
   def active_for_authentication?
     if super_admin?
