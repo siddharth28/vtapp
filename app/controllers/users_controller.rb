@@ -1,12 +1,15 @@
 class UsersController < ResourceController
   skip_load_resource only: [:index, :create]
   before_action :authenticate_user!
-  autocomplete :user, :name, scope: [:abc]
+  autocomplete :user, :name
   autocomplete :user, :department
+
+  def index
+    @users = current_user.company.users
+  end
 
   def new
     @user = current_user.company.users.build
-    @track = current_user.company.tracks
   end
   def create
     @user = current_user.company.users.build(user_params)
@@ -34,5 +37,8 @@ class UsersController < ResourceController
     end
     def edit_user_params
       params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
+    end
+    def get_autocomplete_items(parameters)
+      super(parameters).where(company_id: current_user.company_id)
     end
 end
