@@ -1,5 +1,6 @@
 <div class="form-group">
   <%= form_for(@user) do |user| %>
+    <!-- FIXME error_message partial should be global, not just for company -->
     <!-- FIXED -->
     <!-- FIXME Move this error_message thing in different partial -->
     <%= render partial: 'errors', locals: { object_with_errors: @user } if @user.errors.any? %>

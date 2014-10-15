@@ -7,11 +7,9 @@ class Company < ActiveRecord::Base
 
   validates :name, presence: true
   ROLES = { account_owner: 'account_owner' }
-  #FIXED
-  #FIXME Change rspecs of this scope and below methods as discussed.
+
   validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
-  #FIXED
-  #FIXME Write rspec for eagerload also.
+
   #FIXME_AB: Don't hard code role use ROLES array/hash constant
   scope :load_with_owners, -> { eager_load(:users).joins(users: :roles).merge(Role.with_name(ROLES[:account_owner])) }
   scope :enabled, -> { where(enabled: true) }

@@ -1,5 +1,3 @@
-#FIXED
-#FIXME Write rspecs for missing things.
 class User < ActiveRecord::Base
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
   devise :database_authenticatable, :registerable, :async,
@@ -11,11 +9,11 @@ class User < ActiveRecord::Base
   belongs_to :company
   belongs_to :mentor, class_name: User
 
+  #FIXME -> Write rspec of this line.
   attr_readonly :email, :company_id
 
-  #FIXED
-  #FIXME Write rspecs of mentor and company using context.
   validates :mentor, presence: true, if: :mentor_id?
+  #FIXME -> Write rspec of this validation.
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
   validates :password, presence: true, on: :update
@@ -23,10 +21,9 @@ class User < ActiveRecord::Base
   #email validation is provided by devise
   #FIXME_AB: no validation on email
 
-  ## FIXED
-  ## FIXME Also add validation for account_owner cannot be changed.
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
+  #FIXME -> after_commit rspec remained
   after_commit :send_password_email, on: :create
 
   def active_for_authentication?
@@ -81,6 +78,7 @@ class User < ActiveRecord::Base
       end
     end
 
+    #FIXME self is not required. Also, write rspec of this method.
     def display_track_owner_details
       "#{ self.name } :#{ self.email }"
     end

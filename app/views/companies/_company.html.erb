@@ -1,4 +1,5 @@
 <td><%= link_to company.name, company %></td>
+  <!-- FIXME -> owners is not a scope in company -->
   <!-- #FIXED -->
 <% #FIXME_AB: Why displaying first user's email? any specific reason -%>
 <td><%= link_to company.owners.first.email, company %></td>
