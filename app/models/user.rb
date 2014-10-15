@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   validates :name, presence: true
   validates :password, presence: true, on: :update
   validates :password_confirmation, presence: true, on: :update
+  accepts_nested_attributes_for :tracks
   #FIXME_AB: no validation on email
 
   ## FIXED

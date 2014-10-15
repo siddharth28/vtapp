@@ -30,6 +30,14 @@
       <%= user.label :enabled? %>
       <%= user.check_box :enabled %>
     </div>
+    <div class="field">
+      <% user.fields_for(:tracks) do|user_track| %>
+        <% debugger %>
+        <% @tracks.each do |track| %>
+          <%= user_track.check_box :track %>
+        <% end %>
+      <% end %>
+    </div>
     
     
     <div class="actions">

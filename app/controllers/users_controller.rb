@@ -10,6 +10,11 @@ class UsersController < ResourceController
     @users = @search.result.page(params[:page]).per(20)
   end
 
+  def new
+    @user.tracks.build
+    @tracks = current_user.company.tracks
+  end
+
   def create
     @user = current_user.company.users.build(user_params)
     if @user.save
