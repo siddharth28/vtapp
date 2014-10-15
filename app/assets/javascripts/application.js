@@ -15,3 +15,11 @@
 //= require jquery-ui
 //= require autocomplete-rails
 //= require ckeditor/ckeditor
+//= require autoSuggestBlur
+
+$(document).ready(function () {
+  $user_mentor = $('#user_mentor');
+  $user_mentor_id = $('#user_mentor_id');
+  checkAutoSuggest($user_mentor, $user_mentor_id);
+});
+

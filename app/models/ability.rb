@@ -9,7 +9,7 @@ class Ability
     elsif user.has_role? :account_owner
       can :manage, Track
     end
-    if user.has_role? :account_owner
+    if(user.account_owner? || user.account_admin?)
       can :manage, User, company: user.company
     end
   end

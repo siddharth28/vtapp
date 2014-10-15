@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
-  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner' }
+  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
 
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company

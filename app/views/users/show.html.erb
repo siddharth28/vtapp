@@ -1,5 +1,10 @@
 <div class="authform">
-  <h3>User</h3><%= link_to 'Edit', edit_user_path(@user) %>
+  <h3>User</h3>
+  <% if(current_user.account_owner?) %>
+    <p><%= link_to 'Edit', edit_user_path(@user), class: 'button' %></p>
+  <% elsif (current_user.account_admin? && !@user.account_owner?) %>
+    <p><%= link_to 'Edit', edit_user_path(@user), class: 'button' %></p>
+  <% end %>
   <p>Name: <%= @user.name %></p>
   <p>Email: <%= @user.email %></p>
   <p>Department: <%= @user.email if @user.department %></p>
