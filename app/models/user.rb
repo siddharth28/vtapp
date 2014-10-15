@@ -6,7 +6,8 @@ class User < ActiveRecord::Base
     :recoverable, :rememberable, :trackable, :validatable
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner' }
-
+  has_many :links
+  has_many :tracks, through: :links
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
@@ -66,7 +67,7 @@ class User < ActiveRecord::Base
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
       if role.name == ROLES[:account_owner]
-        if company.owner.first
+        if company.owner
           #FIXME_AB: WE can avoid this nested if statement.
           raise 'There can be only one account owner'
         end
