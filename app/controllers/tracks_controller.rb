@@ -2,9 +2,9 @@ class TracksController < ResourceController
   autocomplete :user, :name, extra_data: [:email],  display_value: :display_user_details
 
   def index
-    # company = Company.find_by(id: params[:company])
-    # @tracks = company.tracks
-    render nothing: true
+    company = Company.find_by(id: params[:company])
+    @search = company.tracks.search(params[:q])
+    @tracks = @search.result.page(params[:page]).per(20)
   end
 
   def create
@@ -17,9 +17,13 @@ class TracksController < ResourceController
     end
   end
 
+  def assign_track_reviewer
+    
+  end
+
   private
     def track_params
-      params.require(:track).permit(:name, :description, :instructions, :references, :owner_name, :owner_email, :enabled)
+      params.require(:track).permit(:name, :description, :instructions, :references, :owner_id, :enabled)
     end
 
     def get_autocomplete_items(parameters)
