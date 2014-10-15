@@ -20,7 +20,7 @@ class Company < ActiveRecord::Base
   def owner
     #FIXED
     #FIXME_AB: should not use .first here, return the arel object
-    users.with_role(:account_owner)
+    users.with_role(:account_owner).first
   end
 
   private
