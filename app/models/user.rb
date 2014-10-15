@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
 
+  has_many :links
+  has_many :tracks, through: :links
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
@@ -19,6 +21,8 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
+  validates :password, presence: true, on: :update
+  validates :password_confirmation, presence: true, on: :update
   #FIXME_AB: no validation on email
 
   ## FIXED
@@ -27,7 +31,6 @@ class User < ActiveRecord::Base
   before_validation :set_random_password, on: :create
   after_commit :send_password_email, on: :create
   after_create :make_admin, if: :admin
-
 
   def active_for_authentication?
     if super_admin?
@@ -86,5 +89,8 @@ class User < ActiveRecord::Base
 
     def make_admin
       add_role :account_admin
+    end
+    def display_user_details
+      "#{ self.name } :#{ self.email }"
     end
 end

@@ -4,9 +4,10 @@
   <li><%= link_to 'Create Company', new_company_path %></li>
 <% end %>
 
-<% if current_user.has_role? :account_owner %>
+<% if current_user.account_owner? || current_user.account_admin? %>
   <li><%= link_to 'Users', users_path %></li>
   <li><%= link_to 'Create User', new_user_path %></li>
+  <li><%= link_to 'Create Track', new_track_path %></li>
 <% end %>
 <li><%= link_to 'Account', edit_user_registration_path %></li>
 <li><%= link_to "Hello, #{ current_user.name }", user_path(current_user), { class: 'user_details' } %></li>

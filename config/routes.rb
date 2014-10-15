@@ -14,8 +14,7 @@ Rails.application.routes.draw do
         get :autocomplete_user_name, on: :collection
         get :autocomplete_user_department, on: :collection
       end
-
-      resources :tracks do
+      resources :tracks, except: [:edit, :update, :destroy, :show] do
         get :autocomplete_user_name, on: :collection
       end
       resources :companies, except: [:edit, :update, :destroy] do

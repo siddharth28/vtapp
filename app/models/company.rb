@@ -1,6 +1,6 @@
 class Company < ActiveRecord::Base
   has_many :users, dependent: :restrict_with_exception
-
+  has_many :tracks, dependent: :restrict_with_exception
   attr_accessor :owner_email, :owner_name
 
   before_validation :build_owner, on: :create
@@ -20,6 +20,8 @@ class Company < ActiveRecord::Base
       #FIXME_AB: Don't hard code role use ROLES array/hash constant
 
     users.with_role(:account_owner)
+    #FIXED
+    #FIXME_AB: should not use .first here, return the arel object
   end
 
   private
