@@ -13,17 +13,32 @@ class TracksController < ResourceController
     if @track.save
       redirect_to tracks_path(company: company), notice: "Track #{ @track.name } is successfully created."
     else
-      render action: 'new'
+      render action: :new
     end
   end
 
   def assign_track_reviewer
-    
+    company = current_user.company
+    @track = company.tracks.find_by(id: params[:id])
+  end
+
+  def update
+    company = current_user.company
+    @track = company.tracks.find_by(id: params[:id])
+    @track.add_reviewer(params[:track][:reviewer_id])
+    render action: :assign_track_reviewer
+  end
+
+  def remove_reviewer
+    company = current_user.company
+    @track = company.tracks.find_by(id: params[:id])
+    @track.remove_reviewer(params[:format])
+    render action: :assign_track_reviewer
   end
 
   private
     def track_params
-      params.require(:track).permit(:name, :description, :instructions, :references, :owner_id, :enabled)
+      params.require(:track).permit(:name, :description, :instructions, :references, :owner_id, :enabled, :reviewer_id)
     end
 
     def get_autocomplete_items(parameters)
