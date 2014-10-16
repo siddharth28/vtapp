@@ -1,5 +1,6 @@
 CKEDITOR.editorConfig = function( config )
 {
+  config.autoParagraph = false;
   config.toolbar =
   [
     { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat' ] },
@@ -7,3 +8,4 @@ CKEDITOR.editorConfig = function( config )
     { name: 'links', items : [ 'Link','Unlink' ] },
   ];
 }
+
