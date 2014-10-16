@@ -5,7 +5,7 @@ class UsersController < ResourceController
   autocomplete :user, :department
 
   def index
-    @search = current_user.company.users.includes(:roles).search(params[:q])
+    @search = current_user.company.users.search(params[:q])
     @users = @search.result.page(params[:page]).per(20)
   end
 

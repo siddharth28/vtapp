@@ -68,11 +68,9 @@ class User < ActiveRecord::Base
     #FIXME_AB: I could not get you by console view, Please elaborate 
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
-      if role.name == ROLES[:account_owner]
-        if company.owner.first
-          #FIXME_AB: WE can avoid this nested if statement.
-          raise 'There can be only one account owner'
-        end
+      if role.name == ROLES[:account_owner] && company.owner.first
+        #FIXME_AB: WE can avoid this nested if statement.
+        raise 'There can be only one account owner'
       end
     end
     #rolify callback
@@ -87,7 +85,7 @@ class User < ActiveRecord::Base
     end
 
     def make_admin
-      add_role :account_admin, company
+      add_role :account_admin, self.company
     end
     def display_user_details
       "#{ self.name } :#{ self.email }"

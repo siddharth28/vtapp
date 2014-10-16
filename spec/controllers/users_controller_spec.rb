@@ -83,7 +83,6 @@ describe UsersController do
 
   describe '#create' do
     before do
-      allow(controller).to receive(:check_mentor_field).and_return(true)
       allow(user).to receive(:company).and_return(company)
       allow(user).to receive(:has_role?).and_return(true)
       allow(company).to receive(:users).and_return(users)
@@ -95,7 +94,7 @@ describe UsersController do
       post :create, user: { name: 'Test User', email: 'test_email@email.com' }
     end
     describe 'skip_load_resource' do
-      it { expect(assigns(:user)).not_to eq(user) }
+      it { expect(assigns(:user)).to eq(user) }
       after { send_request }
     end
     describe 'expects to send' do
