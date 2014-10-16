@@ -21,8 +21,6 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
-  validates :password, presence: true, on: :update
-  validates :password_confirmation, presence: true, on: :update
   accepts_nested_attributes_for :tracks
   #FIXME_AB: no validation on email
 
@@ -89,7 +87,7 @@ class User < ActiveRecord::Base
     end
 
     def make_admin
-      add_role :account_admin
+      add_role :account_admin, company
     end
     def display_user_details
       "#{ self.name } :#{ self.email }"

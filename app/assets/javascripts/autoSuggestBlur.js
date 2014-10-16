@@ -1,5 +1,5 @@
 
-var checkAutoSuggest = function (autoSuggestField, autoSuggestHiddenField) {
+function checkAutoSuggest(autoSuggestField, autoSuggestHiddenField) {
   autoSuggestField.blur(function(){
     if (autoSuggestHiddenField.val() == '') {
       $(this).val('');

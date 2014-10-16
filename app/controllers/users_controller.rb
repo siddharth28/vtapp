@@ -1,12 +1,11 @@
 class UsersController < ResourceController
   skip_load_resource only: [:index, :create]
   before_action :authenticate_user!
-  before_filter :check_mentor_field, only: [:create, :update]
   autocomplete :user, :name, full: true
   autocomplete :user, :department
 
   def index
-    @search = current_user.company.users.search(params[:q])
+    @search = current_user.company.users.includes(:roles).search(params[:q])
     @users = @search.result.page(params[:page]).per(20)
   end
 
@@ -41,15 +40,6 @@ class UsersController < ResourceController
       end
     end
     def get_autocomplete_items(parameters)
-      super(parameters).where(company_id: current_user.company_id).distinct
-    end
-    def check_mentor_field
-      if params[:user][:mentor].present? && params[:user][:mentor_id].blank?
-        @user = current_user.company.users.build(user_params)
-        @user.valid?
-        @user.errors[:mentor] = 'not present in the list'
-        render action: :new
-        false
-      end
+      super(parameters).where(company_id: current_user.company_id).group(:department)
     end
 end

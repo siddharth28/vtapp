@@ -4,7 +4,6 @@ class Role < ActiveRecord::Base
   belongs_to :resource, polymorphic: true
   #FIXED
   #FIXME Change rspec as discussed
-  scope :with_name, ->(role_name) { where(name: role_name) }
 
   scopify
 end
