@@ -6,8 +6,7 @@ class User < ActiveRecord::Base
     :recoverable, :rememberable, :trackable, :validatable
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner' }
-  has_many :links
-  has_many :tracks, through: :links
+
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
@@ -81,6 +80,6 @@ class User < ActiveRecord::Base
     end
 
     def display_user_details
-      "#{ self.name } :#{ self.email }"
+      "#{ self.name } : #{ self.email }"
     end
 end
