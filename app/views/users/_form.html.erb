@@ -42,7 +42,7 @@
   </div>
   <div class="form-group">
     <%= user.label :tracks, "Tracks", class: 'col-sm-2 control-label' %>
-    <%= collection_check_boxes(:user, :track_ids, current_user.company.tracks, :id, :name, default: [current_user.company.tracks.ids]) %>
+    <%= collection_check_boxes(:tracks, :track_ids, current_user.company.tracks, :id, :name, default: [current_user.company.tracks.ids]) %>
   </div>
   <div class="actions">
     <div class="col-sm-2"></div>
