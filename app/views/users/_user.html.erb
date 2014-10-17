@@ -2,9 +2,9 @@
 <td><%= link_to user.email, user %></td>
 <td><%= user.department %></td>
 <td>
-  <% if user.roles.any?{|role| role.name.to_sym == :account_owner} %>
+  <% if user.account_owner? %>
     <%= 'Account Owner' %>
-  <% elsif user.any?{|role| role.name.to_sym == :account_owner} %>
+  <% elsif user.account_admin? %>
     <%= 'Admin' %>
   <% else %>
     <%= '-' %>

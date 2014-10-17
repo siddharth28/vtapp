@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
+  # has_many :tracks, ->{ joins(:roles).tracks }
+  has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
 
   #FIXME -> Write rspec of this line.
   attr_readonly :email, :company_id
@@ -25,7 +27,8 @@ class User < ActiveRecord::Base
   before_validation :set_random_password, on: :create
   #FIXME -> after_commit rspec remained
   after_commit :send_password_email, on: :create
-  after_create :make_admin, if: :admin
+  after_save :check_admin
+  after_initialize :set_admin
 
   def active_for_authentication?
     if super_admin?
@@ -84,8 +87,11 @@ class User < ActiveRecord::Base
       "#{ name } :#{ email }"
     end
 
-    def make_admin
-      add_role ROLES[:account_admin], company
+    def check_admin
+      admin ? remove_role(ROLES[:account_admin], company) : add_role(ROLES[:account_admin], company)
+    end
+    def set_admin
+      account_admin? ? self.admin = true : self.admin = false
     end
     def display_user_details
       "#{ self.name } : #{ self.email }"

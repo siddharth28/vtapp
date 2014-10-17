@@ -9,6 +9,6 @@
   <p>Email: <%= @user.email %></p>
   <p>Department: <%= @user.email if @user.department %></p>
   <p>Mentor: <%= @user.mentor.name if @user.mentor %></p>
-  <p>Is Admin?: <%= @user.has_role?(:account_admin) ? 'Yes' : 'No' %></p>
+  <p>Is Admin?: <%= @user.account_admin? ? 'Yes' : 'No' %></p>
   <p>Status: <%= @user.enabled ? 'Enabled' : 'Disabled' %></p>
 </div>

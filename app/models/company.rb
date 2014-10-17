@@ -30,12 +30,6 @@ class Company < ActiveRecord::Base
       #FIXME_AB: I don't agree with your comment above, this create a user a global account owner.
       #FIXME_AB: This is wrong, when you are building the owner you should pass a second argument to the add_role. For example user.add_role(ROLES[:account_owner], @company) so that user would be owner of the current company not a global owner for all company.
       @owner = users.build(name: owner_name, email: owner_email)
-      # if @owner.valid?
-      #   users << @owner
-      # else
-      #   errors.add(:owner_email, @owner.errors[:email].join(', '))
-      #   errors.add(:owner_name, @owner.errors[:name].join(', '))
-      # end
       #FIXME_AB: Don't hard code role use ROLES array/hash constant
     end
     def make_owner
