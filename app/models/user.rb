@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
+  ROLES = { super_admin: :super_admin, account_owner: :account_owner, account_admin: :account_admin }
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
@@ -88,6 +88,6 @@ class User < ActiveRecord::Base
       add_role ROLES[:account_admin], company
     end
     def display_user_details
-      "#{ self.name } :#{ self.email }"
+      "#{ self.name } : #{ self.email }"
     end
 end

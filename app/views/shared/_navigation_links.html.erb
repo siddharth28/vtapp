@@ -8,6 +8,7 @@
   <li><%= link_to 'Users', users_path %></li>
   <li><%= link_to 'Create User', new_user_path %></li>
   <li><%= link_to 'Create Track', new_track_path %></li>
+  <li><%= link_to 'Tracks', tracks_path(company: current_user.company) %></li>
 <% end %>
 <li><%= link_to 'Account', edit_user_registration_path %></li>
 <li><%= link_to "Hello, #{ current_user.name }", user_path(current_user), { class: 'user_details' } %></li>

@@ -18,7 +18,7 @@ class CompaniesController < ResourceController
     if @company.save
       redirect_to @company, notice: "Company #{ @company.name } is successfully created."
     else
-      render action: 'new'
+      render action: :new
     end
   end
   # Sir why do we need seperate actions for this when we will be doing the same thing in both the actions.

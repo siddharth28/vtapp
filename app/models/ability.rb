@@ -5,7 +5,7 @@ class Ability
     can :manage, user
     if user.has_role? :super_admin
       can :manage, Company
-    elsif user.has_role? :account_owner
+    elsif user.has_role? :account_owner, :any
       can :manage, User, company: user.company
       can :manage, Track
     end

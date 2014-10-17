@@ -1,9 +1,7 @@
 default: &default
   adapter: mysql2
   encoding: utf8
-  pool: 5
-  username: root
-  password: vinsol
+  pool:
   socket: /var/run/mysqld/mysqld.sock
 
 development:
@@ -17,5 +15,5 @@ test:
 production:
   <<: *default
   database: vtapp_production
-  username: root
-  password: vinsol
+  username:
+  password:
