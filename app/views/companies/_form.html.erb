@@ -1,23 +1,33 @@
-<div class="form-group">
-  <%= form_for(@company) do |company| %>
-    <!-- FIXED -->
-    <!-- FIXME Move this error_message thing in different partial -->
-    <%= render partial: 'errors', locals: { object_with_errors: @company } if @company.errors.any? %>
 
-    <div class="field">
-      <%= company.label :company_name %><br>
-      <%= company.text_field :name %>
+<%= form_for(@company, html: { class: 'form-horizontal'}) do |company| %>
+  <!-- FIXME error_message partial should be global, not just for company -->
+  <!-- FIXED -->
+  <!-- FIXME Move this error_message thing in different partial -->
+  <div class="form-group">
+    <%= company.label :company_name, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= company.text_field :name, class: 'form-control' %>
+      <%= errors_for_field(@company, :name) %>
     </div>
-    <div class="field">
-      <%= company.label :owner_name %><br>
-      <%= company.text_field :owner_name %>
+  </div>
+  <div class="form-group">
+    <%= company.label :owner_name, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= company.text_field :owner_name, class: 'form-control' %>
+      <%= errors_for_field(@company.users.first, :name) %>
     </div>
-    <div class="field">
-      <%= company.label :owner_email %><br>
-      <%= company.text_field :owner_email %>
+  </div>
+  <div class="form-group">
+    <%= company.label :owner_email, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= company.text_field :owner_email, class: 'form-control' %>
+      <%= errors_for_field(@company.users.first, :email) %>
     </div>
-    <div class="actions">
-      <%= company.submit %>
-    </div>
-  <% end %>
+  </div>
+  <div class="actions">
+    <div class="col-sm-2"></div>
+    <%= company.submit 'Create Company', class: 'btn btn-default btn-lg' %>
+  </div>
 </div>
+<% end %>
+

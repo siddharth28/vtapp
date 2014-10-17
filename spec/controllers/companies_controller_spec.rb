@@ -26,10 +26,14 @@ describe CompaniesController do
     def send_request
       post :create, company: { name: 'Test Company' }
     end
+
+    #FIXME -> Fix rspec of skip_load_resource
     describe 'skip_load_resource' do
       it { expect(assigns(:company)).not_to eq(company) }
+
       after { send_request }
     end
+
     describe 'expects to send' do
       it { expect(Company).to receive(:new).and_return(company) }
       after { send_request }
@@ -85,6 +89,7 @@ describe CompaniesController do
     end
   end
 
+  #FIXME -> Change rspecs as discussed
   describe '#index' do
     before do
       allow(Company).to receive(:load_with_owners).and_return(companies)
@@ -139,8 +144,7 @@ describe CompaniesController do
 
     describe 'response' do
       before { send_request }
-      #FIXED
-      #FIXME Do not use companies in template rendering and use symbol. Change this thing in other locations also.
+
       it { expect(response).to render_template :toggle_enabled }
       it { expect(response).to have_http_status(200) }
     end
@@ -156,8 +160,7 @@ describe CompaniesController do
       it { expect(assigns(:companies)).not_to eq(companies) }
     end
   end
-  #FIXED
-  #FIXME Change description
+
   describe '#company_params' do
     before do
       allow(Company).to receive(:new).with({ name: 'Test Company', owner_name: 'Owner', owner_email: 'Email@email.com' }.with_indifferent_access).and_return(company)

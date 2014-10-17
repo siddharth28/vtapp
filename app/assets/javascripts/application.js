@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require jquery-ui
 //= require autocomplete-rails
-//= require tracks
+//= require autocomplete_event
 //= require bootstrap-sprockets
 //= require ckeditor/ckeditor
 //= require autoSuggestBlur

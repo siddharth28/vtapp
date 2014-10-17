@@ -4,6 +4,5 @@ class Role < ActiveRecord::Base
   belongs_to :resource, polymorphic: true
   #FIXED
   #FIXME Change rspec as discussed
-
   scopify
 end

@@ -39,7 +39,6 @@ body {
 main {
   @extend .container;
   padding-bottom: 80px;
-  width: 100%;
   margin-top: 51px; // accommodate the navbar
   }
 section {
@@ -172,3 +171,7 @@ section {
     }
   }
 }
+.field_with_errors {
+  @extend .has-error;
+}
+

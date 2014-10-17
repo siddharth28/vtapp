@@ -72,6 +72,6 @@ namespace :deploy do
   task :migrations do
     execute :rake, 'db:migrate', roles: :db
   end
-  after :publishing, 'deploy:restart'#, 'deploy:delayed_job_restart'
+  after :publishing, 'deploy:restart'
   after :finishing, 'deploy:cleanup', 'deploy:migrations'
 end

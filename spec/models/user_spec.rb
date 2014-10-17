@@ -5,19 +5,21 @@ describe User do
   let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
   let(:user) { build(:user, mentor_id: mentor.id, company: company) }
 
+  #FIXME -> Check constant value.
   describe 'constants' do
     it { User.should have_constant(:ROLES) }
   end
 
   describe 'associations' do
+    #FIXME -> Check class_name also
     describe 'has_many association' do
       it { should have_many(:mentees).with_foreign_key(:mentor_id).dependent(:restrict_with_error) }
     end
 
     describe 'belongs_to' do
       it { should belong_to(:company) }
-      #FIXED
-      #FIXME check class_name also
+      
+      #FIXME To check class_name there is a should_a matcher.
       it { should belong_to(:mentor) }
       describe 'class_name in belongs_to mentor' do
         it { expect(mentor.class).to eql(User) }
@@ -29,6 +31,7 @@ describe User do
     it { should validate_presence_of(:company) }
     it { should validate_presence_of(:name) }
 
+    #FIXME -> Why this context ?
     context 'not present' do
       let(:user) { build(:user) }
       before { user.add_role(:track_owner) }
@@ -47,6 +50,7 @@ describe User do
         it { expect(user.valid?).to eql(true) }
       end
 
+      #FIXME -> Also check error message.
       context 'invalid mentor present' do
         let(:user) { build(:user, mentor_id: 3920220, company: company) }
         it { expect { user.valid? }.to change{ user.errors[:mentor].present? }.from(false).to(true) }
@@ -66,8 +70,7 @@ describe User do
         expect(user.password).to eq(user.password_confirmation)
       end
     end
-    #FIXED
-    #FIXME Write method name also in describe block. Check error_messages also.
+
     describe 'before destroy#ensure_an_account_owners_and_super_admin_remains' do
       context 'when super_admin' do
         before { user.add_role(:super_admin) }
@@ -108,8 +111,7 @@ describe User do
   describe 'instance methods' do
     let(:user) { build(:user, name: nil, email: nil, password: nil) }
     let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
-    #FIXED
-    #FIXME Change as discussed
+
     describe '#super_admin?' do
       context 'is a super_admin' do
         before { user.add_role(:super_admin) }
@@ -132,8 +134,6 @@ describe User do
     end
 
     describe '#active_for_authentication?' do
-      #FIXED
-      #FIXME Wrong test case. Change as discussed.
       context 'when super_admin' do
         before { user.add_role(:super_admin) }
         it { expect(user.active_for_authentication?).to eql(true) }
@@ -181,15 +181,16 @@ describe User do
         allow(delayed_job).to receive(:welcome_email).and_return(delayed_job)
       end
       it { expect(UserMailer).to receive(:delay).and_return(delayed_job) }
+      #FIXME -> Test with arguments
       it { expect(delayed_job).to receive(:welcome_email).and_return(delayed_job) }
       after { user.send(:send_password_email) }
     end
-    #FIXED
-    #FIXME Check error_message also
+
     describe '#ensure_only_one_account_owner' do
       let(:user) { create(:user, company: company) }
       it { expect { user.add_role(:account_owner) }.to raise_error("There can be only one account owner") }
     end
+
     #FIXED
     #FIXME Check error_message also
     describe '#ensure_cannot_remove_account_owner_role' do

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+  before_filter :configure_permitted_parameters, if: :devise_controller?
 
   #SEE Issue https://github.com/ryanb/cancan/issues/835
   before_action do
@@ -7,4 +8,10 @@ class ApplicationController < ActionController::Base
     method = "#{resource}_params"
     params[resource] &&= send(method) if respond_to?(method, true)
   end
+  protected
+    def configure_permitted_parameters
+      devise_parameter_sanitizer.for(:account_update) do |u|
+        u.permit(:name, :email, :password, :password_confirmation, :current_password)
+      end
+    end
 end

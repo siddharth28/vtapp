@@ -1,46 +1,51 @@
-
-<div class="form-group">
-  <%= form_for(@user) do |user| %>
-    <%= render partial: 'errors', locals: { object_with_errors: @user } if @user.errors.any? %>
-
-    <div class="field">
-      <%= user.label :user_name %><br>
-      <%= user.text_field :name %>
+<%= form_for(@user, html: { class: 'form-horizontal'}) do |user| %>
+  <!-- FIXME error_message partial should be global, not just for company -->
+  <!-- FIXED -->
+  <!-- FIXME Move this error_message thing in different partial -->
+  <div class="form-group">
+    <%= user.label :user_name, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= user.text_field :name, class: 'form-control' %>
+      <%= errors_for_field(@user, :name) %>
     </div>
-    <div class="field">
-      <%= user.label :user_email %><br>
-      <%= user.text_field :email %>
+  </div>
+  <div class="form-group">
+    <%= user.label :user_email, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= user.text_field :email, class: 'form-control' %>
+      <%= errors_for_field(@user, :email) %>
     </div>
-    <div class="field">
-      <%= user.label :user_department %><br>
-      <%= user.autocomplete_field :department, autocomplete_user_department_users_path %>
+  </div>
+  <div class="form-group">
+    <%= user.label :user_department, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= user.autocomplete_field :department, autocomplete_user_department_users_path, class: 'form-control' %>
     </div>
-    <div class="field">
-      <%= user.label :user_mentor %><br>
+  </div>
+  <div class="form-group">
+    <%= user.label :user_mentor, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
       <%= user.hidden_field :mentor_id %>
-      <%= user.autocomplete_field :mentor, autocomplete_user_name_users_path, id_element: '#user_mentor_id' %>
-    </div><br><br>
-    <% if current_user.has_role? :account_owner %>
-      <div class="field">
-        <%= user.label :is_admin? %>
-        <%= user.check_box :admin %>
-      </div>
-    <% end %>
-    <div class="field">
-      <%= user.label :enabled? %>
-      <%= user.check_box :enabled %>
+      <%= user.autocomplete_field :mentor, autocomplete_user_name_users_path, id_element: '#user_mentor_id', class: 'form-control' %>
+      <%= errors_for_field(@user, :mentor) %>
     </div>
-    <div class="field">
-      <% user.fields_for(:tracks) do|user_track| %>
-        <% @tracks.each do |track| %>
-          <%= user_track.check_box :track %>
-        <% end %>
-      <% end %>
-    </div>
-    
-    
-    <div class="actions">
-      <%= user.submit %>
+  </div><br><br>
+  <% if current_user.has_role? :account_owner %>
+    <div class="form-group">
+      <%= user.label :is_admin?, class: 'col-sm-2 control-label' %>
+      <%= user.check_box :admin %>
     </div>
   <% end %>
-</div>
+  <div class="form-group">
+    <%= user.label :enabled?, class: 'col-sm-2 control-label' %>
+    <%= user.check_box :enabled %>
+  </div>
+  <div class="form-group">
+    <% user.fields_for(:tracks) do|user_track| %>
+    <% end %>
+  </div>
+  <div class="actions">
+    <div class="col-sm-2"></div>
+    <%= user.submit 'Create User', class: 'btn btn-default btn-lg' %>
+  </div>
+<% end %>
