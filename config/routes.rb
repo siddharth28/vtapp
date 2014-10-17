@@ -18,9 +18,7 @@ Rails.application.routes.draw do
           patch :enable, to: :toggle_enabled
           patch :disable, to: :toggle_enabled
           get :assign_track_reviewer
-          post :assign_track_reviewer
           get :remove_reviewer
-          delete :remove_reviewer
         end
         get :autocomplete_user_name, on: :collection
       end
