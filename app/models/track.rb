@@ -1,36 +1,47 @@
 class Track < ActiveRecord::Base
-  has_many :links
-  has_many :users, through: :links
+  resourcify
+  TRACK_ROLES = { track_owner: 'track_owner', track_reviewer: 'track_reviewer', track_runner: 'track_runner' }
+
+  attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
+
   belongs_to :company
+
+  after_create :assign_track_owner_role
 
   validates :name, uniqueness: { case_sensitive: false }, presence: true
   validates :references, presence: true
   validates :description, presence: true
   validates :instructions, presence: true
 
-  attr_accessor :owner_id
-
-  after_create :assign_track_owner_role
-
   def owner
-    users.with_role(:track_owner).first
+    User.with_role(:track_owner, self).first
   end
 
   def reviewer
-    users.with_role(:track_reviewer)
+    User.with_role(:track_reviewer, self)
+  end
+
+  def add_reviewer(user_id)
+    user = find_user(user_id)
+    user.add_role(:track_reviewer, self) if !(user.has_role?(:track_runner, self))
+    user
+  end
+
+  def remove_reviewer(user_id)
+    find_user(user_id).remove_role(:track_reviewer, self)
   end
 
   private
     def assign_track_owner_role
-      if users.include?(owner_id)
-        create_link(user_id, :track_owner)
+      if User.all.include?(owner_id)
+        user = find_user(owner_id)
+        user.add_role(:track_owner, self)
       else
-        create_link(company.owner, :track_owner)
+        company.owner.add_role(:track_owner, self)
       end
     end
 
-    def create_link(user, role)
-      role = Role.find_by(name: role)
-      links.create(user_id: user.id, role_id: role.id)
+    def find_user(user_id)
+      User.find(user_id)
     end
 end
