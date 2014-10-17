@@ -1,0 +1,43 @@
+<div class="track_form form-group col-md-8">
+  <h2>
+    Show <%= @track.name.to_s.humanize %>
+  </h2>
+
+  <%= form_for(:track, as: @track,  html: { method: :get }) do |track| %>
+
+    <%= render partial: 'errors', locals: { object_with_errors: @track } if @track.errors.any? %>
+
+    <div class="field">
+      <%= track.label :name %>
+      <%= track.text_field :name, autofocus: true, readonly: true %>
+    </div>
+
+    <div class="field">
+      <%= track.label :description %>
+      <%= track.text_area :description, readonly: true %>
+    </div>
+
+    <div class="field">
+      <%= track.label :instructions %>
+      <%= track.text_area :instructions, readonly: true %>
+    </div>
+
+    <div class="field">
+      <%= track.label :references %>
+      <%= track.text_area :references, readonly: true %>
+    </div>
+
+    <div class="field">
+      <%= track.label :track_owner %>
+      <%= track.text_field :owner, value: @track.owner.name, readonly: true%>
+    </div>
+
+    <div class="field">
+      <%= track.label :track_status %>
+      <%= track.check_box :enabled, readonly: true%>
+    </div>
+
+  <% end %>
+  <%= link_to 'Back', tracks_path(company: @track.company_id) %>
+
+</div>

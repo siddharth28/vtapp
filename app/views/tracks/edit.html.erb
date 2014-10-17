@@ -1,5 +1,9 @@
-<div class="form-group col-md-10">
-  <%= form_for(@track) do |track| %>
+<div class="track_form form-group col-md-8">
+  <h2>
+    Edit Track : <%= @track.name.to_s.humanize %>
+  </h2>
+
+  <%= form_for(:track, as: @track,  html: { method: :put }) do |track| %>
 
     <%= render partial: 'errors', locals: { object_with_errors: @track } if @track.errors.any? %>
 
@@ -25,8 +29,8 @@
 
     <div class="field">
       <%= track.label :track_owner %>
-      <%= track.autocomplete_field :owner, autocomplete_user_name_tracks_path, id_element: '#track_owner_id', value: '' %>
-      <%= track.hidden_field :owner_id %>
+      <%= track.autocomplete_field :owner, autocomplete_user_name_tracks_path, id_element: '#user_owner_id', value: @track.owner.name %>
+      <%= track.hidden_field :owner_id, value: :owner_email, class:"owner_email" %>
     </div>
 
     <% if (current_user.has_role?(:account_owner) || current_user.has_role?(:account_admin)) %>

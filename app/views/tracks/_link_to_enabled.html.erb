@@ -1,0 +1,5 @@
+<% if track.enabled %>
+  <%= link_to 'Enable', enable_track_path(track), remote: true, id: "track_#{ track.id }", data: { confirm: "Are you sure you want to Enable #{ track.name }?" }, method: :patch %>
+<% else %>
+  <%= link_to 'Disable', disable_track_path(track), remote: true, id: "track_#{ track.id }", data: { confirm: "Are you sure you want to Disable #{ track.name }?" }, method: :patch %>
+<% end %>

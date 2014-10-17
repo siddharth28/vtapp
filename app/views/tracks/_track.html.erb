@@ -1,0 +1,8 @@
+<td><%= link_to track.name, track %></td>
+<td><%= link_to track.owner.name, track %></td>
+<td>
+  <%= link_to 'Assign Track Reviewer', assign_track_reviewer_track_path(track) %>
+  <%= link_to 'Show', track %>
+  <%= link_to 'Edit', edit_track_path(track) %>
+  <%= render partial: 'link_to_enabled', locals: { track: track } %>
+</td>
