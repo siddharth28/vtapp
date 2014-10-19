@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   before_validation :set_random_password, on: :create
   #FIXME -> after_commit rspec remained
   after_commit :send_password_email, on: :create
-  after_save :check_admin
+  after_save :add_or_remove_admin_role
   after_initialize :set_admin
 
   def active_for_authentication?
@@ -106,7 +106,7 @@ class User < ActiveRecord::Base
       "#{ name } :#{ email }"
     end
 
-    def check_admin
+    def add_or_remove_admin_role
       admin ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
     end
     def set_admin
