@@ -59,6 +59,10 @@ class User < ActiveRecord::Base
     tracks.ids
   end
 
+  def mentor_name
+    mentor.name if mentor
+  end
+
   private
     def set_random_password
       self.password_confirmation = self.password = Devise.friendly_token.first(8)

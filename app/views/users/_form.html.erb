@@ -26,7 +26,7 @@
     <%= user.label :user_mentor, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
       <%= user.hidden_field :mentor_id %>
-      <%= user.autocomplete_field :mentor, autocomplete_user_name_users_path, id_element: '#user_mentor_id', class: 'form-control' %>
+      <%= user.autocomplete_field :mentor_name, autocomplete_user_name_users_path, id_element: '#user_mentor_id', class: 'form-control' %>
       <%= errors_for_field(@user, :mentor) %>
     </div>
   </div><br><br>
