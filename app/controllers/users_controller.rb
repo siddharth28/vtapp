@@ -12,10 +12,6 @@ class UsersController < ResourceController
   def create
     @user = current_user.company.users.build(user_params)
     if @user.save
-      params[:tracks][:track_ids].each do |track_id|
-        track = Track.find_by(id: track_id)
-        @user.add_role :track_runner, track if track
-      end
       redirect_to @user, notice: "user #{ @user.name } is successfully created."
     else
       render action: 'new'
@@ -23,6 +19,7 @@ class UsersController < ResourceController
   end
 
   def update
+    user_params[:track_ids] ||= []
     if @user.update(user_params)
       redirect_to @user, notice: "user #{ @user.name } is successfully updated."
     else
@@ -33,9 +30,9 @@ class UsersController < ResourceController
   private
     def user_params
       if current_user.has_role? :account_owner, :any
-        params.require(:user).permit(:name, :email, :department, :mentor_id, :admin, :enabled, :track_ids)
+        params.require(:user).permit(:name, :email, :department, :mentor_id, :admin, :enabled, track_ids: [])
       elsif current_user.has_role? :admin, :any
-        params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, :track_ids)
+        params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, track_ids: [])
       end
     end
     def get_autocomplete_items(parameters)

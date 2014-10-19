@@ -12,8 +12,7 @@ class Track < ActiveRecord::Base
   validates :references, presence: true
   validates :description, presence: true
   validates :instructions, presence: true
-  has_many :users, through: :roles, autosave: false
-  has_many :reviewers, -> { users.merge(User.with_role(:track_reviewer, self)) }
+  # has_many :users, through: :roles, autosave: false
 
   def owner
     User.with_role(:track_owner, self).first

@@ -48,6 +48,7 @@ describe UsersController do
     before do
       allow(user).to receive(:company).and_return(company)
       allow(company).to receive(:users).and_return(users)
+      allow(users).to receive(:eager_load).with(:roles).and_return(users)
       allow(users).to receive(:search).with('example').and_return(users)
       allow(users).to receive(:result).and_return(users)
       allow(users).to receive(:page).with(nil).and_return(users)
@@ -62,6 +63,7 @@ describe UsersController do
       after { send_request }
       it { expect(user).to receive(:company).and_return(company) }
       it { expect(company).to receive(:users).and_return(users) }
+      it { expect(users).to receive(:eager_load).with(:roles).and_return(users) }
       it { expect(users).to receive(:search).with('example').and_return(users) }
       it { expect(users).to receive(:result).and_return(users) }
       it { expect(users).to receive(:page).with(nil).and_return(users) }
@@ -83,6 +85,7 @@ describe UsersController do
 
   describe '#create' do
     before do
+      allow(controller).to receive(:user_params)
       allow(user).to receive(:company).and_return(company)
       allow(user).to receive(:has_role?).and_return(true)
       allow(company).to receive(:users).and_return(users)
@@ -93,12 +96,8 @@ describe UsersController do
     def send_request
       post :create, user: { name: 'Test User', email: 'test_email@email.com' }
     end
-    describe 'skip_load_resource' do
-      it { expect(assigns(:user)).to eq(user) }
-      after { send_request }
-    end
+
     describe 'expects to send' do
-      it { expect(controller).to receive(:check_mentor_field).and_return(true) }
       it { expect(controller).to receive(:user_params) }
       it { expect(user).to receive(:company).and_return(company) }
       it { expect(company).to receive(:users).and_return(users) }

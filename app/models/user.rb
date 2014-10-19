@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  ROLES = { super_admin: :super_admin, account_owner: :account_owner, account_admin: :account_admin }
+  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
@@ -7,7 +7,6 @@ class User < ActiveRecord::Base
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   belongs_to :company
   belongs_to :mentor, class_name: User
-  # has_many :tracks, ->{ joins(:roles).tracks }
   has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
 
   #FIXME -> Write rspec of this line.
@@ -44,6 +43,22 @@ class User < ActiveRecord::Base
     end
   end
 
+  def track_ids=(track_list)
+    track_list.pop
+    track_list.map!(&:to_i)
+    if track_ids != track_list
+      debugger
+      remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
+      add_track_objects = track_list.reject { |track| track_ids.include? track }.map { |track| Track.find_by(id: track) }
+      add_track_objects.each { |track| add_role :track_runner, track }
+      remove_track_objects.each { |track| remove_role :track_runner, track }
+    end
+  end
+
+  def track_ids
+    tracks.ids
+  end
+
   private
     def set_random_password
       self.password_confirmation = self.password = Devise.friendly_token.first(8)
@@ -69,7 +84,7 @@ class User < ActiveRecord::Base
     ## So these actions can be performed only from the console. 
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
-      if role.name == ROLES[:account_owner] && !Company.with_role(ROLES[:account_owner], company)
+      if role.name == ROLES[:account_owner] && company.owner.first
         #FIXED
         #FIXME_AB: WE can avoid this nested if statement.
         raise 'There can be only one account owner'
@@ -88,7 +103,7 @@ class User < ActiveRecord::Base
     end
 
     def check_admin
-      admin ? remove_role(ROLES[:account_admin], company) : add_role(ROLES[:account_admin], company)
+      admin ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
     end
     def set_admin
       account_admin? ? self.admin = true : self.admin = false

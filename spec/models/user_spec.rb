@@ -2,41 +2,37 @@ require 'rails_helper'
 
 describe User do
   let(:company) { create(:company) }
-  let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
+  let(:mentor) { build(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
   let(:user) { build(:user, mentor_id: mentor.id, company: company) }
-
+  #FIXED
   #FIXME -> Check constant value.
   describe 'constants' do
     it { User.should have_constant(:ROLES) }
+    it { expect(User::ROLES[:super_admin]).to eql('super_admin') }
+    it { expect(User::ROLES[:account_owner]).to eql('account_owner') }
+    it { expect(User::ROLES[:account_admin]).to eql('account_admin') }
   end
 
   describe 'associations' do
+    #FIXED
     #FIXME -> Check class_name also
     describe 'has_many association' do
-      it { should have_many(:mentees).with_foreign_key(:mentor_id).dependent(:restrict_with_error) }
+      it { should have_many(:mentees).class_name(User).with_foreign_key(:mentor_id).dependent(:restrict_with_error) }
     end
 
     describe 'belongs_to' do
       it { should belong_to(:company) }
-      
+      #FIXED
       #FIXME To check class_name there is a should_a matcher.
-      it { should belong_to(:mentor) }
-      describe 'class_name in belongs_to mentor' do
-        it { expect(mentor.class).to eql(User) }
-      end
+      it { should belong_to(:mentor).class_name(User) }
     end
   end
 
   describe 'validation' do
     it { should validate_presence_of(:company) }
     it { should validate_presence_of(:name) }
-
+    #FIXED
     #FIXME -> Why this context ?
-    context 'not present' do
-      let(:user) { build(:user) }
-      before { user.add_role(:track_owner) }
-      it { expect(user.valid?).to eql(false) }
-    end
     #FIXED
     #FIXME Change rspec as discussed.
     describe 'mentor validation' do
@@ -86,24 +82,31 @@ describe User do
         it { expect { user.destroy }.not_to raise_error }
       end
     end
-    describe 'after_create #make_admin' do
+    describe 'after_create #check_admin' do
       let(:user) { build(:user, company: company)}
       context 'is admin' do
         before { user.admin = true }
-        it { expect(user).to receive(:make_admin) }
+        it { expect(user).to receive(:check_admin) }
         after { user.save! }
       end
       context 'not an admin' do
         before { user.admin = false }
-        it { expect(user).not_to receive(:make_admin) }
+        it { expect(user).to receive(:check_admin) }
+        it { expect(user.account_admin?).to eql(false)}
         after { user.save! }
       end
-      describe '#make_admin' do
+    end
+
+    describe 'after_initialize#check_admin' do
+      let(:user) { create(:user, company: company) }
+      context 'when admin' do
         before do
-          user.admin = true
-          user.save
+          user.add_role(:account_admin, user.company)
         end
-        it { expect(user.has_role? :account_admin).to eql(true) }
+        it { expect(User.find_by(id: user.id).admin).to eql(true) }
+      end
+      context 'when not an admin' do
+        it { expect(User.find_by(id: user.id).admin).to eql(false) }
       end
     end
   end
@@ -188,18 +191,18 @@ describe User do
 
     describe '#ensure_only_one_account_owner' do
       let(:user) { create(:user, company: company) }
-      it { expect { user.add_role(:account_owner) }.to raise_error("There can be only one account owner") }
+      it { expect { user.add_role(:account_owner, company) }.to raise_error("There can be only one account owner") }
     end
 
     #FIXED
     #FIXME Check error_message also
     describe '#ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
-      it { expect { company.owner.first.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
+      it { expect { company.owner.first.remove_role :account_owner, company }.to raise_error('Cannot remove account_owner role') }
     end
 
     describe '#display_user_details' do
-      it { expect(user.send(:display_user_details)).to eql("#{ user.name } :#{ user.email }") }
+      it { expect(user.send(:display_user_details)).to eql("#{ user.name } : #{ user.email }") }
     end
   end
 end

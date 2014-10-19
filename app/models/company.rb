@@ -10,7 +10,7 @@ class Company < ActiveRecord::Base
 
   validates :name, presence: true
 
-  validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
+  validates :name, uniqueness: true, allow_blank: true
 
   #FIXME_AB: Don't hard code role use ROLES array/hash constant
 
@@ -33,6 +33,6 @@ class Company < ActiveRecord::Base
       #FIXME_AB: Don't hard code role use ROLES array/hash constant
     end
     def make_owner
-      @owner.add_role(ROLES[:account_owner], self)
+      @owner.add_role(ROLES[:account_owner], self) if @owner
     end
 end

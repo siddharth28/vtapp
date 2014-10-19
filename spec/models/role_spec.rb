@@ -11,13 +11,4 @@ describe Role do
       it { should belong_to(:resource) }
     end
   end
-
-  describe 'scope' do
-    describe '#with_name' do
-      let(:super_admin_role) { create(:super_admin_role) }
-      let(:account_owner_role) { create(:account_owner_role) }
-      it { expect(Role.with_name(:super_admin)).to eq([super_admin_role]) }
-      it { expect(Role.with_name(:account_owner)).to eq([account_owner_role]) }
-    end
-  end
 end

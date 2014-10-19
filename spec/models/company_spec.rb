@@ -24,7 +24,7 @@ describe Company do
 
   describe 'instance methods' do
     describe '#owner' do
-      it { expect(company.owner.all? { |user| user.has_role?(:account_owner) }).to eql(true)}
+      it { expect(company.owner.all? { |user| user.has_role?(:account_owner, company) }).to eql(true)}
       it { expect(company.owner.first.name).to eql('Test Owner')}
     end
 
@@ -64,7 +64,7 @@ describe Company do
       it { expect(Company.load_with_owners.include?(company)).to eq(true) }
 
       context 'user owner' do
-        it { expect(Company.eager_load(:users).find(company).users.all? { |user| user.has_role?(:account_owner) }).to eq(true) }
+        it { expect(Company.eager_load(:users).find(company).users.all? { |user| user.has_role?(:account_owner, company) }).to eq(true) }
       end
 
       context 'user not owner' do
