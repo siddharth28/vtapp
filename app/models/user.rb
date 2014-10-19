@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   belongs_to :mentor, class_name: User
   has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
 
+  #FIXED
   #FIXME -> Write rspec of this line.
   attr_readonly :email, :company_id
   attr_accessor :admin

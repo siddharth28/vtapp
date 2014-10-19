@@ -66,6 +66,12 @@ describe User do
       end
 
     end
+
+    describe 'attr_readonly' do
+      let(:user) { create(:user, company: company) }
+      it { expect{ user.update_attribute(:email, 'new_email@email.com')}.to raise_error('email is marked as readonly') }
+      it { expect{ user.update_attribute(:company_id, 9239)}.to raise_error('company_id is marked as readonly') }
+    end
   end
 
   describe 'callbacks' do
@@ -223,8 +229,44 @@ describe User do
           end
         end
       end
+
+    end
+    describe '#track_ids=' do
+      let(:track) { create(:track) }
+
+      context 'assign tracks' do
+        let(:track_list) { [track.id] }
+
+        before { user.track_ids = track_list }
+
+        it { expect(user.tracks.include?(track)).to eql(true) }
+      end
+      context 'remove tracks' do
+        let(:track_list) { [] }
+        before do
+          user.add_role(:track_runner, track)
+          user.track_ids = track_list
+        end
+        it { expect(user.tracks.include?(track)).to eql(false) }
+      end
     end
 
+    describe '#track_ids' do
+      it { expect(user.track_ids).to eql(user.tracks.ids) }
+    end
+
+    describe '#mentor_name' do
+      let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
+      let(:user) { build(:user, mentor_id: mentor.id, company: company) }
+      context 'mentor present' do
+        it { expect(user.mentor_name).to eql(mentor.name) }
+      end
+
+      context 'mentor not present' do
+        it { expect(mentor.mentor_name).to eql(nil) }
+      end
+
+    end
     #FIXED
     #FIXME Change as discussed.
     describe '#send_password_email' do
@@ -237,6 +279,7 @@ describe User do
       end
 
       it { expect(UserMailer).to receive(:delay).and_return(delayed_job) }
+      #FIXED
       #FIXME -> Test with arguments
       it { expect(delayed_job).to receive(:welcome_email).with(user.email, user.password).and_return(delayed_job) }
 
@@ -261,4 +304,5 @@ describe User do
       it { expect(user.send(:display_user_details)).to eql("#{ user.name } : #{ user.email }") }
     end
   end
+
 end

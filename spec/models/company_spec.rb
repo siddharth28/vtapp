@@ -30,18 +30,22 @@ describe Company do
 
     describe '#build_owner' do
       let(:company) { build(:company) }
+
       before { company.save }
+
       it { expect(company.owner.first.name).to eql('Test Owner') }
     end
 
     describe 'attr_accessor' do
       let(:company) { build(:company) }
+
       describe '#owner_email' do
         it { expect(company.owner_email).to eql('owner_email@owner.com') }
       end
 
       describe '#owner_email=' do
         before { company.owner_email= 'Changed Email' }
+
         it { expect(company.owner_email).to eql('Changed Email') }
       end
 
@@ -51,6 +55,7 @@ describe Company do
 
       describe '#owner_name=' do
         before { company.owner_name = 'Changed Name' }
+
         it { expect(company.owner_name).to eq('Changed Name')  }
       end
     end
