@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   attr_accessor :admin
 
   validates :mentor, presence: true, if: :mentor_id?
+  #FIXED
   #FIXME -> Write rspec of this validation.
   validates :company, presence: true, if: -> { !super_admin? }
   validates :name, presence: true
@@ -47,7 +48,6 @@ class User < ActiveRecord::Base
     track_list.pop
     track_list.map!(&:to_i)
     if track_ids != track_list
-      debugger
       remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
       add_track_objects = track_list.reject { |track| track_ids.include? track }.map { |track| Track.find_by(id: track) }
       add_track_objects.each { |track| add_role :track_runner, track }

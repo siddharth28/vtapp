@@ -30,11 +30,17 @@ describe User do
 
   describe 'validation' do
     it { should validate_presence_of(:company) }
+    context 'user is a super_admin' do
+      let(:user) { build(:user) }
+      before { user.add_role(:super_admin) }
+      it { expect(user.valid?).to eql(true) }
+    end
     it { should validate_presence_of(:name) }
     #FIXED
     #FIXME -> Why this context ?
     #FIXED
     #FIXME Change rspec as discussed.
+
     describe 'mentor validation' do
 
       context 'mentor not present' do
@@ -45,11 +51,12 @@ describe User do
         let(:user) { build(:user, mentor_id: mentor.id, company: company) }
         it { expect(user.valid?).to eql(true) }
       end
-
+      #FIXED
       #FIXME -> Also check error message.
       context 'invalid mentor present' do
         let(:user) { build(:user, mentor_id: 3920220, company: company) }
-        it { expect { user.valid? }.to change{ user.errors[:mentor].present? }.from(false).to(true) }
+        before { user.valid? }
+        it { expect(user.errors[:mentor].include?("can't be blank")).to eql(true) }
       end
 
     end
@@ -185,7 +192,7 @@ describe User do
       end
       it { expect(UserMailer).to receive(:delay).and_return(delayed_job) }
       #FIXME -> Test with arguments
-      it { expect(delayed_job).to receive(:welcome_email).and_return(delayed_job) }
+      it { expect(delayed_job).to receive(:welcome_email).with(user.email, user.password).and_return(delayed_job) }
       after { user.send(:send_password_email) }
     end
 
