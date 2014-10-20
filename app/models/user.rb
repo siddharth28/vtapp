@@ -13,7 +13,6 @@ class User < ActiveRecord::Base
   #FIXED
   #FIXME -> Write rspec of this line.
   attr_readonly :email, :company_id
-  attr_accessor :admin
 
   validates :mentor, presence: true, if: :mentor_id?
   #FIXED
@@ -29,8 +28,7 @@ class User < ActiveRecord::Base
   before_validation :set_random_password, on: :create
   #FIXME -> after_commit rspec remained
   after_commit :send_password_email, on: :create
-  after_save :add_or_remove_admin_role
-  after_initialize :set_admin
+
 
   def active_for_authentication?
     if super_admin?
@@ -47,8 +45,6 @@ class User < ActiveRecord::Base
   end
 
   def track_ids=(track_list)
-    #FIXME : Do not leave debugger in code
-    debugger
     track_list.map!(&:to_i)
     #FIXME : This comparison is not correct, arrays should not compared like this
     if track_ids != track_list
@@ -67,7 +63,12 @@ class User < ActiveRecord::Base
     #TIP : we can use mentor.try(:name) and can eliminate if mentor
     mentor.name if mentor
   end
-
+  def admin
+    account_admin?
+  end
+  def admin=(value)
+    value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
+  end
   private
     def set_random_password
       self.password_confirmation = self.password = Devise.friendly_token.first(8)
@@ -106,16 +107,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    #FIXME self is not required. Also, write rspec of this method.
-
-    def add_or_remove_admin_role
-      admin ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
-    end
-    def set_admin
-      #FIXME : self.admin = account_admin?. Do not repeat this 'if true return true' mistake
-      account_admin? ? self.admin = true : self.admin = false
-    end
     def display_user_details
-      "#{ self.name } : #{ self.email }"
+      "#{ name } : #{ email }"
     end
 end
