@@ -112,6 +112,6 @@ class User < ActiveRecord::Base
       account_admin? ? self.admin = true : self.admin = false
     end
     def display_user_details
-      "#{ self.name } : #{ self.email }"
+      "#{ name } : #{ email }"
     end
 end

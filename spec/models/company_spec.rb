@@ -24,15 +24,13 @@ describe Company do
 
   describe 'instance methods' do
     describe '#owner' do
-      it { expect(company.owner.all? { |user| user.has_role?(:account_owner, company) }).to eql(true)}
+      it { expect(company.owner.first.has_role?(:account_owner, company)).to eql(true)}
       it { expect(company.owner.first.name).to eql('Test Owner')}
     end
 
     describe '#build_owner' do
       let(:company) { build(:company) }
-
       before { company.save }
-
       it { expect(company.owner.first.name).to eql('Test Owner') }
     end
 

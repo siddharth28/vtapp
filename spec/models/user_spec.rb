@@ -169,6 +169,7 @@ describe User do
 
         it { expect(company.owner.first.account_owner?).to eql(true) }
       end
+
       context 'not an account_owner' do
         it { expect(user.account_owner?).to eql(false) }
       end
@@ -232,10 +233,10 @@ describe User do
 
     end
     describe '#track_ids=' do
-      let(:track) { create(:track) }
-
+      let(:track) { create(:track, company: company) }
+      let(:user) { create(:user, company: company) }
       context 'assign tracks' do
-        let(:track_list) { [track.id] }
+        let(:track_list) { [track.id, '' ] }
 
         before { user.track_ids = track_list }
 
@@ -297,12 +298,11 @@ describe User do
     describe '#ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
 
-      it { expect { company.owner.first.remove_role :account_owner, company }.to raise_error('Cannot remove account_owner role') }
+      it { expect { company.owner.first.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
     end
 
     describe '#display_user_details' do
       it { expect(user.send(:display_user_details)).to eql("#{ user.name } : #{ user.email }") }
     end
   end
-
 end

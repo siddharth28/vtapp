@@ -26,7 +26,7 @@ describe Ability do
       it{ expect(ability).not_to be_able_to(:manage, User) }
     end
     describe 'account_owner abilities' do
-      let(:ability) { Ability.new(company.owner.first) }
+      let(:ability) { Ability.new(company.owner) }
       it{ expect(ability).to be_able_to(:manage, Track) }
       it{ expect(ability).not_to be_able_to(:manage, Company) }
     end

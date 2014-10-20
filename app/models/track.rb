@@ -15,16 +15,19 @@ class Track < ActiveRecord::Base
   # has_many :users, through: :roles, autosave: false
 
   def owner
-    User.with_role(:track_owner, self).first
+    company.users.with_role(:track_owner, self).first
   end
 
   def reviewer
-    User.with_role(:track_reviewer, self)
+
+    company.users.with_role(:track_reviewer, self)
   end
 
   def add_reviewer(user_id)
     user = find_user(user_id)
-    user.add_role(:track_reviewer, self) if !(user.has_role?(:track_runner, self))
+    if !(user.has_role?(:track_runner, self))
+      user.add_role(:track_reviewer, self)
+    end
     user
   end
 
@@ -34,7 +37,7 @@ class Track < ActiveRecord::Base
 
   private
     def assign_track_owner_role
-      if User.all.include?(owner_id)
+      if company.users.ids.include?(owner_id)
         user = find_user(owner_id)
         user.add_role(:track_owner, self)
       else
@@ -43,6 +46,6 @@ class Track < ActiveRecord::Base
     end
 
     def find_user(user_id)
-      User.find(user_id)
+      company.users.find(user_id)
     end
 end
