@@ -46,6 +46,6 @@ class Track < ActiveRecord::Base
     end
 
     def find_user(user_id)
-      company.users.find(user_id)
+      company.users.find_by(id: user_id)
     end
 end
