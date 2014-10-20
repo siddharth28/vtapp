@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
+  TRACK_ROLES = { track_runner: 'track_runner' }
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
@@ -51,8 +52,8 @@ class User < ActiveRecord::Base
     if track_ids != track_list
       remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
       add_track_objects = track_list.reject { |track| track_ids.include? track }.map { |track| Track.find_by(id: track) }
-      add_track_objects.each { |track| add_role :track_runner, track }
-      remove_track_objects.each { |track| remove_role :track_runner, track }
+      add_track_objects.each { |track| add_role TRACK_ROLES[:track_runner], track }
+      remove_track_objects.each { |track| remove_role TRACK_ROLES[:track_runner], track }
     end
   end
 
@@ -103,9 +104,6 @@ class User < ActiveRecord::Base
     end
 
     #FIXME self is not required. Also, write rspec of this method.
-    def display_track_owner_details
-      "#{ name } :#{ email }"
-    end
 
     def add_or_remove_admin_role
       admin ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
