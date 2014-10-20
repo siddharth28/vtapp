@@ -17,6 +17,10 @@ class TracksController < ResourceController
     end
   end
 
+  def toggle_enabled
+    @track.toggle!(:enabled)
+  end
+
   def reviewers
     @company, @track = set_data
   end

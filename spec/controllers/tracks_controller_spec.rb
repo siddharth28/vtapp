@@ -8,7 +8,6 @@ describe TracksController do
   let(:tracks) { double(ActiveRecord::Relation) }
   let(:user) { mock_model(User) }
 
-
   before do
     allow(controller).to receive(:current_user).and_return(current_user)
     allow(controller).to receive(:current_ability).and_return(ability)
@@ -128,6 +127,30 @@ describe TracksController do
     end
   end
 
+  describe '#toggle_enabled' do
+    before do
+      allow(Track).to receive(:find).and_return(track)
+      allow(track).to receive(:toggle!).and_return(true)
+    end
+
+    def send_request
+      xhr :patch, :toggle_enabled, id: track.id
+    end
+
+    describe 'expects to receive' do
+      after { send_request }
+      it { expect(track).to receive(:toggle!).and_return(true) }
+    end
+
+    describe 'response' do
+      before { send_request }
+
+      it { expect(response).to render_template :toggle_enabled }
+      it { expect(response).to have_http_status(200) }
+    end
+  end
+
+
   describe '#assign_reviewer' do
     before do
       allow(controller).to receive(:set_data).and_return([company, track])
@@ -138,6 +161,11 @@ describe TracksController do
 
     def send_request
       xhr :patch, :assign_reviewer, track: { reviewer_name: 'abc', reviewer_id: "123" }, id: track.id, format: :js
+    end
+
+    describe 'expects to receive' do
+      after { send_request }
+      it { expect(track).to receive(:add_reviewer).with("123").and_return(true) }
     end
 
     describe 'assigns' do
@@ -162,6 +190,11 @@ describe TracksController do
 
     def send_request
       xhr :get, :remove_reviewer, { format: "123", id: track.id }, format: :js
+    end
+
+    describe 'expects to receive' do
+      after { send_request }
+      it { expect(track).to receive(:remove_reviewer).with("123").and_return(true) }
     end
 
     describe 'assigns' do
