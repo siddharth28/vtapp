@@ -1,6 +1,8 @@
 class Company < ActiveRecord::Base
   resourcify
   ROLES = { account_owner: :account_owner }
+
+  #FIXME : group associations, validations, accessors, callbacks with each other
   has_many :users, dependent: :restrict_with_exception
   has_many :tracks, dependent: :restrict_with_exception
   attr_accessor :owner_email, :owner_name

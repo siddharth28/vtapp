@@ -52,6 +52,7 @@ class TracksController < ResourceController
     end
 
     def get_autocomplete_items(parameters)
+      #FIXME : create scope for company
       super(parameters).where(company_id: current_user.company_id)
     end
 end

@@ -24,6 +24,7 @@ class Track < ActiveRecord::Base
 
   def add_reviewer(user_id)
     user = find_user(user_id)
+    #TIP : we can also use unless here instead of 'if !'
     user.add_role(:track_reviewer, self) if !(user.has_role?(:track_runner, self))
     user
   end

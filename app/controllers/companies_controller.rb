@@ -10,6 +10,7 @@ class CompaniesController < ResourceController
     @companies = @search.result.page(params[:page]).per(20)
   end
   def new
+    #FIXME : I think this is not the part of new action, we can move this to before_action
     @company.users.build
   end
 

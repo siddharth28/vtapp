@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_filter :configure_permitted_parameters, if: :devise_controller?
 
+  #FIXME : Seperate methods for before action (do not use blocks unless required)
   #SEE Issue https://github.com/ryanb/cancan/issues/835
   before_action do
     resource = controller_name.singularize.to_sym
