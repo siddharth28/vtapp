@@ -6,6 +6,10 @@ describe Track do
   let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
   let(:user) { build(:user, mentor_id: mentor.id, company: company) }
 
+  describe 'constants' do
+    it { Track.should have_constant(:TRACK_ROLES) }
+  end
+
   describe 'validation' do
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:references) }
@@ -14,7 +18,6 @@ describe Track do
 
     describe 'uniqueness' do
       let(:company) { create(:company) }
-      let(:track) { build(:track) }
       let(:track_owner_user) { create(:track_owner_user, company: company) }
       before do
         track_owner_user
@@ -32,45 +35,140 @@ describe Track do
   end
 
   describe 'attr_accessor' do
-    describe '#owner_email' do
-      it { expect(track.owner_email).to eql('track_owner_email@owner.com') }
+    let(:company) { create(:company) }
+    let(:user) { create(:new_user, company: company)}
+    let(:track) { build(:track) }
+    describe '#owner_id' do
+      it { expect(track.owner_id).to eql(11111) }
     end
 
-    describe '#owner_email=' do
-      before { track.owner_email= 'Changed Email' }
-      it { expect(track.owner_email).to eql('Changed Email') }
+    describe '#owner_id=' do
+      before { track.owner_id = 9 }
+      it { expect(track.owner_id).to eql(9) }
     end
 
     describe '#owner_name' do
-      it { expect(track.owner_name).to eql('Test Owner') }
+      it { expect(track.owner_name).to eql('Owner') }
     end
 
     describe '#owner_name=' do
-      before { track.owner_name = 'Changed Name' }
-      it { expect(track.owner_name).to eq('Changed Name')  }
+      before { track.owner_name = 'Owner1' }
+      it { expect(track.owner_name).to eql('Owner1') }
+    end
+
+    describe '#reviewer_id' do
+      it { expect(track.reviewer_id).to eql(99999) }
+    end
+
+    describe '#reviewer_id=' do
+      before { track.reviewer_id = 9 }
+      it { expect(track.reviewer_id).to eq(9)  }
+    end
+
+    describe '#reviewer_name' do
+      it { expect(track.reviewer_name).to eql('Reviewer') }
+    end
+
+    describe '#reviewer_name=' do
+      before { track.reviewer_name = 'Reviewer1' }
+      it { expect(track.reviewer_name).to eq('Reviewer1')  }
     end
   end
 
-  describe '#assign_track_owner_role' do
-    let(:company) { create(:company) }
-    let(:track_without_owner) { build(:track_without_owner) }
-    let(:track) { build(:track) }
-    let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
-    let(:user) { build(:user, company: company) }
+  describe '#instance methods' do
+    describe '#assign_track_owner_role' do
+      let(:company) { create(:company) }
+      let(:track_without_owner) { build(:track_without_owner) }
+      let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
+      let(:user) { build(:user, company: company) }
 
-    context 'track_owner_given' do
-      before do
-        track.company_id = company.id
+      context 'track_owner_given' do
+        before { track.company_id = company.id }
+        it { expect(track.owner_id).to eql(11111) }
       end
-      it { expect(track.owner_email).to eql('track_owner_email@owner.com') }
+
+      context 'track_owner_not_given' do
+        before do
+          track_without_owner.company_id = company.id
+          track_without_owner.owner_id = 123456
+          track_without_owner.save
+        end
+        it { expect(track_without_owner.owner.name).to eql('Test Owner') }
+      end
     end
 
-    context 'track_owner_not_given' do
-      before do
-        track_without_owner.company_id = company.id
-        track_without_owner.save
+    describe '#add reviewer' do
+      let(:company) { create(:company) }
+      let(:user) { create(:user, company: company)}
+      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
+      let(:user2) { create(:user, email: 'user2@gmail.com', company: company)}
+
+      context 'user having no role initially' do
+        before do
+          track.add_reviewer(user.id)
+        end
+
+        it { expect(track.reviewer.ids.include?(user.id)).to eql(true) }
       end
-      it { expect(track_without_owner.owner.first.email).to eql('owner_email@owner.com') }
+
+      context 'user with track runner role initially' do
+        before do
+          user2.add_role(:track_runner, track)
+          track.add_reviewer(user2.id)
+        end
+
+        it { expect(track.reviewer.ids.include?(user2.id)).not_to eql(true) }
+      end
+    end
+
+    describe '#remove reviewer' do
+      let(:company) { create(:company) }
+      let(:user) { create(:user, company: company)}
+      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
+
+      before do
+        user.add_role(:track_reviewer, track)
+        track.remove_reviewer(user.id)
+      end
+
+      #example for find user
+      it { expect(track.send(:find_user, user.id)).to eql(user) }
+      it { expect(track.reviewer.ids.include?(user.id)).not_to eql(true) }
+    end
+
+
+    describe '#owner' do
+      let(:company) { create(:company) }
+      let(:user) { create(:user, company: company)}
+      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
+      let(:user2) { create(:user, email: 'user2@gmail.com', company: company)}
+
+      it { expect(track.owner).to eql(user) }
+      it { expect(track.owner).not_to eql(user2) }
+    end
+
+    describe '#reviewer' do
+      let(:company) { create(:company) }
+      let(:user) { create(:user, company: company)}
+      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
+      let(:user2) { create(:user, email: 'user2@gmail.com', company: company)}
+
+      context 'user track reviewer' do
+        before do
+          user.add_role(:track_reviewer, track)
+        end
+
+        it { expect(track.reviewer.ids.include?(user.id)).to eql(true) }
+      end
+
+      context 'user track runner' do
+        before do
+          user2.add_role(:track_runner, track)
+          track.add_reviewer(user2.id)
+        end
+
+        it { expect(track.reviewer.ids.include?(user2.id)).not_to eql(true) }
+      end
     end
   end
 end

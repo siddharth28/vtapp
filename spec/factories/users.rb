@@ -12,4 +12,11 @@ FactoryGirl.define do
     password 'please123'
     enabled true
   end
+
+  factory :new_user, class: 'User' do
+    name 'New User'
+    email 'new_user_email@owner.com'
+    password 'please123'
+    enabled true
+  end
 end

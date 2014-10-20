@@ -75,7 +75,7 @@ describe User do
       end
 
       context 'when account_owner' do
-        it { expect { company.owner.first.destroy }.to raise_error("Can't delete Account Owner") }
+        it { expect { company.owner.destroy }.to raise_error("Can't delete Account Owner") }
       end
 
       context 'neither super_admin nor account_owner' do
@@ -111,7 +111,7 @@ describe User do
       context 'is an account_owner' do
         let(:company) { create(:company) }
         let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
-        it { expect(company.owner.first.account_owner?).to eql(true) }
+        it { expect(company.owner.account_owner?).to eql(true) }
       end
       context 'not an account_owner' do
         it { expect(user.account_owner?).to eql(false) }
@@ -181,11 +181,11 @@ describe User do
     #FIXME Check error_message also
     describe '#ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
-      it { expect { company.owner.first.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
+      it { expect { company.owner.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
     end
 
     describe '#display_user_details' do
-      it { expect(user.send(:display_user_details)).to eql("#{ user.name } :#{ user.email }") }
+      it { expect(user.send(:display_user_details)).to eql("#{ user.name } : #{ user.email }") }
     end
   end
 end
