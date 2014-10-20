@@ -105,43 +105,6 @@ describe User do
         it { expect { user.destroy }.not_to raise_error }
       end
     end
-    describe 'after_save #add_or_remove_admin_role' do
-      let(:user) { build(:user, company: company) }
-
-      context 'is admin' do
-        before { user.admin = true }
-
-        it { expect(user).to receive(:add_or_remove_admin_role) }
-
-        after { user.save }
-      end
-      context 'not an admin' do
-        before { user.admin = false }
-
-        it { expect(user).to receive(:add_or_remove_admin_role) }
-        it { expect(user.account_admin?).to eql(false)}
-
-        after { user.save }
-      end
-    end
-
-    describe 'after_initialize#set_admin' do
-
-      let(:user) { create(:user, company: company) }
-
-      context 'when admin' do
-        before do
-          user.add_role(:account_admin, user.company)
-        end
-
-        it { expect(User.find_by(id: user.id).admin).to eql(true) }
-      end
-
-      context 'when not an admin' do
-        it { expect(User.find_by(id: user.id).admin).to eql(false) }
-      end
-
-    end
 
   end
 
@@ -253,6 +216,15 @@ describe User do
 
     describe '#track_ids' do
       it { expect(user.track_ids).to eql(user.tracks.ids) }
+    end
+
+    describe '#admin' do
+      it { expect(user.admin).to eql(user.account_admin?) }
+    end
+
+    describe '#admin=' do
+      before { user.admin = '1' }
+      it { expect(user.has_role?(:account_admin, user.company)).to eql(true) }
     end
 
     describe '#mentor_name' do
