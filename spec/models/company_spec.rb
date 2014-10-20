@@ -17,7 +17,7 @@ describe Company do
   describe 'callbacks' do
     describe 'after_create' do
       describe 'build_owner' do
-        it { expect(company.owner).not_to eql(nil) }
+        it { expect(company.owner.first).not_to eql(nil) }
       end
     end
   end
