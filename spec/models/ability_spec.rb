@@ -15,20 +15,20 @@ describe Ability do
         user.instance_variable_set(:@r_map, {})
         user.add_role(:super_admin)
       end
-      it{ expect(ability).to be_able_to(:manage, user) }
-      it{ expect(ability).to be_able_to(:manage, Company) }
-      it{ expect(ability).not_to be_able_to(:manage, User) }
-      it{ expect(ability).not_to be_able_to(:manage, Track) }
+      it { expect(ability).to be_able_to(:manage, user) }
+      it { expect(ability).to be_able_to(:manage, Company) }
+      it { expect(ability).not_to be_able_to(:manage, User) }
+      it { expect(ability).not_to be_able_to(:manage, Track) }
     end
     describe 'Normal user abilities' do
-      it{ expect(ability).to be_able_to(:manage, user) }
-      it{ expect(ability).not_to be_able_to(:manage, Company) }
-      it{ expect(ability).not_to be_able_to(:manage, User) }
+      it { expect(ability).to be_able_to(:manage, user) }
+      it { expect(ability).not_to be_able_to(:manage, Company) }
+      it { expect(ability).not_to be_able_to(:manage, User) }
     end
     describe 'account_owner abilities' do
-      let(:ability) { Ability.new(company.owner) }
-      it{ expect(ability).to be_able_to(:manage, Track) }
-      it{ expect(ability).not_to be_able_to(:manage, Company) }
+      let(:ability) { Ability.new(company.owner.first) }
+      it { expect(ability).to be_able_to(:manage, Track) }
+      it { expect(ability).to be_able_to(:manage, User) }
     end
   end
 end
