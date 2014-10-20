@@ -58,7 +58,7 @@ class User < ActiveRecord::Base
   end
 
   def track_ids
-    tracks.ids
+    self.persisted? ? Track.with_role(TRACK_ROLES[:track_runner], self).ids : [] 
   end
 
   def mentor_name
