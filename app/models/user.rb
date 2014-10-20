@@ -80,6 +80,6 @@ class User < ActiveRecord::Base
     end
 
     def display_user_details
-      "#{ self.name } : #{ self.email }"
+      "#{ name } : #{ email }"
     end
 end
