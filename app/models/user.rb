@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
   end
 
   def track_ids=(track_list)
-    track_list.pop
+    debugger
     track_list.map!(&:to_i)
     if track_ids != track_list
       remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }

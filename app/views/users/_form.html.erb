@@ -41,8 +41,12 @@
     <%= user.check_box :enabled %>
   </div>
   <div class="form-group">
-    <%= user.label :tracks, class: 'col-sm-2 control-label' %>
-    <%= user.collection_check_boxes :track_ids, current_user.company.tracks, :id, :name %>
+    <div><%= user.label :tracks, class: 'control-label' %></div>
+    <%= user.collection_check_boxes :track_ids, current_user.company.tracks, :id, :name do |b| %>
+    <div class="track_check_box">
+      <%= b.label { b.check_box + b.text } %>
+    </div>
+    <% end %>
   </div>
   <div class="actions">
     <div class="col-sm-2"></div>

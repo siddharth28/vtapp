@@ -86,6 +86,7 @@ describe UsersController do
   describe '#create' do
     before do
       allow(controller).to receive(:user_params)
+      allow(controller).to receive(:remove_empty_element_multiple_select)
       allow(user).to receive(:company).and_return(company)
       allow(user).to receive(:has_role?).and_return(true)
       allow(company).to receive(:users).and_return(users)
@@ -98,6 +99,7 @@ describe UsersController do
     end
 
     describe 'expects to send' do
+      it { expect(controller).to receive(:remove_empty_element_multiple_select) }
       it { expect(controller).to receive(:user_params) }
       it { expect(user).to receive(:company).and_return(company) }
       it { expect(company).to receive(:users).and_return(users) }
@@ -134,6 +136,7 @@ describe UsersController do
 
   describe '#update' do
     before do
+      allow(controller).to receive(:remove_empty_element_multiple_select)
       allow(User).to receive(:find).and_return(user)
       allow(user).to receive(:update).and_return(true)
       allow(user).to receive(:has_role?).and_return(true)

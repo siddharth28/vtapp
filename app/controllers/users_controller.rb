@@ -1,6 +1,7 @@
 class UsersController < ResourceController
   skip_load_resource only: [:index, :create]
   before_action :authenticate_user!
+  before_filter :remove_empty_element_multiple_select, only: [:create, :update]
   autocomplete :user, :name, full: true
   autocomplete :user, :department
 
@@ -19,7 +20,6 @@ class UsersController < ResourceController
   end
 
   def update
-    user_params[:track_ids] ||= []
     if @user.update(user_params)
       redirect_to @user, notice: "user #{ @user.name } is successfully updated."
     else
@@ -34,6 +34,10 @@ class UsersController < ResourceController
       elsif current_user.has_role? :admin, :any
         params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, track_ids: [])
       end
+    end
+
+    def remove_empty_element_multiple_select
+      params[:user][:track_ids].reject!(&:empty?)
     end
     def get_autocomplete_items(parameters)
       super(parameters).where(company_id: current_user.company_id).group(:department)
