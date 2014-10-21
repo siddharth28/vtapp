@@ -10,6 +10,10 @@ class User < ActiveRecord::Base
   belongs_to :mentor, class_name: User
   has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
 
+  scope :with_company, ->(company) { where(company: company) }
+  scope :group_by_department, -> { group(:department) }
+
+
   #FIXED
   #FIXME -> Write rspec of this line.
   attr_readonly :email, :company_id
@@ -47,7 +51,7 @@ class User < ActiveRecord::Base
   def track_ids=(track_list)
     track_list.map!(&:to_i)
     #FIXME : This comparison is not correct, arrays should not compared like this
-    if track_ids != track_list
+    if track_ids.sort != track_list.sort
       remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
       add_track_objects = track_list.reject { |track| track_ids.include? track }.map { |track| Track.find_by(id: track) }
       add_track_objects.each { |track| add_role TRACK_ROLES[:track_runner], track }
@@ -61,7 +65,7 @@ class User < ActiveRecord::Base
 
   def mentor_name
     #TIP : we can use mentor.try(:name) and can eliminate if mentor
-    mentor.name if mentor
+    mentor.try(:name)
   end
   def admin
     account_admin?

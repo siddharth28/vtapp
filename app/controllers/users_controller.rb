@@ -2,13 +2,13 @@ class UsersController < ResourceController
   skip_load_resource only: [:index, :create]
   before_action :authenticate_user!
   before_action :remove_empty_element_multiple_select, only: [:create, :update]
-  autocomplete :user, :name, full: true
+  autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
   autocomplete :user, :department
 
   def index
     #FIXED
     #FIXME : memoize current_user.company to current_company
-    @search = current_company.users.eager_load(:roles).search(params[:q])
+    @search = current_company.users.includes(:roles).search(params[:q])
     @users = @search.result.page(params[:page]).per(20)
   end
 
@@ -17,6 +17,7 @@ class UsersController < ResourceController
     #FIXME : memoize current_user.company to current_company
     @user = current_company.users.build(user_params)
     if @user.save
+      #FIXED
       #FIXME : Typo, 'user' should be with capital 'u'
       redirect_to @user, notice: "User #{ @user.name } is successfully created."
     else
@@ -26,6 +27,7 @@ class UsersController < ResourceController
 
   def update
     if @user.update(user_params)
+      #FIXED
       #FIXME : Typo, 'user' should be with capital 'u'
       redirect_to @user, notice: "User #{ @user.name } is successfully updated."
     else
@@ -48,7 +50,12 @@ class UsersController < ResourceController
       params[:user][:track_ids].reject!(&:empty?)
     end
     def get_autocomplete_items(parameters)
+      #FIXED
       #FIXME : create scope for company
-      super(parameters).where(company_id: current_user.company_id).group(:department)
+      if parameters[:method] == :department
+        super(parameters).with_company(current_company).group_by_department
+      else
+        super(parameters).with_company(current_user.company)
+      end
     end
 end
