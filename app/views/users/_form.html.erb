@@ -30,7 +30,7 @@
       <%= errors_for_field(@user, :mentor) %>
     </div>
   </div><br><br>
-  <% if current_user.has_role? :account_owner, current_user.company %>
+  <% if current_user.has_role? :account_owner, current_company %>
     <div class="form-group">
       <%= user.label :is_admin?, class: 'col-sm-2 control-label' %>
       <%= user.check_box :admin %>

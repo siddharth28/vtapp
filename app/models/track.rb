@@ -1,31 +1,34 @@
 class Track < ActiveRecord::Base
-  resourcify
-  TRACK_ROLES = { track_owner: 'track_owner', track_reviewer: 'track_reviewer', track_runner: 'track_runner' }
 
-  attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
+  TRACK_ROLES = { track_owner: :track_owner, track_reviewer: :track_reviewer, track_runner: :track_runner }
+
+  resourcify
 
   belongs_to :company
 
-  after_create :assign_track_owner_role
+  attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
   validates :name, uniqueness: { case_sensitive: false }, presence: true
   validates :references, presence: true
   validates :description, presence: true
   validates :instructions, presence: true
-  # has_many :users, through: :roles, autosave: false
+
+  after_create :assign_track_owner_role
 
   def owner
-    User.with_role(:track_owner, self).first
+    company.users.with_role(:track_owner, self).first
   end
 
   def reviewer
-    User.with_role(:track_reviewer, self)
+
+    company.users.with_role(:track_reviewer, self)
   end
 
   def add_reviewer(user_id)
     user = find_user(user_id)
-    #TIP : we can also use unless here instead of 'if !'
-    user.add_role(:track_reviewer, self) if !(user.has_role?(:track_runner, self))
+    unless user.has_role?(:track_runner, self)
+      user.add_role(:track_reviewer, self)
+    end
     user
   end
 
@@ -35,7 +38,7 @@ class Track < ActiveRecord::Base
 
   private
     def assign_track_owner_role
-      if User.all.include?(owner_id)
+      if company.users.ids.include?(owner_id)
         user = find_user(owner_id)
         user.add_role(:track_owner, self)
       else
@@ -44,6 +47,6 @@ class Track < ActiveRecord::Base
     end
 
     def find_user(user_id)
-      User.find(user_id)
+      company.users.find_by(id: user_id)
     end
 end

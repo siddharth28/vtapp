@@ -1,4 +1,5 @@
 class RolesController < ApplicationController
+
   def home_page
     #FIXME : create dynamic method for super_admin?
     if current_user.has_role? :super_admin

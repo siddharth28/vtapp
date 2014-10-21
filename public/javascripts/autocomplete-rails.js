@@ -82,14 +82,14 @@
 			var update_elements = false;
 			if (jQuery(this).attr('data-update-elements')) {
 				update_elements = jQuery.parseJSON(jQuery(this).attr("data-update-elements"));
-			}	
+			}
             var data = ui.item ? jQuery(this).data(ui.item.id.toString()) : {};
-            if(update_elements && jQuery(update_elements['id']).val() == "") { 
-            	return; 
+            if(update_elements && jQuery(update_elements['id']).val() == "") {
+            	return;
             }
             for (var key in update_elements) {
                 jQuery(update_elements[key]).val(ui.item ? data[key] : "");
-            }  
+            }
         },
         search: function() {
           // custom minLength

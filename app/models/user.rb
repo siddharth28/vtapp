@@ -1,18 +1,16 @@
 class User < ActiveRecord::Base
+
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
-  TRACK_ROLES = { track_runner: 'track_runner' }
+  TRACK_ROLES = { track_runner: :track_runner }
+
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
+  has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
   belongs_to :company
   belongs_to :mentor, class_name: User
-  has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
-
-  scope :with_company, ->(company) { where(company: company) }
-  scope :group_by_department, -> { group(:department) }
-
 
   #FIXED
   #FIXME -> Write rspec of this line.
@@ -21,9 +19,8 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   #FIXED
   #FIXME -> Write rspec of this validation.
-  validates :company, presence: true, if: -> { !super_admin? }
+  validates :company, presence: true, unless: :super_admin?
   validates :name, presence: true
-
 
   #email validation is provided by devise
   #FIXME_AB: no validation on email
@@ -33,6 +30,10 @@ class User < ActiveRecord::Base
   #FIXME -> after_commit rspec remained
   after_commit :send_password_email, on: :create
 
+
+  scope :with_company, ->(company) { where(company: company) }
+  scope :group_by_department, -> { group(:department) }
+  scope :with_company, ->(company_id) { where(company_id: company_id) }
 
   def active_for_authentication?
     if super_admin?
@@ -67,12 +68,15 @@ class User < ActiveRecord::Base
     #TIP : we can use mentor.try(:name) and can eliminate if mentor
     mentor.try(:name)
   end
+
   def admin
     account_admin?
   end
+
   def admin=(value)
     value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
   end
+
   private
     def set_random_password
       self.password_confirmation = self.password = Devise.friendly_token.first(8)
@@ -94,8 +98,8 @@ class User < ActiveRecord::Base
     #rolify callback
     #FIXED because this functionality is only for console view it's not in app so it won't occur in view
     #FIXME_AB: I could not get you by console view, Please elaborate
-    ## Sir ctually we cannot perform these actions from the application. these are just model level validations.
-    ## So these actions can be performed only from the console. 
+    ## Sir actually we cannot perform these actions from the application. these are just model level validations.
+    ## So these actions can be performed only from the console.
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
       if role.name == ROLES[:account_owner] && company.owner.first
@@ -104,6 +108,7 @@ class User < ActiveRecord::Base
         raise 'There can be only one account owner'
       end
     end
+
     #rolify callback
     def ensure_cannot_remove_account_owner_role(role)
       if role.name == ROLES[:account_owner]

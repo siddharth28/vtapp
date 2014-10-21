@@ -17,22 +17,20 @@ describe Company do
   describe 'callbacks' do
     describe 'after_create' do
       describe 'build_owner' do
-        it { expect(company.owner).not_to eql(nil) }
+        it { expect(company.owner.first).not_to eql(nil) }
       end
     end
   end
 
   describe 'instance methods' do
     describe '#owner' do
-      it { expect(company.owner.all? { |user| user.has_role?(:account_owner, company) }).to eql(true)}
+      it { expect(company.owner.first.has_role?(:account_owner, company)).to eql(true)}
       it { expect(company.owner.first.name).to eql('Test Owner')}
     end
 
     describe '#build_owner' do
       let(:company) { build(:company) }
-
       before { company.save }
-
       it { expect(company.owner.first.name).to eql('Test Owner') }
     end
 

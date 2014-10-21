@@ -1,17 +1,16 @@
 require 'rails_helper'
 
 describe TracksController do
-  let(:current_user) { mock_model(User) }
+  let(:current_company) { mock_model(Company) }
   let(:track) { mock_model(Track)}
   let(:company) { mock_model(Company)}
   let(:ability) { double(Ability) }
   let(:tracks) { double(ActiveRecord::Relation) }
+  let(:user) { mock_model(User) }
 
   before do
-    allow(controller).to receive(:current_user).and_return(current_user)
-    allow(controller).to receive(:current_user).and_return(current_user)
+    allow(controller).to receive(:current_company).and_return(current_company)
     allow(controller).to receive(:current_ability).and_return(ability)
-    allow(current_user).to receive(:has_role?).and_return(true)
     allow(ability).to receive(:authorize!).and_return(true)
     allow(ability).to receive(:attributes_for).and_return([])
     allow(ability).to receive(:has_block?).and_return(true)
@@ -20,8 +19,7 @@ describe TracksController do
   describe '#create' do
     before do
       allow(Track).to receive(:new).with(name: 'Test Track').and_return(track)
-      allow(current_user).to receive(:company).and_return(company)
-      allow(company).to receive(:tracks).and_return(tracks)
+      allow(current_company).to receive(:tracks).and_return(tracks)
       allow(tracks).to receive(:build).and_return(track)
       allow(track).to receive(:save).and_return(true)
     end
@@ -31,12 +29,13 @@ describe TracksController do
     end
 
     describe 'expects to send' do
-      after { send_request }
+      # example for #set_company
       it { expect(Track).to receive(:new).with(name: 'Test Track').and_return(track) }
-      it { expect(current_user).to receive(:company).and_return(company) }
-      it { expect(company).to receive(:tracks).and_return(tracks) }
+      it { expect(current_company).to receive(:tracks).and_return(tracks) }
       it { expect(tracks).to receive(:build).and_return(track) }
       it { expect(track).to receive(:save).and_return(true) }
+
+      after { send_request }
     end
 
     describe 'assigns' do
@@ -47,7 +46,7 @@ describe TracksController do
     describe 'response' do
       context "when response is successfully created" do
         before { send_request }
-        it { expect(response).to redirect_to tracks_path(company: company) }
+        it { expect(response).to redirect_to tracks_path(company: current_company) }
         it { expect(response).to have_http_status(302) }
         it { expect(flash[:notice]).to eq("Track #{ track.name } is successfully created.") }
       end
@@ -66,8 +65,32 @@ describe TracksController do
   end
 
   describe '#index' do
+    before do
+      allow(current_company).to receive(:tracks).and_return(tracks)
+      allow(tracks).to receive(:search).with('example').and_return(tracks)
+      allow(tracks).to receive(:result).and_return(tracks)
+      allow(tracks).to receive(:page).with(nil).and_return(tracks)
+      allow(tracks).to receive(:per).with(20).and_return(tracks)
+    end
+
     def send_request
-      get :index
+      get :index, { q: 'example', page: nil }
+    end
+
+    describe 'expects to receive' do
+      it { expect(current_company).to receive(:tracks).and_return(tracks) }
+      it { expect(tracks).to receive(:search).with('example').and_return(tracks) }
+      it { expect(tracks).to receive(:result).and_return(tracks) }
+      it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
+      it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:search)).to eq(tracks) }
+      it { expect(assigns(:tracks)).to eq(tracks) }
     end
 
     describe 'response' do
@@ -77,22 +100,136 @@ describe TracksController do
     end
   end
 
+  describe '#reviewers' do
+    before do
+      allow(controller).to receive(:set_track).and_return(track)
+      allow(Track).to receive(:find).and_return(track)
+    end
+
+    def send_request
+      get :reviewers, { id: track.id }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:track)).to eq(track) }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template :reviewers }
+    end
+  end
+
+  describe '#toggle_enabled' do
+    before do
+      allow(Track).to receive(:find).and_return(track)
+      allow(track).to receive(:toggle!).and_return(true)
+    end
+
+    def send_request
+      xhr :patch, :toggle_enabled, id: track.id
+    end
+
+    describe 'expects to receive' do
+      it { expect(track).to receive(:toggle!).and_return(true) }
+
+      after { send_request }
+    end
+
+    describe 'response' do
+      before { send_request }
+
+      it { expect(response).to render_template :toggle_enabled }
+      it { expect(response).to have_http_status(200) }
+    end
+  end
+
+
+  describe '#assign_reviewer' do
+    before do
+      allow(controller).to receive(:set_track).and_return(track)
+      allow(Track).to receive(:find).and_return(track)
+      allow(track).to receive(:add_reviewer).with("123").and_return(user)
+    end
+
+    def send_request
+      xhr :patch, :assign_reviewer, track: { reviewer_name: 'abc', reviewer_id: "123" }, id: track.id, format: :js
+    end
+
+    describe 'expects to receive' do
+      it { expect(track).to receive(:add_reviewer).with("123").and_return(true) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:track)).to eq(track) }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template 'tracks/assign_reviewer' }
+    end
+  end
+
+  describe '#remove_reviewer' do
+    before do
+      allow(controller).to receive(:set_track).and_return(track)
+      allow(Track).to receive(:find).and_return(track)
+      allow(track).to receive(:remove_reviewer).with("123").and_return(user)
+    end
+
+    def send_request
+      xhr :get, :remove_reviewer, { format: "123", id: track.id }, format: :js
+    end
+
+    describe 'expects to receive' do
+      it { expect(track).to receive(:remove_reviewer).with("123").and_return(true) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:track)).to eq(track) }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template 'tracks/remove_reviewer' }
+    end
+  end
+
+  describe '#set_track' do
+    before do
+      allow(current_company).to receive(:tracks).and_return(tracks)
+      allow(tracks).to receive(:find_by).and_return(track)
+    end
+
+    it { expect(controller.send(:set_track)).to eql(track) }
+  end
+
   describe '#track_params' do
     before do
-      allow(Track).to receive(:new).with({ name: 'Test Track', owner_name: 'Owner', owner_email: 'Email@email.com', enabled: false }.with_indifferent_access).and_return(track)
-      allow(current_user).to receive(:company).and_return(company)
-      allow(company).to receive(:tracks).and_return(tracks)
+      allow(Track).to receive(:new).with({ name: 'Test Track', description: 'Owner', instructions: 'Abcd', references: 'ABCD', enabled: false }.with_indifferent_access).and_return(track)
+      allow(current_company).to receive(:tracks).and_return(tracks)
       allow(tracks).to receive(:build).and_return(track)
       allow(track).to receive(:save).and_return(true)
     end
 
     def send_request
-      post :create, track: { name: 'Test Track', owner_name: 'Owner', owner_email: 'Email@email.com', enabled: false }
+      post :create, track: { name: 'Test Track', description: 'Owner', instructions: 'Abcd', references: 'ABCD', enabled: false, status: true }
     end
 
     describe 'expects to send' do
+      it { expect(Track).to receive(:new).with({ name: 'Test Track', description: 'Owner', instructions: 'Abcd', references: 'ABCD', enabled: false }.with_indifferent_access).and_return(track) }
+
       after { send_request }
-      it { expect(Track).to receive(:new).with({ name: 'Test Track', owner_name: 'Owner', owner_email: 'Email@email.com', enabled: false }.with_indifferent_access).and_return(track) }
     end
   end
 end

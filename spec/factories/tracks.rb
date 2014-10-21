@@ -5,8 +5,10 @@ FactoryGirl.define do
     references 'references'
     instructions 'instruction'
     description 'descriptions'
-    owner_name 'Test Owner'
-    owner_email 'track_owner_email@owner.com'
+    owner_id 11111
+    owner_name 'Owner'
+    reviewer_id 99999
+    reviewer_name 'Reviewer'
   end
 
   factory :track_without_owner, class: 'Track' do

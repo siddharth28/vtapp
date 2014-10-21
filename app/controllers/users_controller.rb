@@ -50,6 +50,7 @@ class UsersController < ResourceController
     def remove_empty_element_multiple_select
       params[:user][:track_ids].reject!(&:empty?)
     end
+
     def get_autocomplete_items(parameters)
       #FIXED
       #FIXME : create scope for company

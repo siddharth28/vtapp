@@ -31,6 +31,8 @@ describe User do
 
   describe 'validation' do
     it { should validate_presence_of(:company) }
+    it { should validate_presence_of(:name) }
+
     context 'user is a super_admin' do
       let(:user) { build(:user) }
 
@@ -38,14 +40,12 @@ describe User do
 
       it { expect(user.valid?).to eql(true) }
     end
-    it { should validate_presence_of(:name) }
     #FIXED
     #FIXME -> Why this context ?
     #FIXED
     #FIXME Change rspec as discussed.
 
     describe 'mentor validation' do
-
       context 'mentor not present' do
         it { should_not validate_presence_of(:mentor) }
       end
@@ -64,14 +64,13 @@ describe User do
 
         it { expect(user.errors[:mentor].include?("can't be blank")).to eql(true) }
       end
-
     end
+  end
 
-    describe 'attr_readonly' do
-      let(:user) { create(:user, company: company) }
-      it { expect{ user.update_attribute(:email, 'new_email@email.com')}.to raise_error('email is marked as readonly') }
-      it { expect{ user.update_attribute(:company_id, 9239)}.to raise_error('company_id is marked as readonly') }
-    end
+  describe 'attr_readonly' do
+    let(:user) { create(:user, company: company) }
+    it { expect{ user.update_attribute(:email, 'new_email@email.com')}.to raise_error('email is marked as readonly') }
+    it { expect{ user.update_attribute(:company_id, 9239)}.to raise_error('company_id is marked as readonly') }
   end
 
   describe 'callbacks' do
@@ -80,12 +79,10 @@ describe User do
     #FIXED
     #FIXME Change as discussed.
     describe 'before validation#set_random_password' do
-
       it do
         expect { user.valid? }.to change{ user.password.nil? }.from(true).to(false)
         expect(user.password).to eq(user.password_confirmation)
       end
-
     end
 
     describe 'before destroy#ensure_an_account_owners_and_super_admin_remains' do
@@ -105,7 +102,6 @@ describe User do
         it { expect { user.destroy }.not_to raise_error }
       end
     end
-
   end
 
   describe 'instance methods' do
@@ -113,7 +109,6 @@ describe User do
     let(:company) { build(:company, name: 'Vinsol', enabled: true ) }
 
     describe '#super_admin?' do
-
       context 'is a super_admin' do
         before { user.add_role(:super_admin) }
 
@@ -132,6 +127,7 @@ describe User do
 
         it { expect(company.owner.first.account_owner?).to eql(true) }
       end
+
       context 'not an account_owner' do
         it { expect(user.account_owner?).to eql(false) }
       end
@@ -165,7 +161,6 @@ describe User do
         end
 
         context 'company_enabled' do
-
           context 'user_disabled' do
             before { status(user, false, true) }
 
@@ -178,6 +173,7 @@ describe User do
             it { expect(user.active_for_authentication?).to eql(true) }
           end
         end
+
         context 'company_disabled' do
           context 'user_enabled' do
             before { status(user, true, false) }
@@ -192,13 +188,14 @@ describe User do
           end
         end
       end
-
     end
+
     describe '#track_ids=' do
-      let(:track) { create(:track) }
+      let(:track) { create(:track, company: company) }
+      let(:user) { create(:user, company: company) }
 
       context 'assign tracks' do
-        let(:track_list) { [track.id] }
+        let(:track_list) { [track.id, '' ] }
 
         before { user.track_ids = track_list }
 
@@ -230,6 +227,7 @@ describe User do
     describe '#mentor_name' do
       let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
       let(:user) { build(:user, mentor_id: mentor.id, company: company) }
+
       context 'mentor present' do
         it { expect(user.mentor_name).to eql(mentor.name) }
       end
@@ -237,7 +235,6 @@ describe User do
       context 'mentor not present' do
         it { expect(mentor.mentor_name).to eql(nil) }
       end
-
     end
     #FIXED
     #FIXME Change as discussed.
@@ -269,12 +266,11 @@ describe User do
     describe '#ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
 
-      it { expect { company.owner.first.remove_role :account_owner, company }.to raise_error('Cannot remove account_owner role') }
+      it { expect { company.owner.first.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
     end
 
     describe '#display_user_details' do
       it { expect(user.send(:display_user_details)).to eql("#{ user.name } : #{ user.email }") }
     end
   end
-
 end
