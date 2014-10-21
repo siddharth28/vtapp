@@ -16,12 +16,6 @@ describe UsersController do
     allow(ability).to receive(:has_block?).and_return(true)
   end
 
-  describe '#new' do
-    def send_request
-      get :new
-    end
-  end
-
   describe '#show' do
     before do
       allow(User).to receive(:find).and_return(user)

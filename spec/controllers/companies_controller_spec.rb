@@ -17,6 +17,12 @@ describe CompaniesController do
     allow(ability).to receive(:has_block?).and_return(true)
   end
 
+  describe '#new' do
+    def send_request
+      get :new
+    end
+  end
+
   describe '#create' do
     before do
       allow(Company).to receive(:new).and_return(company)
