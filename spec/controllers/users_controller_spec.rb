@@ -48,23 +48,23 @@ describe UsersController do
     before do
       allow(user).to receive(:company).and_return(company)
       allow(company).to receive(:users).and_return(users)
-      allow(users).to receive(:eager_load).with(:roles).and_return(users)
-      allow(users).to receive(:search).with('example').and_return(users)
+      allow(users).to receive(:includes).with(:roles).and_return(users)
+      allow(users).to receive(:search).with({ s: "name {name:'asc'}" }).and_return(users)
       allow(users).to receive(:result).and_return(users)
       allow(users).to receive(:page).with(nil).and_return(users)
       allow(users).to receive(:per).with(20).and_return(users)
     end
 
     def send_request
-      get :index, { q: 'example' }
+      get :index, q: { s: "name {name:'asc'}" }
     end
 
     describe 'expects to receive' do
       after { send_request }
       it { expect(user).to receive(:company).and_return(company) }
       it { expect(company).to receive(:users).and_return(users) }
-      it { expect(users).to receive(:eager_load).with(:roles).and_return(users) }
-      it { expect(users).to receive(:search).with('example').and_return(users) }
+      it { expect(users).to receive(:includes).with(:roles).and_return(users) }
+      it { expect(users).to receive(:search).with({ s: "name {name:'asc'}" }).and_return(users) }
       it { expect(users).to receive(:result).and_return(users) }
       it { expect(users).to receive(:page).with(nil).and_return(users) }
       it { expect(users).to receive(:per).with(20).and_return(users) }
