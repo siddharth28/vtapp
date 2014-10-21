@@ -35,6 +35,7 @@ class UsersController < ResourceController
         params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, track_ids: [])
       end
     end
+
     def get_autocomplete_items(parameters)
       super(parameters).where(company_id: current_user.company_id).group(:department)
     end

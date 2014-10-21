@@ -11,10 +11,12 @@ Rails.application.routes.draw do
       end
 
       root 'roles#home_page', as: :authenticated_root
+
       resources :users do
         get :autocomplete_user_name, on: :collection
         get :autocomplete_user_department, on: :collection
       end
+
       resources :tracks do
         member do
           patch :enable, to: :toggle_enabled

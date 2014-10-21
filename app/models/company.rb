@@ -1,18 +1,20 @@
 class Company < ActiveRecord::Base
   resourcify
+
+  #FIXME_AB: Don't hard code role use ROLES array/hash constant
+
   ROLES = { account_owner: :account_owner }
+
   has_many :users, dependent: :restrict_with_exception
   has_many :tracks, dependent: :restrict_with_exception
+
   attr_accessor :owner_email, :owner_name
 
   before_validation :build_owner, on: :create
   after_create :make_owner
 
   validates :name, presence: true
-
   validates :name, uniqueness: true, allow_blank: true
-
-  #FIXME_AB: Don't hard code role use ROLES array/hash constant
 
   scope :load_with_owners, -> { eager_load(:users).joins(:users).merge(User.with_role(ROLES[:account_owner], :any)) }
   scope :enabled, -> { where(enabled: true) }
