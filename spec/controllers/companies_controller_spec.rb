@@ -21,6 +21,11 @@ describe CompaniesController do
     def send_request
       get :new
     end
+    before { allow(controller).to receive(:build_user) }
+
+    it { expect(controller).to receive(:build_user) }
+
+    after { send_request }
   end
 
   describe '#create' do
