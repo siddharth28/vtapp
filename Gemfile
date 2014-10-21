@@ -44,4 +44,5 @@ group :test do
   gem 'guard-rspec',                          '4.3.1'
   gem 'shoulda-matchers',                     '2.7.0', require: false
   gem 'simplecov',                            '0.9.1', require: false
+  gem 'codeclimate-test-reporter',            '0.4.1', require: nil
 end
