@@ -39,10 +39,10 @@ class TracksController < ResourceController
     end
 
     def set_track
-      @track ||= current_company.tracks.find_by(id: params[:id])
+      @track = current_company.tracks.find_by(id: params[:id])
     end
 
     def get_autocomplete_items(parameters)
-      super(parameters).where(company_id: current_company.id)
+      super(parameters).with_company(current_company.id)
     end
 end
