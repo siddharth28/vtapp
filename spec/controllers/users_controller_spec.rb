@@ -16,10 +16,16 @@ describe UsersController do
     allow(ability).to receive(:has_block?).and_return(true)
   end
 
+  describe '#new' do
+    def send_request
+      get :new
+    end
+  end
+
   describe '#show' do
     before do
       allow(User).to receive(:find).and_return(user)
-      allow(user).to receive(:has_role?).and_return(true)
+      allow(user).to receive(:account_owner?).and_return(true)
       allow(controller).to receive(:authenticate_user!)
     end
 
@@ -88,7 +94,7 @@ describe UsersController do
       allow(controller).to receive(:user_params)
       allow(controller).to receive(:remove_empty_element_multiple_select)
       allow(user).to receive(:company).and_return(company)
-      allow(user).to receive(:has_role?).and_return(true)
+      allow(user).to receive(:account_owner?).and_return(true)
       allow(company).to receive(:users).and_return(users)
       allow(users).to receive(:build).and_return(user)
       allow(user).to receive(:save).and_return(true)
@@ -117,7 +123,7 @@ describe UsersController do
         before { send_request }
         it { expect(response).to redirect_to user_path(user) }
         it { expect(response).to have_http_status(302) }
-        it { expect(flash[:notice]).to eq("user #{ user.name } is successfully created.") }
+        it { expect(flash[:notice]).to eq("User #{ user.name } is successfully created.") }
       end
 
       context "when user cannot be created" do
@@ -139,7 +145,7 @@ describe UsersController do
       allow(controller).to receive(:remove_empty_element_multiple_select)
       allow(User).to receive(:find).and_return(user)
       allow(user).to receive(:update).and_return(true)
-      allow(user).to receive(:has_role?).and_return(true)
+      allow(user).to receive(:account_owner?).and_return(true)
     end
 
     def send_request
@@ -156,7 +162,7 @@ describe UsersController do
         before { send_request }
         it { expect(response).to redirect_to user_path(user) }
         it { expect(response).to have_http_status(302) }
-        it { expect(flash[:notice]).to eq("user #{ user.name } is successfully updated.") }
+        it { expect(flash[:notice]).to eq("User #{ user.name } is successfully updated.") }
       end
 
       context "when user cannot be updated" do
