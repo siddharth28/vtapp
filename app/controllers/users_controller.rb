@@ -8,6 +8,7 @@ class UsersController < ResourceController
   def index
     #FIXED
     #FIXME : memoize current_user.company to current_company
+    params[:q] ||= { s: "name {name:'asc'}" }
     @search = current_company.users.includes(:roles).search(params[:q])
     @users = @search.result.page(params[:page]).per(20)
   end

@@ -6,8 +6,9 @@
       <table class="sortable_table table table-bordered table-striped ">
         <thead>
           <tr>
-            <%= content_tag :th, sort_link(@search, :name, 'Name', default_order: :desc) %>
+            <%= content_tag :th, sort_link(@search, :name, 'Name',  default_order: { name: 'asc' }) %>
             <%= content_tag :th, sort_link(@search, :email, 'Email') %>
+            <%= content_tag :th,sort_link(@search, :department) %>
 
             <th>
               Department
