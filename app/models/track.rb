@@ -1,6 +1,7 @@
 class Track < ActiveRecord::Base
   resourcify
-  TRACK_ROLES = { track_owner: 'track_owner', track_reviewer: 'track_reviewer', track_runner: 'track_runner' }
+
+  TRACK_ROLES = { track_owner: :track_owner, track_reviewer: :track_reviewer, track_runner: :track_runner }
 
   attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
@@ -12,7 +13,6 @@ class Track < ActiveRecord::Base
   validates :references, presence: true
   validates :description, presence: true
   validates :instructions, presence: true
-  # has_many :users, through: :roles, autosave: false
 
   def owner
     company.users.with_role(:track_owner, self).first
@@ -25,7 +25,7 @@ class Track < ActiveRecord::Base
 
   def add_reviewer(user_id)
     user = find_user(user_id)
-    if !(user.has_role?(:track_runner, self))
+    unless user.has_role?(:track_runner, self)
       user.add_role(:track_reviewer, self)
     end
     user
