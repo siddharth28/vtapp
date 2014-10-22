@@ -190,6 +190,28 @@ section {
 }
 .track_check_box {
   display: inline-block;
-  width: 24.7%;
   text-align: right;
+  line-height: 20px;
+  font-size: 16px;
+}
+
+.track_check_box label {
+  margin-bottom: 20px;
+}
+
+.track_check_box label input {
+  vertical-align: top;
+  margin-left: 10px;
+}
+
+.label_with_check_box input {
+  vertical-align: sub;
+}
+
+.mbot20 {
+  margin-bottom: 20px !important;
+}
+
+.h4.mbot20 {
+  font-weight: bold;
 }
