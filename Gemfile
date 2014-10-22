@@ -21,6 +21,7 @@ gem 'capistrano-rails',                       '~>1.1.2'
 gem 'daemons',                                '1.1.9'
 gem 'ckeditor',                               '4.1.0'
 gem 'rails4-autocomplete',                    '1.1.1'
+gem 'paperclip',                              '~> 4.2'
 
 group :assets do
   gem 'therubyracer',                         '0.12.1', platforms: :ruby

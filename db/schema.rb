@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141010061237) do
+ActiveRecord::Schema.define(version: 20141022173109) do
+
+  create_table "comments", force: true do |t|
+    t.string   "data"
+    t.integer  "task_id"
+    t.integer  "commenter_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -36,6 +44,23 @@ ActiveRecord::Schema.define(version: 20141010061237) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+  create_table "exercise_tasks", force: true do |t|
+    t.string   "title"
+    t.integer  "parent_task_id"
+    t.string   "description"
+    t.boolean  "need_review"
+    t.integer  "track_id"
+    t.string   "instructions"
+    t.string   "sample_solution_file_name"
+    t.string   "sample_solution_content_type"
+    t.integer  "sample_solution_file_size"
+    t.datetime "sample_solution_updated_at"
+    t.integer  "reveiwer_id"
+    t.boolean  "is_hidden"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "roles", force: true do |t|
     t.string   "name"
     t.integer  "resource_id"
@@ -46,6 +71,23 @@ ActiveRecord::Schema.define(version: 20141010061237) do
 
   add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
   add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
+
+  create_table "solutions", force: true do |t|
+    t.string   "link"
+    t.integer  "exercise_task_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "study_tasks", force: true do |t|
+    t.string   "title"
+    t.integer  "parent_task_id"
+    t.string   "description"
+    t.boolean  "need_review"
+    t.integer  "track_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "tracks", force: true do |t|
     t.string   "name"
