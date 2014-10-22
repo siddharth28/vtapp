@@ -38,10 +38,12 @@ class UsersController < ResourceController
 
   private
     def user_params
+      #FIXED
       #FIXME : create dynamic method for account_owner?
       if current_user.account_owner?
         params.require(:user).permit(:name, :email, :department, :mentor_id, :admin, :enabled, track_ids: [])
       elsif current_user.account_admin?
+        #FIXED
         #FIXME : create dynamic method for admin?
         params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, track_ids: [])
       end

@@ -20,6 +20,10 @@ class ApplicationController < ActionController::Base
     params[resource] &&= send(method) if respond_to?(method, true)
   end
 
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to '/', :alert => exception.message
+  end
+
   protected
     def configure_permitted_parameters
       devise_parameter_sanitizer.for(:account_update) do |u|

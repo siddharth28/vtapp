@@ -2,33 +2,69 @@ require 'cancan/matchers'
 require 'rails_helper'
 
 describe Ability do
+
   let(:company) { create(:company) }
   let(:user){ create(:user, company: company) }
-  let(:super_admin_role) { create(:super_admin_role) }
-  let(:account_owner_role) { create(:account_owner_role) }
-
   let(:ability) { Ability.new(user) }
+  let(:account_admin) { user.add_role(:account_admin) }
+
   describe 'User' do
+
     describe 'super_admin abilities' do
+
       before(:each) do
-        super_admin_role
         user.instance_variable_set(:@r_map, {})
         user.add_role(:super_admin)
       end
-      it { expect(ability).to be_able_to(:manage, user) }
+
+      it { expect(ability).to be_able_to(:read, user) }
+      it { expect(ability).to be_able_to(:update, user) }
       it { expect(ability).to be_able_to(:manage, Company) }
       it { expect(ability).not_to be_able_to(:manage, User) }
       it { expect(ability).not_to be_able_to(:manage, Track) }
+
     end
+
     describe 'Normal user abilities' do
-      it { expect(ability).to be_able_to(:manage, user) }
+
+      it { expect(ability).to be_able_to(:read, user) }
       it { expect(ability).not_to be_able_to(:manage, Company) }
       it { expect(ability).not_to be_able_to(:manage, User) }
+
     end
+
     describe 'account_owner abilities' do
+
       let(:ability) { Ability.new(company.owner.first) }
+
+      it { expect(ability).to be_able_to(:read, user) }
+      it { expect(ability).to be_able_to(:update, user) }
       it { expect(ability).to be_able_to(:manage, Track) }
       it { expect(ability).to be_able_to(:manage, User) }
+
     end
+
+    describe 'account_admin abilities' do
+
+
+
+      before(:each) do
+        user.instance_variable_set(:@r_map, {})
+        user.add_role(:account_admin)
+      end
+
+
+      it { expect(ability).to be_able_to(:read, user) }
+      it { expect(ability).to be_able_to(:update, user) }
+      it { expect(ability).to be_able_to(:manage, Track) }
+      it { expect(ability).to be_able_to(:read, User) }
+      it { expect(ability).to be_able_to(:create, User) }
+      it { expect(ability).to be_able_to(:update, User) }
+      it { expect(ability).not_to be_able_to(:update, company.owner.first) }
+      it { expect(ability).not_to be_able_to(:update, account_admin) }
+
+    end
+
   end
+
 end
