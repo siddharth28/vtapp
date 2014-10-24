@@ -1,9 +1,11 @@
 class Task < ActiveRecord::Base
   actable
-  belongs_to :track
+  acts_as_tree
+
   has_many :child_tasks, class_name: Task, foreign_key: :parent_task_id, dependent: :restrict_with_error
   has_many :comments
   belongs_to :parent_task, class_name: Task
+  belongs_to :track
 
 
   def parent_task_title
@@ -26,11 +28,11 @@ class Task < ActiveRecord::Base
     specific.try(:sample_solution)
   end
 
-  def reveiwer_name
-    specific.try(:reveiwer).try(:name)
+  def reviewer_name
+    specific.try(:reviewer).try(:name)
   end
 
-  def reveiwer_id
-    specific.try(:reveiwer_id)
+  def reviewer_id
+    specific.try(:reviewer_id)
   end
 end

@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20141024043004) do
     t.string   "sample_solution_content_type"
     t.integer  "sample_solution_file_size"
     t.datetime "sample_solution_updated_at"
-    t.integer  "reveiwer_id"
+    t.integer  "reviewer_id"
     t.boolean  "is_hidden"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -114,11 +114,13 @@ ActiveRecord::Schema.define(version: 20141024043004) do
     t.string   "department"
     t.boolean  "enabled",                default: true
     t.integer  "mentor_id"
+    t.integer  "track_id"
   end
 
   add_index "users", ["company_id"], name: "index_users_on_company_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["track_id"], name: "index_users_on_track_id", using: :btree
 
   create_table "users_roles", id: false, force: true do |t|
     t.integer "user_id"
