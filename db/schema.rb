@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141022173109) do
+ActiveRecord::Schema.define(version: 20141024043004) do
 
   create_table "comments", force: true do |t|
     t.string   "data"
@@ -45,11 +45,6 @@ ActiveRecord::Schema.define(version: 20141022173109) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "exercise_tasks", force: true do |t|
-    t.string   "title"
-    t.integer  "parent_task_id"
-    t.string   "description"
-    t.boolean  "need_review"
-    t.integer  "track_id"
     t.string   "instructions"
     t.string   "sample_solution_file_name"
     t.string   "sample_solution_content_type"
@@ -79,12 +74,13 @@ ActiveRecord::Schema.define(version: 20141022173109) do
     t.datetime "updated_at"
   end
 
-  create_table "study_tasks", force: true do |t|
+  create_table "tasks", force: true do |t|
     t.string   "title"
     t.integer  "parent_task_id"
     t.string   "description"
-    t.boolean  "need_review"
     t.integer  "track_id"
+    t.integer  "actable_id"
+    t.string   "actable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
