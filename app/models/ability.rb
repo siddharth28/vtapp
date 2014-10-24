@@ -11,6 +11,7 @@ class Ability
     elsif user.account_owner?
       can :manage, User, company: user.company
       can :manage, Track, company: user.company
+      can :manage, Task
     elsif user.account_admin?
       can :read, User
       can :create, User
