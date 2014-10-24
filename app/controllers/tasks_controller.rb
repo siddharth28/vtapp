@@ -36,7 +36,7 @@ class TasksController < ResourceController
         params.require(:task).permit(:title, :description, :parent_task_id, :need_review)
       elsif params[:task][:need_review] == '1'
         params.require(:task).permit(:title, :description, :parent_task_id, :instructions, :reviewer_id, :is_hidden, :sample_solution, :need_review)
-      end        
+      end
     end
 
     def save_task(task)
