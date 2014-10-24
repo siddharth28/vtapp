@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20141024043004) do
     t.string   "sample_solution_content_type"
     t.integer  "sample_solution_file_size"
     t.datetime "sample_solution_updated_at"
-    t.integer  "reveiwer_id"
+    t.integer  "reviewer_id"
     t.boolean  "is_hidden"
     t.datetime "created_at"
     t.datetime "updated_at"

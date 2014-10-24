@@ -3,7 +3,7 @@ class CreateExerciseTasks < ActiveRecord::Migration
     create_table :exercise_tasks do |t|
       t.string :instructions
       t.attachment :sample_solution
-      t.integer :reveiwer_id
+      t.integer :reviewer_id
       t.boolean :is_hidden
       t.timestamps
     end
