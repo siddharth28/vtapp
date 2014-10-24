@@ -18,7 +18,7 @@ class Task < ActiveRecord::Base
   def need_review
     specific
   end
-
+  [:instructions, :is_hidden, :sample_solution, :reviewer_id]
   def instructions
     specific.try(:instructions)
   end
@@ -31,11 +31,11 @@ class Task < ActiveRecord::Base
     specific.try(:sample_solution)
   end
 
-  def reveiwer_name
-    specific.try(:reveiwer).try(:name)
+  def reviewer_name
+    specific.try(:reviewer).try(:name)
   end
 
-  def reveiwer_id
-    specific.try(:reveiwer_id)
+  def reviewer_id
+    specific.try(:reviewer)
   end
 end
