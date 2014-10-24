@@ -1,4 +1,5 @@
 
 <% @tasks.each do |task| %>
 <%= task.title %>
+<%= link_to task, [@track, task] %>
 <% end %>

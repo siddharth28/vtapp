@@ -16,26 +16,17 @@ class Task < ActiveRecord::Base
   end
 
   def need_review
-    specific
+    specific ? 1 : 0
   end
-  [:instructions, :is_hidden, :sample_solution, :reviewer_id]
-  def instructions
-    specific.try(:instructions)
-  end
-
-  def is_hidden
-    specific.try(:is_hidden)
+  [:instructions, :is_hidden, :sample_solution, :reviewer_id].each do |method|
+    define_method(method) do
+      specific.try(method)
+    end
   end
 
-  def sample_solution
-    specific.try(:sample_solution)
-  end
 
   def reviewer_name
     specific.try(:reviewer).try(:name)
   end
 
-  def reviewer_id
-    specific.try(:reviewer)
-  end
 end

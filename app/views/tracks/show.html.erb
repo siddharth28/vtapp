@@ -40,4 +40,7 @@
   <% end %>
   <%= link_to 'Back', tracks_path(company: @track.company_id) %>
 
+  <%= link_to 'New Task', new_track_task_path(@track) %>
+  <%= link_to 'Tasks', track_tasks_path(@track) %>
+
 </div>
