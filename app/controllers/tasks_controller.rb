@@ -1,4 +1,5 @@
 class TasksController < ResourceController
+
   skip_load_resource only: [:index, :create]
   before_filter :get_track
 
@@ -14,11 +15,10 @@ class TasksController < ResourceController
   end
 
   def new
-    @task = @track.tasks.build
+    @task = @track.tasks.build(:parent_id => params[:parent_id])
   end
 
   def create
-    debugger
     if params[:task][:need_review] == '0'
       @task = @track.tasks.build(task_params)
       if @task.save
@@ -37,13 +37,25 @@ class TasksController < ResourceController
     end
   end
 
+  def sort
+    debugger;
+    params[:task].sort { |a, b| a <=> b }.each_with_index do |id, index|
+      value = id[1][:id]
+      position = id[1][:position]
+      position = position.to_i + 1
+      parent = id[1][:parent_id]
+      Task.update(value, :position => position, :parent_id => parent)
+    end
+    render :nothing => true
+  end
+
   private
     def task_params
       if params[:task][:need_review] == '0'
-        params.require(:task).permit(:title, :description, :parent_task_id, :need_review)
+        params.require(:task).permit(:title, :description, :parent_id, :need_review, :ancestry_depth)
       elsif params[:task][:need_review] == '1'
-        params.require(:task).permit(:title, :description, :parent_task_id, :instructions, :reviewer_id, :is_hidden, :sample_solution, :need_review)
-      end        
+        params.require(:task).permit(:title, :description, :parent_id, :instructions, :reviewer_id, :is_hidden, :sample_solution, :need_review, :ancestry_depth)
+      end
     end
 
 end
