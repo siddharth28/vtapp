@@ -5,7 +5,6 @@ gem 'rails',                                  '4.1.6'
 gem 'mysql2',                                 '0.3.16'
 gem 'jquery-rails',                           '3.1.2'
 gem 'jquery-ui-rails',                        '5.0.0'
-
 gem 'jbuilder',                               '~> 2.0'
 gem 'devise',                                 '3.3.0'
 gem 'devise-async',                           '0.9.0'
@@ -23,6 +22,8 @@ gem 'ckeditor',                               '4.1.0'
 gem 'rails4-autocomplete',                    '1.1.1'
 gem 'paperclip',                              '~> 4.2'
 gem 'active_record-acts_as',                  '1.0.2'
+gem 'ancestry',                               '2.1.0'
+gem 'acts_as_tree',                           '2.1.0'
 
 group :assets do
   gem 'therubyracer',                         '0.12.1', platforms: :ruby
@@ -30,11 +31,8 @@ group :assets do
   gem 'sass-rails',                           '~> 4.0.3'
 end
 
-group :development do
-  gem 'spring',                               '1.1.3'
-end
-
 group :test, :development do
+  gem 'spring',                               '1.1.3'
   gem 'byebug',                               '3.5.0'
   gem 'quiet_assets',                         '1.0.3'
 end
