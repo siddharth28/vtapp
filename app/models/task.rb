@@ -1,12 +1,14 @@
 class Task < ActiveRecord::Base
-  actable
-  acts_as_tree
 
-  has_many :child_tasks, class_name: Task, foreign_key: :parent_task_id, dependent: :restrict_with_error
+  actable
+  acts_as_tree cache_depth: true
+
+  has_many :child_tasks, class_name: Task, foreign_key: :parent_id, dependent: :restrict_with_error
   has_many :comments
   belongs_to :parent_task, class_name: Task
   belongs_to :track
 
+  attr_accessor :need_review
 
   def parent_task_title
     parent_task.try(:title)

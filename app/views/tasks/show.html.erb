@@ -1,0 +1,24 @@
+<p>
+  <strong>Task Title:</strong>
+  <%= @task.title %>
+</p>
+
+<p>
+  <strong>Task Description:</strong>
+  <%= @task.description %>
+</p>
+
+<% if @task.specific %>
+  <p>
+    <strong>Task Instructions:</strong>
+    <%= @task.instructions %>
+  </p>
+  <p>
+    <strong>Task sample solution:</strong>
+    <%= @task.sample_solution %>
+  </p>  
+  <p>
+    <strong>Task Reviewer:</strong>
+    <%= @task.reveiwer_name %>
+  </p>
+<% end %>
