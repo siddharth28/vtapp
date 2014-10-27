@@ -15,6 +15,7 @@
 //= require jquery-ui
 //= require autocomplete-rails
 //= require bootstrap-sprockets
+//= require ckeditor/init
 //= require ckeditor/ckeditor
 //= require autoSuggestBlur
 

@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
   TRACK_ROLES = { track_runner: :track_runner }
 
-  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
+  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -51,6 +51,7 @@ class User < ActiveRecord::Base
 
   def track_ids=(track_list)
     track_list.map!(&:to_i)
+    #FIXED
     #FIXME : This comparison is not correct, arrays should not compared like this
     if track_ids.sort != track_list.sort
       remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
@@ -65,6 +66,7 @@ class User < ActiveRecord::Base
   end
 
   def mentor_name
+    #CHANGED
     #TIP : we can use mentor.try(:name) and can eliminate if mentor
     mentor.try(:name)
   end
