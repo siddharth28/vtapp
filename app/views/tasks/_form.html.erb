@@ -18,9 +18,9 @@
   <div class="form-group">
     <%= task.label :parent_task, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
-      <%= task.hidden_field :parent_task_id %>
-      <%= task.autocomplete_field :parent_task_title, autocomplete_task_title_track_tasks_path, id_element: '#task_parent_task_id', class: 'form-control' %>
-      <%= errors_for_field(@task, :parent_task) %>
+      <%= task.hidden_field :parent_id %>
+      <%= task.autocomplete_field :parent_title, autocomplete_task_title_track_tasks_path, id_element: '#task_parent_id', class: 'form-control' %>
+      <%= errors_for_field(@task, :parent) %>
     </div>
   </div>
 

@@ -32,7 +32,6 @@ class TasksController < ResourceController
 
   def manage
     @tasks = Task.nested_set.select('id, title, parent_id').all
-    debugger
   end
 
 
