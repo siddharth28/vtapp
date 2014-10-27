@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024043004) do
+ActiveRecord::Schema.define(version: 20141024160722) do
 
   create_table "comments", force: true do |t|
     t.string   "data"
@@ -83,7 +83,11 @@ ActiveRecord::Schema.define(version: 20141024043004) do
     t.string   "actable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "ancestry"
+    t.integer  "ancestry_depth", default: 0
   end
+
+  add_index "tasks", ["ancestry"], name: "index_tasks_on_ancestry", using: :btree
 
   create_table "tracks", force: true do |t|
     t.string   "name"

@@ -1,4 +1,5 @@
 class TasksController < ResourceController
+  include TheSortableTreeController::Rebuild
   skip_load_resource only: [:index, :create]
   before_filter :get_track
 
@@ -28,6 +29,12 @@ class TasksController < ResourceController
       save_task(@exercise_task)
     end
   end
+
+  def manage
+    @tasks = Task.nested_set.select('id, title, parent_id').all
+    debugger
+  end
+
 
 
   private

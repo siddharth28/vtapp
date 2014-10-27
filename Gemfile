@@ -23,6 +23,9 @@ gem 'ckeditor',                               '4.1.0'
 gem 'rails4-autocomplete',                    '1.1.1'
 gem 'paperclip',                              '~> 4.2'
 gem 'active_record-acts_as',                  '1.0.2'
+gem 'awesome_nested_set',                     '3.0.1'
+gem 'the_sortable_tree',                      '~> 2.5.0'
+gem 'coffee-rails',                           '4.0.1'
 
 group :assets do
   gem 'therubyracer',                         '0.12.1', platforms: :ruby

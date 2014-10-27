@@ -5,6 +5,8 @@ class CreateTasks < ActiveRecord::Migration
       t.integer :parent_task_id
       t.string :description
       t.references :track
+      t.integer :lft
+      t.integer :rgt
       t.actable
       t.timestamps
     end

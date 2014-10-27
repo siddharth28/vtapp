@@ -17,6 +17,8 @@
 //= require bootstrap-sprockets
 //= require ckeditor/ckeditor
 //= require autoSuggestBlur
+//= require jquery.ui.nestedSortable
+//= require sortable_tree/initializer
 
 $(document).ready(function () {
   $user_mentor = $('#user_mentor_name');

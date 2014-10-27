@@ -1,5 +1,6 @@
 class Task < ActiveRecord::Base
   actable
+  include TheSortableTree::Scopes
 
   belongs_to :track
   belongs_to :parent_task, class_name: Task
