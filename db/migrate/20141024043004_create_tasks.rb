@@ -7,7 +7,7 @@ class CreateTasks < ActiveRecord::Migration
       t.references :track
       t.integer :lft
       t.integer :rgt
-      t.references :taskable, polymorphic: true
+      t.actable
       t.timestamps
     end
   end

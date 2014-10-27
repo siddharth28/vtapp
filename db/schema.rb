@@ -81,8 +81,8 @@ ActiveRecord::Schema.define(version: 20141024043004) do
     t.integer  "track_id"
     t.integer  "lft"
     t.integer  "rgt"
-    t.integer  "taskable_id"
-    t.string   "taskable_type"
+    t.integer  "actable_id"
+    t.string   "actable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
