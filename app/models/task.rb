@@ -1,5 +1,7 @@
 class Task < ActiveRecord::Base
+
   actable
+  acts_as_tree cache_depth: true
 
   belongs_to :track
   belongs_to :parent_task, class_name: Task
@@ -29,4 +31,11 @@ class Task < ActiveRecord::Base
     specific.try(:reviewer).try(:name)
   end
 
+  def reviewer_name
+    specific.try(:reviewer).try(:name)
+  end
+
+  def reviewer_id
+    specific.try(:reviewer_id)
+  end
 end

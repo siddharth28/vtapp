@@ -30,6 +30,10 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    acts_as_tree (2.1.0)
+      activerecord (>= 3.0.0)
+    ancestry (2.1.0)
+      activerecord (>= 3.0.0)
     arel (5.0.1.20140414130214)
     bcrypt (3.1.7)
     bootstrap-sass (3.2.0.2)
@@ -249,6 +253,8 @@ PLATFORMS
 
 DEPENDENCIES
   active_record-acts_as (= 1.0.2)
+  acts_as_tree (= 2.1.0)
+  ancestry (= 2.1.0)
   bootstrap-sass (= 3.2.0.2)
   byebug (= 3.5.0)
   cancan (= 1.6.10)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024043004) do
+ActiveRecord::Schema.define(version: 20141024160722) do
 
   create_table "comments", force: true do |t|
     t.string   "data"
@@ -76,14 +76,21 @@ ActiveRecord::Schema.define(version: 20141024043004) do
 
   create_table "tasks", force: true do |t|
     t.string   "title"
-    t.integer  "parent_task_id"
+    t.integer  "parent_id"
     t.string   "description"
     t.integer  "track_id"
+    t.integer  "lft"
+    t.integer  "rgt"
+    t.integer  "depth"
     t.integer  "actable_id"
     t.string   "actable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "ancestry"
+    t.integer  "ancestry_depth", default: 0
   end
+
+  add_index "tasks", ["ancestry"], name: "index_tasks_on_ancestry", using: :btree
 
   create_table "tracks", force: true do |t|
     t.string   "name"
@@ -114,11 +121,13 @@ ActiveRecord::Schema.define(version: 20141024043004) do
     t.string   "department"
     t.boolean  "enabled",                default: true
     t.integer  "mentor_id"
+    t.integer  "track_id"
   end
 
   add_index "users", ["company_id"], name: "index_users_on_company_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["track_id"], name: "index_users_on_track_id", using: :btree
 
   create_table "users_roles", id: false, force: true do |t|
     t.integer "user_id"

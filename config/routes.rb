@@ -26,8 +26,11 @@ Rails.application.routes.draw do
           get :remove_reviewer
         end
         get :autocomplete_user_name, on: :collection
+
         resources :tasks do
-          get :autocomplete_task_title, on: :collection
+          collection do
+            post :sort
+          end
           get :autocomplete_user_name, on: :collection
         end
       end
