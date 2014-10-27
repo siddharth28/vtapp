@@ -7,8 +7,8 @@ set :application, 'vtapp'
 #############################################################
 #   Servers
 #############################################################
-set :user, 'deploy'
-set :scm_passphrase, 'vinsol'
+# set :user, 'deploy'
+# set :scm_passphrase, 'vinsol'
 set :use_sudo, true
 
 # set :ssh_options, { :forward_agent => true }
