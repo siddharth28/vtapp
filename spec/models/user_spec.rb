@@ -19,6 +19,8 @@ describe User do
     describe 'has_many association' do
       it { should have_many(:mentees).class_name(User).with_foreign_key(:mentor_id).dependent(:restrict_with_error) }
       it { should have_many(:tracks).through(:roles).source(:resource) }
+      it { should have_many(:tasks).through(:usertasks) }
+      it { should have_many(:usertasks).dependent(:destroy) }
     end
 
     describe 'belongs_to' do
