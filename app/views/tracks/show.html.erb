@@ -15,7 +15,9 @@
   <p>Status: <%= @track.enabled ? 'Enabled' : 'Disabled' %></p>
 
   <%= link_to 'Back', tracks_path(company: @track.company_id) %>
-  <%= link_to 'New Task', new_track_task_path(@track) %>
+  <% if current_user.has_role?(:track_owner, @track) %>
+    <%= link_to 'New Task', new_track_task_path(@track) %>
+  <% end %>
   <%= link_to 'Tasks', track_tasks_path(@track) %>
 
 </div>

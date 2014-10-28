@@ -1,24 +1,13 @@
-<div class="form-group col-md-10">
-  <%= form_for([@usertask, @task], url: url_for(controller: :users, action: 'submit_task'), html: { class: 'form-horizontal'}) do |usertask| %>
+<div class="form-group col-md-10 task-show">
+  <%= form_for([@usertask], url: url_for(controller: :users, action: 'submit_task'), html: { class: 'form-horizontal'}) do |usertask| %>
     <div class="form-group">
       <strong>Task Title:</strong>
-      <div class="col-sm-4">
-        <%= @task.title %>
-      </div>
+      <%= @usertask.task.title %>
     </div>
 
     <div class="form-group">
       <strong>Task Description:</strong>
-      <div class="col-sm-4">
-        <%= @task.description %>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <%= usertask.label :url, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-4">
-        <%= usertask.file_field :sample_solution %>
-      </div>
+      <%= @usertask.task.description %>
     </div>
 
     <div class="form-group">
@@ -40,6 +29,6 @@
       <%= current_user.current_task_state(params[:task_id]) %>
     </div>
 
-    <%= task.submit 'Save task', class: 'btn btn-default btn-lg' %>
+    <%= usertask.submit 'Submit', class: 'btn btn-default btn-lg' %>
   <% end %>
 </div>
