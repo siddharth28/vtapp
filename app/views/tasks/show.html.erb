@@ -1,25 +1,28 @@
-<p>
+<div class="form-group">
   <strong>Task Title:</strong>
   <%= @task.title %>
-</p>
+</div>
 
-<p>
+<div class="form-group">
   <strong>Task Description:</strong>
   <%= @task.description %>
-</p>
+</div>
 
 <% if @task.specific %>
-  <p>
+  <div class="form-group">
     <strong>Task Instructions:</strong>
     <%= @task.instructions %>
-  </p>
-  <p>
+  </div>
+
+  <div class="form-group">
     <strong>Task sample solution:</strong>
     <%= @task.sample_solution %>
-  </p>
-  <p>
+  </div>
+
+  <div class="form-group">
     <strong>Task Reviewer:</strong>
     <%= @task.reviewer_name %>
-  </p>
+  </div>
+
+  <%= link_to 'Edit', edit_track_task_path(@track, @task)%>
 <% end %>
-<%= link_to 'Edit', edit_track_task_path(@track, @task)%>
