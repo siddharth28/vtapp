@@ -14,7 +14,7 @@ describe Usertask do
     end
 
     describe 'has_many' do
-      it { should belong_to(:comments).dependent(:destroy) }
+      it { should have_many(:comments).dependent(:destroy) }
       it { should have_many(:urls).dependent(:destroy) }
     end
   end

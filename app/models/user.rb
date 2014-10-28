@@ -94,7 +94,7 @@ class User < ActiveRecord::Base
   end
 
   def current_task_state(task_id)
-    TASK_STATES[find_users_task(task_id).aasm_state]
+    TASK_STATES[find_users_task(task_id).aasm_state.to_sym]
   end
 
   private
