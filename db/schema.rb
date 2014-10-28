@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024160722) do
+ActiveRecord::Schema.define(version: 20141027151831) do
 
   create_table "comments", force: true do |t|
     t.string   "data"
@@ -121,13 +121,11 @@ ActiveRecord::Schema.define(version: 20141024160722) do
     t.string   "department"
     t.boolean  "enabled",                default: true
     t.integer  "mentor_id"
-    t.integer  "track_id"
   end
 
   add_index "users", ["company_id"], name: "index_users_on_company_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  add_index "users", ["track_id"], name: "index_users_on_track_id", using: :btree
 
   create_table "users_roles", id: false, force: true do |t|
     t.integer "user_id"
@@ -135,5 +133,13 @@ ActiveRecord::Schema.define(version: 20141024160722) do
   end
 
   add_index "users_roles", ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
+
+  create_table "usertasks", force: true do |t|
+    t.integer  "task_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "aasm_state"
+  end
 
 end
