@@ -11,11 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141027151831) do
+ActiveRecord::Schema.define(version: 20141028095416) do
 
   create_table "comments", force: true do |t|
     t.string   "data"
-    t.integer  "task_id"
+    t.integer  "usertask_id"
     t.integer  "commenter_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -94,9 +94,9 @@ ActiveRecord::Schema.define(version: 20141027151831) do
 
   create_table "tracks", force: true do |t|
     t.string   "name"
-    t.string   "description"
-    t.string   "instructions"
-    t.string   "references"
+    t.text     "description"
+    t.text     "instructions"
+    t.text     "references"
     t.boolean  "enabled"
     t.integer  "company_id"
     t.datetime "created_at"
