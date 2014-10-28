@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    aasm (3.4.0)
     actionmailer (4.1.6)
       actionpack (= 4.1.6)
       actionview (= 4.1.6)
@@ -252,6 +253,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm (= 3.4.0)
   active_record-acts_as (= 1.0.2)
   acts_as_tree (= 2.1.0)
   ancestry (= 2.1.0)
