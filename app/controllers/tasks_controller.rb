@@ -30,24 +30,12 @@ class TasksController < ResourceController
     end
   end
 
-  def sort
-    debugger;
-    params[:task].sort { |a, b| a <=> b }.each_with_index do |id, index|
-      value = id[1][:id]
-      position = id[1][:position]
-      position = position.to_i + 1
-      parent = id[1][:parent_id]
-      Task.update(value, :position => position, :parent_id => parent)
-    end
-    render :nothing => true
-  end
-
   private
     def task_params
       if params[:task][:need_review] == '0'
-        params.require(:task).permit(:title, :description, :parent_id, :need_review, :ancestry_depth)
+        params.require(:task).permit(:title, :description, :parent_id, :need_review, :ancestry_depth, :aasm_state)
       elsif params[:task][:need_review] == '1'
-        params.require(:task).permit(:title, :description, :parent_task_id, :instructions, :reviewer_id, :is_hidden, :sample_solution, :need_review)
+        params.require(:task).permit(:title, :description, :parent_task_id, :instructions, :reviewer_id, :is_hidden, :sample_solution, :need_review, :aasm_state)
       end
     end
 

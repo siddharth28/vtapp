@@ -36,6 +36,14 @@ class UsersController < ResourceController
     end
   end
 
+  def start_task
+    @task = current_user.usertasks.create(task_id: params[:task_id]).task
+  end
+
+  def submit_task
+    current_user.submit(params[:id])
+  end
+
   private
     def user_params
       #FIXED
