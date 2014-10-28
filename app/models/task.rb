@@ -1,5 +1,4 @@
 class Task < ActiveRecord::Base
-
   actable
   acts_as_tree cache_depth: true
 
@@ -8,28 +7,12 @@ class Task < ActiveRecord::Base
 
   has_many :child_tasks, class_name: Task, foreign_key: :parent_task_id, dependent: :restrict_with_error
   has_many :comments
+  has_many :usertasks
+  has_many :users, through: :usertasks
 
   attr_accessor :need_review
 
   validates :title, presence: true
-
-  state_machine :state, initial: :not_started_yet do
-    event :start do
-      transition :not_started_yet => :in_progress
-    end
-
-    event :submit do
-      transition :in_progress => :submitted
-    end
-
-    event :accepted do
-      transition :submitted => :completed
-    end
-
-    event :rejected do
-      transition :submitted => :in_progress
-    end
-  end
 
   def parent_task_title
     parent_task.try(:title)
