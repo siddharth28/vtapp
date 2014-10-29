@@ -5,7 +5,6 @@ class ExerciseTask < ActiveRecord::Base
   belongs_to :reviewer, class_name: User
   has_many :solutions
 
-  validates_attachment_file_name :sample_solution, :matches => [/zip\Z/, /rar\Z/]
-
-  validates :reviewer, presence: true, if: :reviewer_id?
+  validates_attachment :sample_solution, content_type: { content_type: "application/zip" }
+  validates :reviewer, presence: true
 end
