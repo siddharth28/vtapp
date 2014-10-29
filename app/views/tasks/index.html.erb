@@ -1,5 +1,3 @@
-
-<% @tasks.each do |task| %>
-<%= task.title %>
-<%= link_to task.title, [@track, task] %>
-<% end %>
+<ol class="sortable_tree">
+  <%= just_tree(@tasks, namespace: @track) %>
+</ol>

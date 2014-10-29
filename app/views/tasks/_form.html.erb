@@ -9,7 +9,7 @@
   <div class="form-group">
     <%= task.label :task_description, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
-      <%= task.text_field :description, class: 'form-control' %>
+      <%= task.text_area :description, class: 'form-control' %>
       <%= errors_for_field(@task, :description) %>
     </div>
   </div>
@@ -36,7 +36,7 @@
   <div class="form-group">
     <%= task.label :task_instructions, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
-      <%= task.text_field :instructions, class: 'form-control' %>
+      <%= task.text_area :instructions, class: 'form-control' %>
     </div>
   </div>
 

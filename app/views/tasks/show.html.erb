@@ -15,7 +15,9 @@
   </p>
   <p>
     <strong>Task sample solution:</strong>
-    <%= @task.sample_solution %>
+    <% if @task.sample_solution.path %>
+      <%= link_to 'Download',[:sample_solution, @track, @task] %>
+    <% end %>
   </p>  
   <p>
     <strong>Task Reviewer:</strong>
