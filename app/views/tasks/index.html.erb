@@ -14,10 +14,10 @@
           <div class="dd3-content">
             <%= task.title %>
             <% if current_user.has_role?(:track_runner, task.track) %>
-              <% if current_user.current_task_state?(:not_started_yet, task) %>
-                <%= link_to 'Start', user_start_task_path(current_user, task_id: task) %>
-              <% elsif %>
+              <% if current_user.current_task_state?(task.id) %>
                 <%= link_to current_user.current_task_state(task), user_started_task_path(current_user, task_id: task) %>
+              <% elsif %>
+                <%= link_to 'Start', user_start_task_path(current_user, task_id: task) %>
               <% end %>
             <% end %>
           </div>
