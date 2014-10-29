@@ -1,0 +1,57 @@
+<%= form_for(@usertask, url: url_for(controller: :users, action: 'submit_task', task_id: @usertask.task.id), html: { class: 'form-horizontal'}) do |usertask| %>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Task Title</label>
+    <div class="col-sm-10">
+      <%= @usertask.task.title %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Task Description</label>
+    <div class="col-sm-10">
+      <%= @usertask.task.description %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">URL Submitted</label>
+    <div class="col-sm-10">
+      <% @usertask.urls.each do |url| %>
+        <%= link_to url.name %><br>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">URL</label>
+    <div class="col-sm-10">
+      <%= usertask.url_field :url, :class => 'url_field' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Comment</label>
+    <div class="col-sm-10">
+      <%= usertask.text_area :comment, class: "span12", rows: 3, placeholder: "Click to add in a comment.." %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Task Status</label>
+    <div class="col-sm-10">
+      <%= current_user.current_task_state(params[:task_id]) %>
+    </div>
+  </div>
+
+  <div class="col-sm-offset-2 col-sm-10">
+    <%= usertask.submit 'Submit', class: 'btn btn-default btn-lg' %>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Comments</label><br>
+    <div class="col-sm-5">
+      <% @usertask.comments.each do |comment| %>
+        <p class="bg-info"><%= comment.data %></p><br>
+      <% end %>
+    </div>
+  </div>
+<% end %>
