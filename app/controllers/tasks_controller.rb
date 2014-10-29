@@ -18,18 +18,20 @@ class TasksController < ResourceController
 
   def create
     if params[:task][:need_review] == '1'
-      @task = ExerciseTask.new(task_params)
+      @exercise_task = ExerciseTask.new(task_params)
+      @task = @exercise_task.task
+      save_task(@exercise_task)
     else
       @task = Task.new(task_params)
+      save_task(@task)
     end
-    save_task(@task)
   end
 
   def update
     if params[:task][:need_review] == '1'
-      exercise_task = @task.specific || ExerciseTask.new
-      exercise_task.task ||= @task
-      update_task(exercise_task)
+      @exercise_task = @task.specific || ExerciseTask.new
+      @exercise_task.task ||= @task
+      update_task(@exercise_task)
     else
       @task.specific && @task.specific.destroy
       update_task(@task)
