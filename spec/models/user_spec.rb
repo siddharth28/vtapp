@@ -342,6 +342,12 @@ describe User do
           it { expect(mentor.send(:find_users_task, task.id)).to eql(nil) }
         end
       end
+
+      describe '#submit' do
+        before { usertask.save }
+        it { expect{ user.submit({ url: 'http://abc.com', comment: 'Comment' }, task.id) }.to change{ user.usertasks.find(usertask.id).aasm_state }.from("in_progress").to("submitted") }
+        it { expect(user.submit({ url: 'http://abc.com', comment: 'Comment' }, task.id)).to eql(true) }
+      end
     end
   end
 end

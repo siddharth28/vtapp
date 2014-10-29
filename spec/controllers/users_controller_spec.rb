@@ -9,8 +9,18 @@ describe UsersController do
   let(:usertasks) { double(ActiveRecord::Relation) }
   let(:usertask) { mock_model(Usertask) }
 
+  def sign_in(user)
+    if user.nil?
+      allow(request.env['warden']).to receive(:authenticate!).and_throw(:warden, {:scope => :user})
+      allow(controller).to receive(:current_user).and_return(nil)
+    else
+      allow(request.env['warden']).to receive(:authenticate!).and_return(user)
+      allow(controller).to receive(:current_user).and_return(user)
+    end
+  end
+
   before do
-    allow(request.env['warden']).to receive(:authenticate!).and_return(user)
+    sign_in(user)
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:current_ability).and_return(ability)
     allow(ability).to receive(:authorize!).and_return(true)
@@ -200,19 +210,19 @@ describe UsersController do
 
     describe 'response' do
       before { send_request }
-      it { expect(response).to redirect_to action: :started_task, task_id: 1 }
+      it { expect(response).to redirect_to action: :task_description, task_id: 1 }
       it { expect(response).to have_http_status(302) }
     end
   end
 
-  describe '#started_task' do
+  describe '#task_description' do
     before do
       allow(user).to receive(:usertasks).and_return(usertasks)
       allow(usertasks).to receive(:find_by).with(task_id: "1").and_return(usertask)
     end
 
     def send_request
-      get :started_task, { task_id: 1, user_id: 1 }
+      get :task_description, { task_id: 1, user_id: 1 }
     end
 
     describe 'expects to send' do
@@ -229,7 +239,28 @@ describe UsersController do
     describe 'response' do
       before { send_request }
       it { expect(response).to have_http_status(200) }
-      it { expect(response).to render_template :started_task }
+      it { expect(response).to render_template :task_description }
+    end
+  end
+
+  describe '#submit_task' do
+    before do
+      allow(user).to receive(:submit).with({"url"=>"http://Example.com", "comment"=>"Comment"}, "1").and_return(usertasks)
+    end
+
+    def send_request
+      patch :submit_task, { usertask: { url: 'http://Example.com', comment: 'Comment' }, task_id: 1, user_id: 1 }
+    end
+
+    describe 'expects to send' do
+      it { expect(user).to receive(:submit).with({"url"=>"http://Example.com", "comment"=>"Comment"}, "1").and_return(usertasks) }
+      after { send_request }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to redirect_to action: :task_description, task_id: 1 }
+      it { expect(response).to have_http_status(302) }
     end
   end
 end
