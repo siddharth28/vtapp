@@ -31,7 +31,7 @@ describe Task do
       end
 
       context 'task with exercise task' do
-        let(:exercise_task) { create(:exercise_task, track: track) }
+        let(:exercise_task) { create(:exercise_task, track: track, reviewer: user) }
         let(:task) { exercise_task.task }
 
         it { expect(task.need_review).to eq(1) }
@@ -41,16 +41,16 @@ describe Task do
     describe '#dynamic instance methods' do
       context 'no exercise task' do
 
-        [:instructions, :is_hidden, :sample_solution, :reviewer_id].each do |method|
+        [:instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer].each do |method|
           it { expect(task.send(method)).to eq(nil) }
         end
 
       end
       context 'task with exercise_task' do
-        let(:exercise_task) { create(:exercise_task, track: track) }
+        let(:exercise_task) { create(:exercise_task, track: track, reviewer: user) }
         let(:task) { exercise_task.task }
 
-        [:instructions, :is_hidden, :sample_solution, :reviewer_id].each do |method|
+        [:instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer].each do |method|
           it { expect(task.send(method)).to eq(task.specific.send(method)) }
         end
       end

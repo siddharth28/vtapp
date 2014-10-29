@@ -17,7 +17,7 @@ class Task < ActiveRecord::Base
     specific ? 1 : 0
   end
 
-  [:instructions, :is_hidden, :sample_solution, :reviewer_id].each do |method|
+  [:instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer].each do |method|
     define_method(method) do
       specific.try(method)
     end

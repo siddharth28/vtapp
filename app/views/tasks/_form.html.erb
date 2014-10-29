@@ -53,7 +53,7 @@
     <div class="col-sm-4">
       <%= task.hidden_field :reviewer_id %>
       <%= task.autocomplete_field :reviewer_name, autocomplete_user_name_track_tasks_path, id_element: '#task_reviewer_id', class: 'form-control' %>
-      <%= errors_for_field(@task, :parent_task) %>
+      <%= errors_for_field(@exercise_task, :reviewer) if @exercise_task %>
     </div>
   </div>
 
@@ -62,6 +62,7 @@
     <%= task.label :sample_solution, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
       <%= task.file_field :sample_solution %>
+      <%= errors_for_field(@exercise_task, :sample_solution) if @exercise_task %>
     </div>
   </div>
 
