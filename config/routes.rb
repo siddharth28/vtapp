@@ -16,8 +16,8 @@ Rails.application.routes.draw do
         get :autocomplete_user_name, on: :collection
         get :autocomplete_user_department, on: :collection
         get :start_task
-        get :started_task
-        get :submit_task
+        get :task_description
+        patch :submit_task
       end
 
       resources :tracks do

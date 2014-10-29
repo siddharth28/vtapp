@@ -22,7 +22,7 @@ class UsersController < ResourceController
       #FIXME : Typo, 'user' should be with capital 'u'
       redirect_to @user, notice: "User #{ @user.name } is successfully created."
     else
-      render action: 'new'
+      render action: :new
     end
   end
 
@@ -32,21 +32,22 @@ class UsersController < ResourceController
       #FIXME : Typo, 'user' should be with capital 'u'
       redirect_to @user, notice: "User #{ @user.name } is successfully updated."
     else
-      render action: 'edit'
+      render action: :edit
     end
   end
 
   def start_task
     current_user.usertasks.create(task_id: params[:task_id])
-    redirect_to action: :started_task, task_id: params[:task_id]
+    redirect_to action: :task_description, task_id: params[:task_id]
   end
 
-  def started_task
+  def task_description
     @usertask = current_user.usertasks.find_by(task_id: params[:task_id])
   end
 
   def submit_task
-    current_user.submit(params[:id])
+    current_user.submit(params[:usertask], params[:task_id])
+    redirect_to action: :task_description, task_id: params[:task_id]
   end
 
   private
