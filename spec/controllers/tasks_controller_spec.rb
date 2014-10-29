@@ -71,6 +71,7 @@ describe TasksController do
       before do
         allow(ExerciseTask).to receive(:new).and_return(exercise_task)
         allow(exercise_task).to receive(:save).and_return(true)
+        allow(exercise_task).to receive(:task).and_return(task)
         allow(exercise_task).to receive(:title)
       end
 
@@ -87,7 +88,7 @@ describe TasksController do
 
       describe 'assigns' do
         before { send_request }
-        it { expect(assigns(:task)).to eq(exercise_task) }
+        it { expect(assigns(:task)).to eq(task) }
       end
 
       describe 'response' do
