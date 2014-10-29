@@ -82,19 +82,15 @@ class User < ActiveRecord::Base
   end
 
   def submit(task_id)
-    usertasks.find_by(task_id: task_id).submit
+    usertasks.find_by(task_id: task_id).submit!
   end
 
-  def current_task_state?(state, task)
-    if state == :not_started_yet
-      find_users_task(task.id).blank?
-    else
-      find_users_task(task.id).aasm_state == state.to_s
-    end
+  def current_task_state?(task_id)
+    !!find_users_task(task_id).try(:aasm_state)
   end
 
   def current_task_state(task_id)
-    TASK_STATES[find_users_task(task_id).aasm_state.to_sym]
+    TASK_STATES[find_users_task(task_id).try(:aasm_state).try(:to_sym)]
   end
 
   private
