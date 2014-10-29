@@ -39,17 +39,17 @@ class User < ActiveRecord::Base
   scope :group_by_department, -> { group(:department) }
   scope :with_company, ->(company_id) { where(company_id: company_id) }
 
+  ROLES.each do |key, method|
+    define_method "#{ method }?" do
+      roles.any? { |role| role.name == "#{ method }" }
+    end
+  end
+
   def active_for_authentication?
     if super_admin?
       super
     else
       super && enabled && company.enabled
-    end
-  end
-
-  ROLES.each do |key, method|
-    define_method "#{ method }?" do
-      roles.any? { |role| role.name == "#{ method }" }
     end
   end
 
@@ -83,8 +83,9 @@ class User < ActiveRecord::Base
     value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
   end
 
-  def submit(task_id)
-    usertasks.find_by(task_id: task_id).submit!
+  def submit(arg, task_id)
+    usertask = usertasks.find_by(task_id: task_id)
+    usertask.submit_data(arg[:url], arg[:comment])
   end
 
   def current_task_state?(task_id)
