@@ -15,15 +15,15 @@ class Usertask < ActiveRecord::Base
     state :completed
 
     event :submit do
-      transitions in_progress: :submitted
+      transitions from: :in_progress, to: :submitted
     end
 
-    event :accepted do
-      transitions submitted: :completed
+    event :accept do
+      transitions from: :submitted, to: :completed
     end
 
-    event :rejected do
-      transitions submitted: :in_progress
+    event :reject do
+      transitions from: :submitted, to: :in_progress
     end
   end
 end
