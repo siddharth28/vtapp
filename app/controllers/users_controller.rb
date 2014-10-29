@@ -38,7 +38,7 @@ class UsersController < ResourceController
 
   def start_task
     current_user.usertasks.create(task_id: params[:task_id])
-    redirect_to action: started_task
+    redirect_to action: :started_task, task_id: params[:task_id]
   end
 
   def started_task
