@@ -19,10 +19,3 @@
 //= require autoSuggestBlur
 //= require jquery.ui.nestedSortable
 //= require sortable_tree/initializer
-
-$(document).ready(function () {
-  $user_mentor = $('#user_mentor_name');
-  $user_mentor_id = $('#user_mentor_id');
-  checkAutoSuggest($user_mentor, $user_mentor_id);
-});
-
