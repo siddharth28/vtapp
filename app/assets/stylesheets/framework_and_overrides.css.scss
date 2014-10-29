@@ -106,6 +106,14 @@ section {
   width: 1300px;
   margin: 0 auto;
 }
+
+.task_form {
+  padding-top: 30px;
+  padding-left: 350px;
+  width: 900px;
+  margin: 0 auto;
+}
+
 .track_form form {
   @extend .well;
   @extend .well-lg;
