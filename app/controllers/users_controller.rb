@@ -36,6 +36,19 @@ class UsersController < ResourceController
     end
   end
 
+  def start_task
+    current_user.usertasks.create(task_id: params[:task_id])
+    redirect_to action: :started_task, task_id: params[:task_id]
+  end
+
+  def started_task
+    @usertask = current_user.usertasks.find_by(task_id: params[:task_id])
+  end
+
+  def submit_task
+    current_user.submit(params[:id])
+  end
+
   private
     def user_params
       #FIXED

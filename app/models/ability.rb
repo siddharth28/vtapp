@@ -11,6 +11,7 @@ class Ability
     elsif user.account_owner?
       can :manage, User, company: user.company
       can :manage, Track, company: user.company
+      can :manage, Task
     elsif user.account_admin?
       can :read, User
       can :create, User
@@ -18,6 +19,12 @@ class Ability
         !(other_user.account_owner? || other_user.account_admin?)
       end
       can :manage, Track, company: user.company
+    elsif
+      can :manage, Track, company: user.company
+      can :read, Task
+      can :start_task, User
+      can :started_task, User
+      can :submit_task, User
     end
   end
 end

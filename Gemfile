@@ -5,7 +5,6 @@ gem 'rails',                                  '4.1.6'
 gem 'mysql2',                                 '0.3.16'
 gem 'jquery-rails',                           '3.1.2'
 gem 'jquery-ui-rails',                        '5.0.0'
-
 gem 'jbuilder',                               '~> 2.0'
 gem 'devise',                                 '3.3.0'
 gem 'devise-async',                           '0.9.0'
@@ -15,24 +14,26 @@ gem 'bootstrap-sass',                         '3.2.0.2'
 gem 'delayed_job_active_record',              '4.0.2'
 gem 'kaminari',                               '0.16.1'
 gem 'ransack',                                '1.4.1'
-gem 'capistrano',                             '~>3.2.0'
-gem 'capistrano-bundler',                     '~>1.1.3'
-gem 'capistrano-rails',                       '~>1.1.2'
 gem 'daemons',                                '1.1.9'
 gem 'ckeditor',                               '4.1.0'
 gem 'rails4-autocomplete',                    '1.1.1'
+gem 'paperclip',                              '~> 4.2'
+gem 'active_record-acts_as',                  '1.0.2'
+gem 'ancestry',                               '2.1.0'
+gem 'acts_as_tree',                           '2.1.0'
+gem 'aasm',                                   '3.4.0'
 
 group :assets do
   gem 'therubyracer',                         '0.12.1', platforms: :ruby
   gem 'uglifier',                             '>= 1.3.0'
   gem 'sass-rails',                           '~> 4.0.3'
-end
-
-group :development do
-  gem 'spring',                               '1.1.3'
+  gem 'capistrano',                           '~>3.2.0'
+  gem 'capistrano-bundler',                   '~>1.1.3'
+  gem 'capistrano-rails',                     '~>1.1.2'
 end
 
 group :test, :development do
+  gem 'spring',                               '1.1.3'
   gem 'byebug',                               '3.5.0'
   gem 'quiet_assets',                         '1.0.3'
 end

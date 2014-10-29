@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
   TRACK_ROLES = { track_runner: :track_runner }
+  TASK_STATES = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
 
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
   devise :database_authenticatable, :registerable, :async,
@@ -9,6 +10,9 @@ class User < ActiveRecord::Base
 
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
+  has_many :usertasks, dependent: :destroy
+  has_many :tasks, through: :usertasks
+
   belongs_to :company
   belongs_to :mentor, class_name: User
 
@@ -62,7 +66,7 @@ class User < ActiveRecord::Base
   end
 
   def track_ids
-    self.persisted? ? Track.with_role(TRACK_ROLES[:track_runner], self).ids : [] 
+    self.persisted? ? Track.with_role(TRACK_ROLES[:track_runner], self).ids : []
   end
 
   def mentor_name
@@ -77,6 +81,18 @@ class User < ActiveRecord::Base
 
   def admin=(value)
     value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
+  end
+
+  def submit(task_id)
+    usertasks.find_by(task_id: task_id).submit!
+  end
+
+  def current_task_state?(task_id)
+    !!find_users_task(task_id).try(:aasm_state)
+  end
+
+  def current_task_state(task_id)
+    TASK_STATES[find_users_task(task_id).try(:aasm_state).try(:to_sym)]
   end
 
   private
@@ -120,5 +136,9 @@ class User < ActiveRecord::Base
 
     def display_user_details
       "#{ name } : #{ email }"
+    end
+
+    def find_users_task(task_id)
+      usertasks.find_by(task_id: task_id)
     end
 end

@@ -6,6 +6,8 @@ describe UsersController do
   let(:current_user) { mock_model(User) }
   let(:users) { double(ActiveRecord::Relation) }
   let(:ability) { double(Ability) }
+  let(:usertasks) { double(ActiveRecord::Relation) }
+  let(:usertask) { mock_model(Usertask) }
 
   before do
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
@@ -28,9 +30,9 @@ describe UsersController do
     end
 
     describe 'expects to send' do
-      after { send_request }
       it { expect(User).to receive(:find).and_return(user) }
       it { expect(controller).to receive(:authenticate_user!) }
+      after { send_request }
     end
 
     describe 'assigns' do
@@ -60,7 +62,6 @@ describe UsersController do
     end
 
     describe 'expects to receive' do
-      after { send_request }
       it { expect(user).to receive(:company).and_return(company) }
       it { expect(company).to receive(:users).and_return(users) }
       it { expect(users).to receive(:includes).with(:roles).and_return(users) }
@@ -68,6 +69,7 @@ describe UsersController do
       it { expect(users).to receive(:result).and_return(users) }
       it { expect(users).to receive(:page).with(nil).and_return(users) }
       it { expect(users).to receive(:per).with(20).and_return(users) }
+      after { send_request }
     end
 
     describe 'assigns' do
@@ -146,6 +148,13 @@ describe UsersController do
       patch :update, id: user, user: { name: 'Test User', email: 'test_email@email.com' }
     end
 
+    describe 'expects to send' do
+      it { expect(User).to receive(:find).and_return(user) }
+      it { expect(user).to receive(:update).and_return(true) }
+      it { expect(user).to receive(:account_owner?).and_return(true) }
+      after { send_request }
+    end
+
     describe 'assigns' do
       before { send_request }
       it { expect(assigns(:user)).to eq(user) }
@@ -169,6 +178,58 @@ describe UsersController do
         it { expect(response).to have_http_status(200) }
         it { expect(flash[:notice]).to be_nil }
       end
+    end
+  end
+
+  describe '#start_task' do
+    before do
+      allow(user).to receive(:usertasks).and_return(usertasks)
+      allow(usertasks).to receive(:create).and_return(usertask)
+      allow(usertasks).to receive(:find_by).with(task_id: "1").and_return(usertask)
+    end
+
+    def send_request
+      get :start_task, { task_id: 1, user_id: 1 }
+    end
+
+    describe 'expects to send' do
+      it { expect(user).to receive(:usertasks).and_return(usertasks) }
+      it { expect(usertasks).to receive(:create).and_return(usertask) }
+      after { send_request }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to redirect_to action: :started_task, task_id: 1 }
+      it { expect(response).to have_http_status(302) }
+    end
+  end
+
+  describe '#started_task' do
+    before do
+      allow(user).to receive(:usertasks).and_return(usertasks)
+      allow(usertasks).to receive(:find_by).with(task_id: "1").and_return(usertask)
+    end
+
+    def send_request
+      get :started_task, { task_id: 1, user_id: 1 }
+    end
+
+    describe 'expects to send' do
+      it { expect(user).to receive(:usertasks).and_return(usertasks) }
+      it { expect(usertasks).to receive(:find_by).with(task_id: "1").and_return(usertask) }
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:usertask)).to eq(usertask) }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template :started_task }
     end
   end
 end

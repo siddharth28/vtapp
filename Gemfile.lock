@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    aasm (3.4.0)
     actionmailer (4.1.6)
       actionpack (= 4.1.6)
       actionview (= 4.1.6)
@@ -14,6 +15,9 @@ GEM
       activesupport (= 4.1.6)
       builder (~> 3.1)
       erubis (~> 2.7.0)
+    active_record-acts_as (1.0.2)
+      activerecord (~> 4.1.2)
+      activesupport (~> 4)
     activemodel (4.1.6)
       activesupport (= 4.1.6)
       builder (~> 3.1)
@@ -27,6 +31,10 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    acts_as_tree (2.1.0)
+      activerecord (>= 3.0.0)
+    ancestry (2.1.0)
+      activerecord (>= 3.0.0)
     arel (5.0.1.20140414130214)
     bcrypt (3.1.7)
     bootstrap-sass (3.2.0.2)
@@ -52,6 +60,10 @@ GEM
     ckeditor (4.1.0)
       mime-types
       orm_adapter (~> 0.5.0)
+    climate_control (0.0.3)
+      activesupport (>= 3.0)
+    cocaine (0.5.4)
+      climate_control (>= 0.0.3, < 1.0)
     codeclimate-test-reporter (0.4.1)
       simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.0)
@@ -124,6 +136,11 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (2.9.1)
     orm_adapter (0.5.0)
+    paperclip (4.2.0)
+      activemodel (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      cocaine (~> 0.5.3)
+      mime-types
     polyamorous (1.1.0)
       activerecord (>= 3.0)
     pry (0.10.1)
@@ -236,6 +253,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm (= 3.4.0)
+  active_record-acts_as (= 1.0.2)
+  acts_as_tree (= 2.1.0)
+  ancestry (= 2.1.0)
   bootstrap-sass (= 3.2.0.2)
   byebug (= 3.5.0)
   cancan (= 1.6.10)
@@ -255,6 +276,7 @@ DEPENDENCIES
   jquery-ui-rails (= 5.0.0)
   kaminari (= 0.16.1)
   mysql2 (= 0.3.16)
+  paperclip (~> 4.2)
   quiet_assets (= 1.0.3)
   rails (= 4.1.6)
   rails4-autocomplete (= 1.1.1)

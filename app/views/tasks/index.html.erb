@@ -1,0 +1,29 @@
+<menu id="nestable-menu">
+  <button type="button" data-action="expand-all">Expand All</button>
+  <button type="button" data-action="collapse-all">Collapse All</button>
+</menu>
+
+<div class="cf nestable-lists">
+  <div class="dd" id="nestable3">
+    <ol class="dd-list">
+      <% @tasks.at_depth(0).each do |task| %>
+        <li class="dd-item dd3-item" data-rel="level1" data-id="<%= task.id %>">
+          <div class="dd-handle dd3-handle">
+            Drag
+          </div>
+          <div class="dd3-content">
+            <%= task.title %>
+            <% if current_user.has_role?(:track_runner, task.track) %>
+              <% if current_user.current_task_state?(task.id) %>
+                <%= link_to current_user.current_task_state(task), user_started_task_path(current_user, task_id: task) %>
+              <% elsif %>
+                <%= link_to 'Start', user_start_task_path(current_user, task_id: task) %>
+              <% end %>
+            <% end %>
+          </div>
+          <%= render 'sub_tasks', tasks: task.children %>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+</div>

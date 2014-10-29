@@ -5,6 +5,7 @@ class Track < ActiveRecord::Base
   resourcify
 
   belongs_to :company
+  has_many :tasks
 
   attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
