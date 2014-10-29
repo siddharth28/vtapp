@@ -11,10 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141028095416) do
+ActiveRecord::Schema.define(version: 20141029123542) do
 
   create_table "comments", force: true do |t|
-    t.string   "data"
+    t.text     "data"
     t.integer  "usertask_id"
     t.integer  "commenter_id"
     t.datetime "created_at"
@@ -101,6 +101,11 @@ ActiveRecord::Schema.define(version: 20141028095416) do
     t.integer  "company_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "urls", force: true do |t|
+    t.string  "name"
+    t.integer "usertask_id"
   end
 
   create_table "users", force: true do |t|
