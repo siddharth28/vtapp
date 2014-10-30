@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141028095416) do
+ActiveRecord::Schema.define(version: 20141029211633) do
 
   create_table "comments", force: true do |t|
     t.string   "data"
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20141028095416) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "exercise_tasks", force: true do |t|
-    t.string   "instructions"
+    t.text     "instructions"
     t.string   "sample_solution_file_name"
     t.string   "sample_solution_content_type"
     t.integer  "sample_solution_file_size"
@@ -77,20 +77,15 @@ ActiveRecord::Schema.define(version: 20141028095416) do
   create_table "tasks", force: true do |t|
     t.string   "title"
     t.integer  "parent_id"
-    t.string   "description"
+    t.text     "description"
     t.integer  "track_id"
     t.integer  "lft"
     t.integer  "rgt"
-    t.integer  "depth"
     t.integer  "actable_id"
     t.string   "actable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "ancestry"
-    t.integer  "ancestry_depth", default: 0
   end
-
-  add_index "tasks", ["ancestry"], name: "index_tasks_on_ancestry", using: :btree
 
   create_table "tracks", force: true do |t|
     t.string   "name"
@@ -133,13 +128,5 @@ ActiveRecord::Schema.define(version: 20141028095416) do
   end
 
   add_index "users_roles", ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
-
-  create_table "usertasks", force: true do |t|
-    t.integer  "task_id"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "aasm_state"
-  end
 
 end
