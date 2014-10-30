@@ -9,7 +9,7 @@
   <div class="form-group">
     <%= task.label :task_description, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
-      <%= task.text_field :description, class: 'form-control' %>
+      <%= task.text_area :description, class: 'form-control' %>
       <%= errors_for_field(@task, :description) %>
     </div>
   </div>
@@ -18,7 +18,7 @@
     <%= task.label :parent_task, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
       <%= task.hidden_field :parent_id %>
-      <%= task.collection_select :parent_id, Task.at_depth(0), :id, :title, include_blank: true %>
+      <%= task.autocomplete_field :parent_title, autocomplete_task_title_track_tasks_path, id_element: '#task_parent_id', class: 'form-control' %>
       <%= errors_for_field(@task, :parent) %>
     </div>
   </div>
@@ -34,7 +34,7 @@
   <div class="form-group">
     <%= task.label :task_instructions, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
-      <%= task.text_field :instructions, class: 'form-control' %>
+      <%= task.text_area :instructions, class: 'form-control' %>
     </div>
   </div>
 
@@ -50,7 +50,7 @@
     <div class="col-sm-4">
       <%= task.hidden_field :reviewer_id %>
       <%= task.autocomplete_field :reviewer_name, autocomplete_user_name_track_tasks_path, id_element: '#task_reviewer_id', class: 'form-control' %>
-      <%= errors_for_field(@task, :parent_task) %>
+      <%= errors_for_field(@exercise_task, :reviewer) if @exercise_task %>
     </div>
   </div>
 
@@ -58,6 +58,7 @@
     <%= task.label :sample_solution, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
       <%= task.file_field :sample_solution %>
+      <%= errors_for_field(@exercise_task, :sample_solution) if @exercise_task %>
     </div>
   </div>
 

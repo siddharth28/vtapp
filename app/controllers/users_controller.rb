@@ -1,5 +1,5 @@
 class UsersController < ResourceController
-  skip_load_resource only: [:index, :create]
+
   before_action :authenticate_user!
   before_action :remove_empty_element_multiple_select, only: [:create, :update]
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details

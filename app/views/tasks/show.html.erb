@@ -16,10 +16,12 @@
 
   <div class="form-group">
     <strong>Task sample solution:</strong>
-    <%= @task.sample_solution %>
-  </div>
+    <% if @task.sample_solution.path %>
+      <%= link_to 'Download',[:sample_solution, @track, @task] %>
+    <% end %>
+  </p>
 
-  <div class="form-group">
+  <p>
     <strong>Task Reviewer:</strong>
     <%= @task.reviewer_name %>
   </div>

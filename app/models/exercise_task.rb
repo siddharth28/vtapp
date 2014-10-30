@@ -1,10 +1,11 @@
 class ExerciseTask < ActiveRecord::Base
-  acts_as :task
+  acts_as :task, dependent: :nullify
 
   has_attached_file :sample_solution
 
   has_many :solutions
   belongs_to :reviewer, class_name: User
 
-  validates :reviewer, presence: true, if: :reviewer_id?
+  validates_attachment :sample_solution, content_type: { content_type: "application/zip" }
+  validates :reviewer, presence: true
 end

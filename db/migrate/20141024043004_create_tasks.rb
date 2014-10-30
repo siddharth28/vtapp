@@ -7,7 +7,6 @@ class CreateTasks < ActiveRecord::Migration
       t.references :track
       t.integer :lft
       t.integer :rgt
-      t.integer :depth
       t.actable
       t.timestamps
     end
