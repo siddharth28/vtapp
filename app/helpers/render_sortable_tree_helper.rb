@@ -7,7 +7,7 @@
 # or use h.html_escape(node.content)
 # for escape potentially dangerous content
 module RenderSortableTreeHelper
-  module Render 
+  module Render
     class << self
       attr_accessor :h, :options
 
