@@ -4,7 +4,6 @@ class Task < ActiveRecord::Base
   include TheSortableTree::Scopes
 
   belongs_to :track
-  has_many :comments
   has_many :usertasks
   has_many :users, through: :usertasks
 
