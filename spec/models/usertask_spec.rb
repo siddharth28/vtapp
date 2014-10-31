@@ -35,16 +35,16 @@ describe Usertask do
       end
 
       context 'submit event' do
-        it { expect { exercise_usertask.exercise_submit! }.to change{ exercise_usertask.aasm_state }.from("in_progress").to("submitted") }
+        it { expect { exercise_usertask.submit! }.to change{ exercise_usertask.aasm_state }.from("in_progress").to("submitted") }
 
         context 'accepted event' do
-          before { exercise_usertask.exercise_submit! }
+          before { exercise_usertask.submit! }
 
           it { expect { exercise_usertask.accept! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("completed") }
         end
 
         context 'rejected event' do
-          before { exercise_usertask.exercise_submit! }
+          before { exercise_usertask.submit! }
           it { expect { exercise_usertask.reject! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("in_progress") }
         end
       end
@@ -58,7 +58,7 @@ describe Usertask do
       end
 
       context 'submit event' do
-        it { expect { usertask.task_submit! }.to change{ usertask.aasm_state }.from("in_progress").to("completed") }
+        it { expect { usertask.submit! }.to change{ usertask.aasm_state }.from("in_progress").to("completed") }
       end
     end
   end
@@ -91,10 +91,22 @@ describe Usertask do
         it { expect{ usertask.submit_task }.to change{ user.usertasks.find(usertask.id).aasm_state }.from("in_progress").to("completed") }
       end
 
-      context 'normal theory task' do
+      context 'exercise' do
         before { exercise_usertask.save }
         it { expect{ exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' }) }.to change{ user.usertasks.find(exercise_usertask.id).aasm_state }.from("in_progress").to("submitted") }
         it { expect( exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' })).to eql(true) }
+      end
+    end
+
+    describe '#check_exercise?' do
+      context 'normal theory exercise' do
+        before { usertask.save }
+        it { expect(usertask.check_exercise?).to eql(false) }
+      end
+
+      context 'exercise' do
+        before { exercise_usertask.save }
+        it { expect(exercise_usertask.check_exercise?).to eql(true) }
       end
     end
 
@@ -112,7 +124,7 @@ describe Usertask do
         end
 
         context 'After task submitted' do
-          before { usertask.task_submit! }
+          before { usertask.submit! }
           it { expect(usertask.start_time).not_to be_nil }
           it { expect(usertask.end_time).not_to be_nil }
         end
@@ -131,7 +143,7 @@ describe Usertask do
       end
 
       context 'After task submitted' do
-        before { exercise_usertask.exercise_submit! }
+        before { exercise_usertask.submit! }
         it { expect(exercise_usertask.start_time).not_to be_nil }
         it { expect(exercise_usertask.end_time).not_to be_nil }
       end

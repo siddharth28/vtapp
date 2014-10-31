@@ -321,7 +321,7 @@ describe User do
             it { expect(user.current_task_state(task.id)).to eql('Started') }
 
             context 'task submitted' do
-              it { expect{ usertask.task_submit! }.to change{ user.current_task_state(task.id) }.from('Started').to('Completed') }
+              it { expect{ usertask.submit! }.to change{ user.current_task_state(task.id) }.from('Started').to('Completed') }
             end
           end
 
@@ -330,15 +330,15 @@ describe User do
             it { expect(user.current_task_state(exercise_task.id)).to eql('Started') }
 
             context 'task submitted' do
-              it { expect{ exercise_usertask.exercise_submit! }.to change{ user.current_task_state(exercise_task.id) }.from('Started').to('Pending for review') }
+              it { expect{ exercise_usertask.submit! }.to change{ user.current_task_state(exercise_task.id) }.from('Started').to('Pending for review') }
 
               context 'task accepted' do
-                before { exercise_usertask.exercise_submit! }
+                before { exercise_usertask.submit! }
                 it { expect{ exercise_usertask.accept! }.to change{ user.current_task_state(exercise_task.id) }.from('Pending for review').to('Completed') }
               end
 
               context 'task accepted' do
-                before { exercise_usertask.exercise_submit! }
+                before { exercise_usertask.submit! }
                 it { expect{ exercise_usertask.reject! }.to change{ user.current_task_state(exercise_task.id) }.from('Pending for review').to('Started') }
               end
             end

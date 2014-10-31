@@ -18,8 +18,9 @@ class Usertask < ActiveRecord::Base
     state :submitted
     state :completed
 
-    event :exercise_submit, after: :add_end_time do
-      transitions from: :in_progress, to: :submitted
+    event :submit, after: :add_end_time do
+      transitions from: :in_progress, to: :submitted, guard: :check_exercise?
+      transitions from: :in_progress, to: :completed
     end
 
     event :accept do
@@ -29,20 +30,16 @@ class Usertask < ActiveRecord::Base
     event :reject do
       transitions from: :submitted, to: :in_progress
     end
-
-    event :task_submit, after: :add_end_time do
-      transitions from: :in_progress, to: :completed
-    end
   end
 
   def submit_task(*args)
-    task.specific ? submit_data(args[0][:url], args[0][:comment]) : task_submit!
+    task.specific ? submit_data(args[0][:url], args[0][:comment]) : submit!
   end
 
   def submit_data(url, comment)
     urls.find_or_create_by(name: url)
     comments.create(data: comment)
-    exercise_submit! unless(aasm_state == 'submitted')
+    submit! unless(aasm_state == 'submitted')
   end
 
   def add_start_time
@@ -51,5 +48,9 @@ class Usertask < ActiveRecord::Base
 
   def add_end_time
     self.end_time = Time.now
+  end
+
+  def check_exercise?
+    !!task.specific
   end
 end
