@@ -1,25 +1,20 @@
 class UsertasksController < ResourceController
 
-  def create
-    @usertask = current_user.usertasks.build(usertask_params)
-    if @usertask.save
-      redirect_to action: 'show', id: @usertask, task_id: @usertask.task_id
-    else
-      render action: :new
-    end
+  def start_task
+    @usertask = current_user.usertasks.create(usertask_params)
+    redirect_to action: :task_description, id: @usertask
   end
 
-  def show
-    @usertask = current_user.usertasks.find_by(task_id: params[:task_id])
+  def submit_task
+    @usertask.submit_task(params[:usertask])
+    redirect_to action: :task_description, id: params[:id]
   end
 
-  def update
-    @usertask.submit_task
-    redirect_to action: 'show', id: @usertask, task_id: params[:task_id]
+  def task_description
   end
 
   private
     def usertask_params
-      params.require(:usertask).permit(:user_id, :task_id)
+      params.require(:usertask).permit(:user_id, :task_id, :url, :comment)
     end
 end
