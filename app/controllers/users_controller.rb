@@ -36,19 +36,6 @@ class UsersController < ResourceController
     end
   end
 
-  def start_task
-    current_user.usertasks.create(task_id: params[:task_id])
-    redirect_to action: :started_task, task_id: params[:task_id]
-  end
-
-  def started_task
-    @usertask = current_user.usertasks.find_by(task_id: params[:task_id])
-  end
-
-  def submit_task
-    current_user.submit(params[:id])
-  end
-
   private
     def user_params
       #FIXED
@@ -63,7 +50,7 @@ class UsersController < ResourceController
     end
 
     def remove_empty_element_multiple_select
-      params[:user][:track_ids].reject!(&:empty?)
+      params[:user][:track_ids].reject!(&:blank?)
     end
 
     def get_autocomplete_items(parameters)
