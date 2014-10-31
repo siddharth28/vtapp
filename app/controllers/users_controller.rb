@@ -6,20 +6,14 @@ class UsersController < ResourceController
   autocomplete :user, :department
 
   def index
-    #FIXED
-    #FIXME : memoize current_user.company to current_company
     params[:q] ||= { s: "name {name:'asc'}" }
     @search = current_company.users.includes(:roles).search(params[:q])
     @users = @search.result.page(params[:page]).per(20)
   end
 
   def create
-    #FIXED
-    #FIXME : memoize current_user.company to current_company
     @user = current_company.users.build(user_params)
     if @user.save
-      #FIXED
-      #FIXME : Typo, 'user' should be with capital 'u'
       redirect_to @user, notice: "User #{ @user.name } is successfully created."
     else
       render action: 'new'
@@ -27,9 +21,8 @@ class UsersController < ResourceController
   end
 
   def update
+    # FIXME : What if normal or any other user updates ?
     if @user.update(user_params)
-      #FIXED
-      #FIXME : Typo, 'user' should be with capital 'u'
       redirect_to @user, notice: "User #{ @user.name } is successfully updated."
     else
       render action: 'edit'
@@ -38,13 +31,9 @@ class UsersController < ResourceController
 
   private
     def user_params
-      #FIXED
-      #FIXME : create dynamic method for account_owner?
       if current_user.account_owner?
         params.require(:user).permit(:name, :email, :department, :mentor_id, :admin, :enabled, track_ids: [])
       elsif current_user.account_admin?
-        #FIXED
-        #FIXME : create dynamic method for admin?
         params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, track_ids: [])
       end
     end
@@ -54,11 +43,10 @@ class UsersController < ResourceController
     end
 
     def get_autocomplete_items(parameters)
-      #FIXED
-      #FIXME : create scope for company
       if parameters[:method] == :department
         super(parameters).with_company(current_company).group_by_department
       else
+        # FIXME : use current_company here
         super(parameters).with_company(current_user.company)
       end
     end

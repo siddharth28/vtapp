@@ -9,6 +9,7 @@ class Track < ActiveRecord::Base
   attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
   validates :name, uniqueness: { case_sensitive: false }, presence: true
+  # FIXME : presence validations can ve clubbed in one
   validates :references, presence: true
   validates :description, presence: true
   validates :instructions, presence: true
@@ -19,13 +20,15 @@ class Track < ActiveRecord::Base
     company.users.with_role(:track_owner, self).first
   end
 
+  # FIXME : method name should be plural as it returns activerelation
   def reviewer
-
     company.users.with_role(:track_reviewer, self)
   end
 
   def add_reviewer(user_id)
     user = find_user(user_id)
+    # FIXME : dynamic track_runner? method can be used here
+    # FIXME : No need to check for role here.
     unless user.has_role?(:track_runner, self)
       user.add_role(:track_reviewer, self)
     end
@@ -38,6 +41,7 @@ class Track < ActiveRecord::Base
 
   private
     def assign_track_owner_role
+      # FIXME : This code can be simplified
       if company.users.ids.include?(owner_id)
         user = find_user(owner_id)
         user.add_role(:track_owner, self)

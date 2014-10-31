@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
+  # FIXME : this should be before_action
   before_filter :configure_permitted_parameters, if: :devise_controller?
 
   before_action :receive_resource
@@ -11,8 +12,6 @@ class ApplicationController < ActionController::Base
     @current_company ||= current_user.company
   end
 
-  #FIXED
-  #FIXME : Seperate methods for before action (do not use blocks unless required)
   #SEE Issue https://github.com/ryanb/cancan/issues/835
   def receive_resource
     resource = controller_name.singularize.to_sym
@@ -20,6 +19,7 @@ class ApplicationController < ActionController::Base
     params[resource] &&= send(method) if respond_to?(method, true)
   end
 
+  # FIXME : this should be above methods
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to '/', :alert => exception.message
   end
