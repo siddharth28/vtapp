@@ -40,12 +40,12 @@ module RenderTreeHelper
         usertask = options[:user].usertasks.find_by(task_id: options[:node].id)
         if options[:user].current_task_state?(options[:node].id)
           link_text = options[:user].current_task_state(options[:node])
-          url = h.url_for(controller: :usertasks, action: :show, id: usertask, task_id: options[:node])
+          url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
           method = :get
         else
           link_text = "Start #{ link_text }"
-          url = h.url_for(controller: :usertasks, action: :create, usertask: { user_id: options[:user], task_id: options[:node] })
-          method = :post
+          url = h.url_for(controller: :usertasks, action: :start_task, usertask: { user_id: options[:user], task_id: options[:node] })
+          method = :get
         end
 
         "
