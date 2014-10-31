@@ -14,7 +14,7 @@ class Usertask < ActiveRecord::Base
     state :submitted
     state :completed
 
-    event :submit do
+    event :exercise_submit do
       transitions from: :in_progress, to: :submitted
     end
 
@@ -25,5 +25,13 @@ class Usertask < ActiveRecord::Base
     event :reject do
       transitions from: :submitted, to: :in_progress
     end
+
+    event :task_submit do
+      transitions from: :in_progress, to: :completed
+    end
+  end
+
+  def submit_task
+    task.specific ? exercise_submit! : task_submit!
   end
 end

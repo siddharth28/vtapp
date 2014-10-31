@@ -26,6 +26,7 @@ class Ability
       can :started_task, User
       can :submit_task, User
       can :manage, Task
+      can :manage, Usertask
     end
   end
 end

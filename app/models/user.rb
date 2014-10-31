@@ -81,10 +81,6 @@ class User < ActiveRecord::Base
     value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
   end
 
-  def submit(task_id)
-    usertasks.find_by(task_id: task_id).submit!
-  end
-
   def current_task_state?(task_id)
     !!find_users_task(task_id).try(:aasm_state)
   end
