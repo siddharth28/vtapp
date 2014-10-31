@@ -1,6 +1,5 @@
 class Company < ActiveRecord::Base
-  #FIXED
-  #FIXME_AB: Don't hard code role use ROLES array/hash constant
+  #FIXME: ROLES constant is not needed here, can be accesses from User class
   ROLES = { account_owner: :account_owner }
 
   resourcify
@@ -24,6 +23,7 @@ class Company < ActiveRecord::Base
   def owner
     #FIXED
     #FIXME_AB: Don't hard code role use ROLES array/hash constant
+    # FIXME : Return active record from here
     users.with_role(ROLES[:account_owner], self)
     #FIXED
     #FIXME_AB: should not use .first here, return the arel object

@@ -1,2 +1,3 @@
 // FIXME_AB: Avoid using js in erb file. move to js file as a callback to ajax request
+// FIXME : use dom_id helper here
 $("#company_<%= @company.id %>").html("<%= escape_javascript(render(partial: 'link_to_enabled', locals: {company: @company})) %>");

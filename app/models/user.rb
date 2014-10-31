@@ -1,9 +1,11 @@
 class User < ActiveRecord::Base
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
+  #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class
   TRACK_ROLES = { track_runner: :track_runner }
 
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
+
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -12,8 +14,6 @@ class User < ActiveRecord::Base
   belongs_to :company
   belongs_to :mentor, class_name: User
 
-  #FIXED
-  #FIXME -> Write rspec of this line.
   attr_readonly :email, :company_id
 
   validates :mentor, presence: true, if: :mentor_id?
@@ -22,14 +22,10 @@ class User < ActiveRecord::Base
   validates :company, presence: true, unless: :super_admin?
   validates :name, presence: true
 
-  #email validation is provided by devise
-  #FIXME_AB: no validation on email
-
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
   #FIXME -> after_commit rspec remained
   after_commit :send_password_email, on: :create
-
 
   scope :with_company, ->(company) { where(company: company) }
   scope :group_by_department, -> { group(:department) }
@@ -43,6 +39,7 @@ class User < ActiveRecord::Base
     end
   end
 
+  # TIP : Put define_method before other methods but after callbacks/validations
   ROLES.each do |key, method|
     define_method "#{ method }?" do
       roles.any? { |role| role.name == "#{ method }" }
@@ -51,9 +48,11 @@ class User < ActiveRecord::Base
 
   def track_ids=(track_list)
     track_list.map!(&:to_i)
+    # NOT FIXED
     #FIXED
     #FIXME : This comparison is not correct, arrays should not compared like this
     if track_ids.sort != track_list.sort
+      # FIXME : This can be optimised
       remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
       add_track_objects = track_list.reject { |track| track_ids.include? track }.map { |track| Track.find_by(id: track) }
       add_track_objects.each { |track| add_role TRACK_ROLES[:track_runner], track }
@@ -66,15 +65,15 @@ class User < ActiveRecord::Base
   end
 
   def mentor_name
-    #CHANGED
-    #TIP : we can use mentor.try(:name) and can eliminate if mentor
     mentor.try(:name)
   end
 
+  #FIXME : method name not correct
   def admin
     account_admin?
   end
 
+  #FIXME : create reader for this
   def admin=(value)
     value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
   end
@@ -105,8 +104,6 @@ class User < ActiveRecord::Base
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
       if role.name == ROLES[:account_owner] && company.owner.first
-        #FIXED
-        #FIXME_AB: WE can avoid this nested if statement.
         raise 'There can be only one account owner'
       end
     end

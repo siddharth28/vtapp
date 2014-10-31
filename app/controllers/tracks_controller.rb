@@ -19,15 +19,18 @@ class TracksController < ResourceController
     @track.toggle!(:enabled)
   end
 
+  # FIXME : extract set_track to a before_action
   def reviewers
     set_track
   end
 
+  # FIXME : extract set_track to a before_action
   def assign_reviewer
     set_track
     @user = @track.add_reviewer(params[:track][:reviewer_id])
   end
 
+  # FIXME : extract set_track to a before_action
   def remove_reviewer
     set_track
     @track.remove_reviewer(params[:format])
