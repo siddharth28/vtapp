@@ -39,6 +39,7 @@ describe Usertask do
 
         context 'accepted event' do
           before { exercise_usertask.exercise_submit! }
+
           it { expect { exercise_usertask.accept! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("completed") }
         end
 
@@ -94,6 +95,45 @@ describe Usertask do
         before { exercise_usertask.save }
         it { expect{ exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' }) }.to change{ user.usertasks.find(exercise_usertask.id).aasm_state }.from("in_progress").to("submitted") }
         it { expect( exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' })).to eql(true) }
+      end
+    end
+
+    describe '#add_start_time' do
+      context 'normal theory task' do
+        context 'before initialization task' do
+          it { expect(usertask.start_time).to be_nil }
+          it { expect(usertask.end_time).to be_nil }
+        end
+
+        context 'After task started' do
+          before { usertask.save }
+          it { expect(usertask.start_time).not_to be_nil }
+          it { expect(usertask.end_time).to be_nil }
+        end
+
+        context 'After task submitted' do
+          before { usertask.task_submit! }
+          it { expect(usertask.start_time).not_to be_nil }
+          it { expect(usertask.end_time).not_to be_nil }
+        end
+      end
+
+      context 'exercise task' do
+        context 'before initialization task'
+        it { expect(exercise_usertask.start_time).to be_nil }
+        it { expect(exercise_usertask.end_time).to be_nil }
+      end
+
+      context 'After task started' do
+        before { exercise_usertask.save }
+        it { expect(exercise_usertask.start_time).not_to be_nil }
+        it { expect(exercise_usertask.end_time).to be_nil }
+      end
+
+      context 'After task submitted' do
+        before { exercise_usertask.exercise_submit! }
+        it { expect(exercise_usertask.start_time).not_to be_nil }
+        it { expect(exercise_usertask.end_time).not_to be_nil }
       end
     end
   end

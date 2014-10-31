@@ -5,7 +5,6 @@ describe ExerciseTask do
   describe 'association' do
 
     it { should belong_to(:reviewer).class_name(User) }
-    it { should have_many(:solutions) }
     it { should have_attached_file(:sample_solution) }
 
   end
