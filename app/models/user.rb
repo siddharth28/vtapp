@@ -61,8 +61,8 @@ class User < ActiveRecord::Base
       # FIXME : This can be optimised
     remove_track_object_ids = track_ids - track_list
     add_track_object_ids = track_list - track_ids
-    remove_role_track_runner(remove_track_object_ids)
-    add_role_track_runner(add_track_object_ids)
+    remove_role_track_runner(remove_track_object_ids) if !remove_track_object_ids.blank?
+    add_role_track_runner(add_track_object_ids) if !add_track_object_ids.blank?
   end
 
   def mentor_name
@@ -101,7 +101,7 @@ class User < ActiveRecord::Base
     ## So these actions can be performed only from the console.
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
-      if role.name == ROLES[:account_owner] && company.owner.first
+      if role.name == ROLES[:account_owner] && company.owner
         raise 'There can be only one account owner'
       end
     end

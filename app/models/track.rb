@@ -42,9 +42,9 @@ class Track < ActiveRecord::Base
       if company.users.ids.include?(owner_id)
         user = find_user(owner_id)
       else
-        user = company.owner.first
+        user = company.owner
       end
-      user.add_role(ROLES[:track_owner], self)
+      user.try(:add_role, ROLES[:track_owner], self)
     end
 
     def find_user(user_id)

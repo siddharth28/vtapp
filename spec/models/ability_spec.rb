@@ -6,7 +6,7 @@ describe Ability do
   let(:company) { create(:company) }
   let(:user){ create(:user, company: company) }
   let(:ability) { Ability.new(user) }
-  let(:account_admin) { user.add_role(:account_admin) }
+  let(:account_admin) { user.add_role(:account_admin, company) }
 
   describe 'User' do
 
@@ -35,7 +35,7 @@ describe Ability do
 
     describe 'account_owner abilities' do
 
-      let(:ability) { Ability.new(company.owner.first) }
+      let(:ability) { Ability.new(company.reload.owner) }
 
       it { expect(ability).to be_able_to(:read, user) }
       it { expect(ability).to be_able_to(:update, user) }
@@ -60,7 +60,7 @@ describe Ability do
       it { expect(ability).to be_able_to(:read, User) }
       it { expect(ability).to be_able_to(:create, User) }
       it { expect(ability).to be_able_to(:update, User) }
-      it { expect(ability).not_to be_able_to(:update, company.owner.first) }
+      it { expect(ability).not_to be_able_to(:update, company.owner) }
       it { expect(ability).not_to be_able_to(:update, account_admin) }
 
     end

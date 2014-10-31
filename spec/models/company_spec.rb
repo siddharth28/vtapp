@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Company do
   let(:company) { create(:company) }
-  let(:user) { create(:user, company: company) }
+
 
   describe 'associations' do
     it { should have_many(:users).dependent(:restrict_with_exception) }
@@ -17,21 +17,14 @@ describe Company do
   describe 'callbacks' do
     describe 'after_create' do
       describe 'build_owner' do
-        it { expect(company.owner.first).not_to eql(nil) }
+        it { expect(company.reload.owner).not_to eql(nil) }
       end
     end
   end
 
   describe 'instance methods' do
-    describe '#owner' do
-      it { expect(company.owner.first.has_role?(:account_owner, company)).to eql(true)}
-      it { expect(company.owner.first.name).to eql('Test Owner')}
-    end
-
     describe '#build_owner' do
-      let(:company) { build(:company) }
-      before { company.save }
-      it { expect(company.owner.first.name).to eql('Test Owner') }
+      it { expect(company.reload.owner.name).to eql('Test Owner') }
     end
 
     describe 'attr_accessor' do
@@ -62,22 +55,10 @@ describe Company do
   #FIXME -> Change rspecs of these scopes as discussed.
   describe 'scopes' do
     describe 'load_with_owners' do
-      let(:user) { create(:user, company: company) }
+      describe 'includes' do
+        before { allow(Company).to receive(:includes).with(:owner).and_return(Company) }
 
-      it { expect(Company.load_with_owners.include?(company)).to eq(true) }
-
-      context 'user owner' do
-        it { expect(Company.eager_load(:users).find(company).users.all? { |user| user.has_role?(:account_owner, company) }).to eq(true) }
-      end
-
-      context 'user not owner' do
-        it { expect(Company.eager_load(:users).find(company).users.include?(user)).to eq(false) }
-      end
-
-      describe 'eager_load' do
-        before { allow(Company).to receive(:eager_load).and_return(Company) }
-
-        it { expect(Company).to receive(:eager_load) }
+        it { expect(Company).to receive(:includes).with(:owner) }
 
         after { Company.load_with_owners }
       end
