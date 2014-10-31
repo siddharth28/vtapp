@@ -11,12 +11,14 @@ class Usertask < ActiveRecord::Base
 
   attr_accessor :url, :comment
 
+  after_create :add_start_time
+
   aasm do
     state :in_progress, initial: true
     state :submitted
     state :completed
 
-    event :exercise_submit do
+    event :exercise_submit, after: :add_end_time do
       transitions from: :in_progress, to: :submitted
     end
 
@@ -28,7 +30,7 @@ class Usertask < ActiveRecord::Base
       transitions from: :submitted, to: :in_progress
     end
 
-    event :task_submit do
+    event :task_submit, after: :add_end_time do
       transitions from: :in_progress, to: :completed
     end
   end
@@ -41,5 +43,13 @@ class Usertask < ActiveRecord::Base
     urls.find_or_create_by(name: url)
     comments.create(data: comment)
     exercise_submit! unless(aasm_state == 'submitted')
+  end
+
+  def add_start_time
+    self.start_time = Time.now
+  end
+
+  def add_end_time
+    self.end_time = Time.now
   end
 end

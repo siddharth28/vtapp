@@ -3,7 +3,6 @@ class ExerciseTask < ActiveRecord::Base
 
   has_attached_file :sample_solution
 
-  has_many :solutions
   belongs_to :reviewer, class_name: User
 
   validates_attachment :sample_solution, content_type: { content_type: "application/zip" }
