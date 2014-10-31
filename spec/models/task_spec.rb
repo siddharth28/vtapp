@@ -7,8 +7,14 @@ describe Task do
   let(:task) { create(:task, track: track) }
 
   describe 'association' do
-    it { should belong_to(:track) }
-    it { should have_many(:comments) }
+    describe 'belongs_to' do
+      it { should belong_to(:track) }
+    end
+
+    describe 'has_many' do
+      it { should have_many(:usertasks) }
+      it { should have_many(:users).through(:usertasks) }
+    end
   end
 
   describe 'validations' do
