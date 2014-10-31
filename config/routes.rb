@@ -15,10 +15,9 @@ Rails.application.routes.draw do
       resources :users do
         get :autocomplete_user_name, on: :collection
         get :autocomplete_user_department, on: :collection
-        get :start_task
-        get :started_task
-        get :submit_task
       end
+
+      resources :usertasks
 
       resources :tracks do
         member do
@@ -28,9 +27,11 @@ Rails.application.routes.draw do
           patch :assign_reviewer
           get :remove_reviewer
         end
+
         get :autocomplete_user_name, on: :collection
 
         resources :tasks do
+          get :autocomplete_task_title, on: :collection
           get :autocomplete_user_name, on: :collection
           get :manage, on: :collection
           get :sample_solution, on: :member

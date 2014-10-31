@@ -1,7 +1,5 @@
 <div class="form-group col-md-10">
-  <%= form_for(@track) class: 'form-horizontal'do |track| %>
-
-    <%= render partial: 'errors', locals: { object_with_errors: @track } if @track.errors.any? %>
+  <%= form_for(@track, html: { class: 'form-horizontal'}) do |track| %>
 
     <div class="field">
       <%= track.label :name %>
