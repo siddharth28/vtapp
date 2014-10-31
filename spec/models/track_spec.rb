@@ -7,7 +7,7 @@ describe Track do
   let(:user) { build(:user, mentor_id: mentor.id, company: company) }
 
   describe 'constants' do
-    it { Track.should have_constant(:TRACK_ROLES) }
+    it { Track.should have_constant(:ROLES) }
   end
 
   describe 'validation' do
@@ -101,24 +101,12 @@ describe Track do
       let(:company) { create(:company) }
       let(:user) { create(:user, company: company)}
       let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
-      let(:user2) { create(:user, email: 'user2@gmail.com', company: company)}
 
-      context 'user having no role initially' do
-        before do
-          track.add_reviewer(user.id)
-        end
-
-        it { expect(track.reviewer.ids.include?(user.id)).to eql(true) }
+      before do
+        track.add_reviewer(user.id)
       end
 
-      context 'user with track runner role initially' do
-        before do
-          user2.add_role(:track_runner, track)
-          track.add_reviewer(user2.id)
-        end
-
-        it { expect(track.reviewer.ids.include?(user2.id)).not_to eql(true) }
-      end
+      it { expect(track.reviewer.ids.include?(user.id)).to eql(true) }
     end
 
     describe '#remove reviewer' do
@@ -151,24 +139,13 @@ describe Track do
       let(:company) { create(:company) }
       let(:user) { create(:user, company: company)}
       let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
-      let(:user2) { create(:user, email: 'user2@gmail.com', company: company)}
 
-      context 'user track reviewer' do
-        before do
-          user.add_role(:track_reviewer, track)
-        end
-
-        it { expect(track.reviewer.ids.include?(user.id)).to eql(true) }
+      before do
+        user.add_role(:track_reviewer, track)
       end
 
-      context 'user track runner' do
-        before do
-          user2.add_role(:track_runner, track)
-          track.add_reviewer(user2.id)
-        end
+      it { expect(track.reviewer.ids.include?(user.id)).to eql(true) }
 
-        it { expect(track.reviewer.ids.include?(user2.id)).not_to eql(true) }
-      end
     end
   end
 end

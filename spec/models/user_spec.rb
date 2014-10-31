@@ -195,7 +195,7 @@ describe User do
       let(:user) { create(:user, company: company) }
 
       context 'assign tracks' do
-        let(:track_list) { [track.id, '' ] }
+        let(:track_list) { [track.id] }
 
         before { user.track_ids = track_list }
 
@@ -215,12 +215,12 @@ describe User do
       it { expect(user.track_ids).to eql(user.tracks.ids) }
     end
 
-    describe '#admin' do
-      it { expect(user.admin).to eql(user.account_admin?) }
+    describe '#is_admin' do
+      it { expect(user.is_admin).to eql(user.account_admin?) }
     end
 
-    describe '#admin=' do
-      before { user.admin = '1' }
+    describe '#is_admin=' do
+      before { user.is_admin = '1' }
       it { expect(user.has_role?(:account_admin, user.company)).to eql(true) }
     end
 

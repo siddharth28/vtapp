@@ -1,6 +1,6 @@
 class Track < ActiveRecord::Base
 
-  TRACK_ROLES = { track_owner: :track_owner, track_reviewer: :track_reviewer, track_runner: :track_runner }
+  ROLES = { track_owner: :track_owner, track_reviewer: :track_reviewer, track_runner: :track_runner }
 
   resourcify
 
@@ -9,45 +9,42 @@ class Track < ActiveRecord::Base
   attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
   validates :name, uniqueness: { case_sensitive: false }, presence: true
+  # FIXED
   # FIXME : presence validations can ve clubbed in one
-  validates :references, presence: true
-  validates :description, presence: true
-  validates :instructions, presence: true
+  validates :references, :description, :instructions, presence: true
 
   after_create :assign_track_owner_role
 
   def owner
-    company.users.with_role(:track_owner, self).first
+    company.users.with_role(ROLES[:track_owner], self).first
   end
 
   # FIXME : method name should be plural as it returns activerelation
   def reviewer
-    company.users.with_role(:track_reviewer, self)
+    company.users.with_role(ROLES[:track_reviewer], self)
   end
 
   def add_reviewer(user_id)
     user = find_user(user_id)
     # FIXME : dynamic track_runner? method can be used here
     # FIXME : No need to check for role here.
-    unless user.has_role?(:track_runner, self)
-      user.add_role(:track_reviewer, self)
-    end
-    user
+    user.add_role(ROLES[:track_reviewer], self)
   end
 
   def remove_reviewer(user_id)
-    find_user(user_id).remove_role(:track_reviewer, self)
+    find_user(user_id).remove_role(ROLES[:track_reviewer], self)
   end
 
   private
     def assign_track_owner_role
+      #FIXED
       # FIXME : This code can be simplified
       if company.users.ids.include?(owner_id)
         user = find_user(owner_id)
-        user.add_role(:track_owner, self)
       else
-        company.owner.first.add_role(:track_owner, self)
+        user = company.owner.first
       end
+      user.add_role(ROLES[:track_owner], self)
     end
 
     def find_user(user_id)

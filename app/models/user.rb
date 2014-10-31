@@ -1,8 +1,9 @@
 class User < ActiveRecord::Base
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
+  #FIXED
   #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class
-  TRACK_ROLES = { track_runner: :track_runner }
+
 
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
 
@@ -31,13 +32,6 @@ class User < ActiveRecord::Base
   scope :group_by_department, -> { group(:department) }
   scope :with_company, ->(company_id) { where(company_id: company_id) }
 
-  def active_for_authentication?
-    if super_admin?
-      super
-    else
-      super && enabled && company.enabled
-    end
-  end
 
   # TIP : Put define_method before other methods but after callbacks/validations
   ROLES.each do |key, method|
@@ -46,36 +40,40 @@ class User < ActiveRecord::Base
     end
   end
 
-  def track_ids=(track_list)
-    track_list.map!(&:to_i)
-    # NOT FIXED
-    #FIXED
-    #FIXME : This comparison is not correct, arrays should not compared like this
-    if track_ids.sort != track_list.sort
-      # FIXME : This can be optimised
-      remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
-      add_track_objects = track_list.reject { |track| track_ids.include? track }.map { |track| Track.find_by(id: track) }
-      add_track_objects.each { |track| add_role TRACK_ROLES[:track_runner], track }
-      remove_track_objects.each { |track| remove_role TRACK_ROLES[:track_runner], track }
+  alias_method :is_admin, :account_admin?
+
+  def active_for_authentication?
+    if super_admin?
+      super
+    else
+      super && enabled && company.enabled
     end
   end
 
-  def track_ids
-    self.persisted? ? Track.with_role(TRACK_ROLES[:track_runner], self).ids : [] 
+
+  def track_ids=(track_list)
+    track_list.map!(&:to_i)
+    # FIXED
+    # NOT FIXED
+    #FIXED
+    #FIXME : This comparison is not correct, arrays should not compared like this
+      #FIXED
+      # FIXME : This can be optimised
+    remove_track_object_ids = track_ids - track_list
+    add_track_object_ids = track_list - track_ids
+    remove_role_track_runner(remove_track_object_ids)
+    add_role_track_runner(add_track_object_ids)
   end
 
   def mentor_name
     mentor.try(:name)
   end
-
+  #FIXED
   #FIXME : method name not correct
-  def admin
-    account_admin?
-  end
 
   #FIXME : create reader for this
-  def admin=(value)
-    value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
+  def is_admin=(value)
+    value == '1' ? add_role_account_admin : remove_role_account_admin
   end
 
   private
@@ -117,5 +115,21 @@ class User < ActiveRecord::Base
 
     def display_user_details
       "#{ name } : #{ email }"
+    end
+
+    def add_role_account_admin
+      add_role(ROLES[:account_admin], company)
+    end
+
+    def remove_role_account_admin
+      remove_role(ROLES[:account_admin], company)
+    end
+
+    def add_role_track_runner(add_track_object_ids)
+      add_track_object_ids.each { |track| add_role Track::ROLES[:track_runner], Track.find(track) }
+    end
+
+    def remove_role_track_runner(remove_track_object_ids)
+      remove_track_object_ids.each { |track| remove_role Track::ROLES[:track_runner], Track.find(track) }
     end
 end

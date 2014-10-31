@@ -32,7 +32,7 @@ class UsersController < ResourceController
   private
     def user_params
       if current_user.account_owner?
-        params.require(:user).permit(:name, :email, :department, :mentor_id, :admin, :enabled, track_ids: [])
+        params.require(:user).permit(:name, :email, :department, :mentor_id, :is_admin, :enabled, track_ids: [])
       elsif current_user.account_admin?
         params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, track_ids: [])
       end
