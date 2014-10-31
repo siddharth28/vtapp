@@ -22,7 +22,8 @@ class Company < ActiveRecord::Base
   scope :enabled, -> { where(enabled: true) }
 
   def owner
-      #FIXME_AB: Don't hard code role use ROLES array/hash constant
+    #FIXED
+    #FIXME_AB: Don't hard code role use ROLES array/hash constant
     users.with_role(ROLES[:account_owner], self)
     #FIXED
     #FIXME_AB: should not use .first here, return the arel object

@@ -13,10 +13,9 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery-ui
-//= require nestable
-//= require jquery.nestable.js
 //= require autocomplete-rails
 //= require bootstrap-sprockets
+//= require ckeditor/init
 //= require ckeditor/ckeditor
 //= require autoSuggestBlur
 //= require jquery.ui.nestedSortable

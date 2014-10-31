@@ -22,7 +22,7 @@ class UsersController < ResourceController
       #FIXME : Typo, 'user' should be with capital 'u'
       redirect_to @user, notice: "User #{ @user.name } is successfully created."
     else
-      render action: 'new'
+      render action: :new
     end
   end
 
@@ -32,7 +32,7 @@ class UsersController < ResourceController
       #FIXME : Typo, 'user' should be with capital 'u'
       redirect_to @user, notice: "User #{ @user.name } is successfully updated."
     else
-      render action: 'edit'
+      render action: :edit
     end
   end
 

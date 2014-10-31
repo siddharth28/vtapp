@@ -34,4 +34,10 @@ class Usertask < ActiveRecord::Base
   def submit_task
     task.specific ? exercise_submit! : task_submit!
   end
+
+  def submit_data(url, comment)
+    urls.find_or_create_by(name: url)
+    comments.find_or_create_by(data: comment)
+    submit! unless(aasm_state == 'submitted')
+  end
 end

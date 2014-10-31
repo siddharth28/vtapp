@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   TRACK_ROLES = { track_runner: :track_runner }
   TASK_STATES = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
 
-  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
+  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
   devise :database_authenticatable, :registerable, :async,
     :recoverable, :rememberable, :trackable, :validatable
 
@@ -39,6 +39,12 @@ class User < ActiveRecord::Base
   scope :group_by_department, -> { group(:department) }
   scope :with_company, ->(company_id) { where(company_id: company_id) }
 
+  ROLES.each do |key, method|
+    define_method "#{ method }?" do
+      roles.any? { |role| role.name == "#{ method }" }
+    end
+  end
+
   def active_for_authentication?
     if super_admin?
       super
@@ -47,14 +53,9 @@ class User < ActiveRecord::Base
     end
   end
 
-  ROLES.each do |key, method|
-    define_method "#{ method }?" do
-      roles.any? { |role| role.name == "#{ method }" }
-    end
-  end
-
   def track_ids=(track_list)
     track_list.map!(&:to_i)
+    #FIXED
     #FIXME : This comparison is not correct, arrays should not compared like this
     if track_ids.sort != track_list.sort
       remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
@@ -69,6 +70,7 @@ class User < ActiveRecord::Base
   end
 
   def mentor_name
+    #CHANGED
     #TIP : we can use mentor.try(:name) and can eliminate if mentor
     mentor.try(:name)
   end

@@ -4,21 +4,25 @@
     <div class="field">
       <%= track.label :name %>
       <%= track.text_field :name %>
+      <%= errors_for_field(@track, :name) %>
     </div>
 
     <div class="field">
       <%= track.label :description %>
       <%= track.cktext_area :description %>
+      <%= errors_for_field(@track, :description) %>
     </div>
 
     <div class="field">
       <%= track.label :instructions %>
       <%= track.cktext_area :instructions %>
+      <%= errors_for_field(@track, :instructions) %>
     </div>
 
     <div class="field">
       <%= track.label :references %>
       <%= track.cktext_area :references %>
+      <%= errors_for_field(@track, :references) %>
     </div>
 
     <div class="field">

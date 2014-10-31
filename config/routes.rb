@@ -17,7 +17,12 @@ Rails.application.routes.draw do
         get :autocomplete_user_department, on: :collection
       end
 
-      resources :usertasks
+      namespace :usertasks do
+        get :start_task
+        get :task_description
+        patch :submit_task
+      end
+
 
       resources :tracks do
         member do
