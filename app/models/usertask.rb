@@ -1,6 +1,8 @@
 class Usertask < ActiveRecord::Base
   include AASM
 
+  TASK_STATES = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed' }
+
   belongs_to :user
   belongs_to :task
 
@@ -31,13 +33,13 @@ class Usertask < ActiveRecord::Base
     end
   end
 
-  def submit_task
-    task.specific ? exercise_submit! : task_submit!
+  def submit_task(*args)
+    task.specific ? submit_data(args[0][:url], args[0][:comment]) : task_submit!
   end
 
   def submit_data(url, comment)
     urls.find_or_create_by(name: url)
-    comments.find_or_create_by(data: comment)
-    submit! unless(aasm_state == 'submitted')
+    comments.create(data: comment)
+    exercise_submit! unless(aasm_state == 'submitted')
   end
 end
