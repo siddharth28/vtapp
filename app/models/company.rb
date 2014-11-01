@@ -15,7 +15,9 @@ class Company < ActiveRecord::Base
   after_create :make_owner
 
   validates :name, presence: true
-  validates :name, uniqueness: true, allow_blank: true
+  validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
+
+  strip_fields :name
 
   scope :load_with_owners, -> { eager_load(:users).joins(:users).merge(User.with_role(ROLES[:account_owner], :any)) }
   scope :enabled, -> { where(enabled: true) }

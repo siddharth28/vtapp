@@ -6,7 +6,7 @@ class Track < ActiveRecord::Base
 
   belongs_to :company
 
-  attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
+  after_create :assign_track_owner_role
 
   validates :name, uniqueness: { case_sensitive: false }, presence: true
   # FIXME : presence validations can ve clubbed in one
@@ -14,7 +14,9 @@ class Track < ActiveRecord::Base
   validates :description, presence: true
   validates :instructions, presence: true
 
-  after_create :assign_track_owner_role
+  attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
+
+  strip_fields :name
 
   def owner
     company.users.with_role(:track_owner, self).first
@@ -42,7 +44,7 @@ class Track < ActiveRecord::Base
   private
     def assign_track_owner_role
       # FIXME : This code can be simplified
-      if company.users.ids.include?(owner_id)
+      if company.users.ids.include?(owner_id.to_i)
         user = find_user(owner_id)
         user.add_role(:track_owner, self)
       else
