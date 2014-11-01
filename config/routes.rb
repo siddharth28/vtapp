@@ -23,6 +23,9 @@ Rails.application.routes.draw do
         patch :submit_task
       end
 
+      namespace :tracks do
+        get :tracks_search
+      end
 
       resources :tracks do
         member do
