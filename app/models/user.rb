@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
+  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin', track_owner: 'track_owner', track_reviewer: 'track_reviewer', track_runner: 'track_runner' }
   TRACK_ROLES = { track_runner: :track_runner }
   TASK_STATES = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
 
