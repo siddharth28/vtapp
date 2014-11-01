@@ -16,11 +16,14 @@ class User < ActiveRecord::Base
 
   attr_readonly :email, :company_id
 
+  attr_accessor :password, :password_confirmation
+
+  validates :password, :name, presence: true
+  validates :password_confirmation, presence: true, allow_blank: true
   validates :mentor, presence: true, if: :mentor_id?
   #FIXED
   #FIXME -> Write rspec of this validation.
   validates :company, presence: true, unless: :super_admin?
-  validates :name, presence: true
 
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
