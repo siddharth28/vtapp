@@ -1,6 +1,5 @@
 class Company < ActiveRecord::Base
   #FIXME: ROLES constant is not needed here, can be accesses from User class
-  ROLES = { account_owner: :account_owner }
 
   resourcify
 
@@ -8,6 +7,8 @@ class Company < ActiveRecord::Base
   #FIXME : group associations, validations, accessors, callbacks with each other
   has_many :users, dependent: :restrict_with_exception
   has_many :tracks, dependent: :restrict_with_exception
+  has_one :owner, through: :owner_role, source: :users
+  has_one :owner_role, -> { where(roles: { name: User::ROLES[:account_owner], resource_type: 'Company' }) }, class_name: 'Role', foreign_key: :resource_id
 
   attr_accessor :owner_email, :owner_name
 
@@ -19,17 +20,15 @@ class Company < ActiveRecord::Base
 
   strip_fields :name
 
-  scope :load_with_owners, -> { eager_load(:users).joins(:users).merge(User.with_role(ROLES[:account_owner], :any)) }
+  scope :load_with_owners, -> { includes(:owner) }
   scope :enabled, -> { where(enabled: true) }
 
-  def owner
+
     #FIXED
     #FIXME_AB: Don't hard code role use ROLES array/hash constant
     # FIXME : Return active record from here
-    users.with_role(ROLES[:account_owner], self)
     #FIXED
     #FIXME_AB: should not use .first here, return the arel object
-  end
 
   def status
     enabled ? 'Enabled' : 'Disabled'
@@ -45,6 +44,6 @@ class Company < ActiveRecord::Base
     end
 
     def make_owner
-      @owner.add_role(ROLES[:account_owner], self) if @owner
+      @owner.try(:add_role, User::ROLES[:account_owner], self)
     end
 end

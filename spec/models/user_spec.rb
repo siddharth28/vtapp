@@ -93,7 +93,7 @@ describe User do
       end
 
       context 'when account_owner' do
-        it { expect { company.owner.first.destroy }.to raise_error("Can't delete Account Owner") }
+        it { expect { company.reload.owner.destroy }.to raise_error("Can't delete Account Owner") }
       end
 
       context 'neither super_admin nor account_owner' do
@@ -125,7 +125,7 @@ describe User do
         let(:company) { create(:company) }
         let(:user) { build(:user, name: nil, email: nil, password: nil, company: company) }
 
-        it { expect(company.owner.first.account_owner?).to eql(true) }
+        it { expect(company.reload.owner.account_owner?).to eql(true) }
       end
 
       context 'not an account_owner' do
@@ -191,11 +191,12 @@ describe User do
     end
 
     describe '#track_ids=' do
+      let(:company) { create(:company) }
       let(:track) { create(:track, company: company) }
       let(:user) { create(:user, company: company) }
 
       context 'assign tracks' do
-        let(:track_list) { [track.id, '' ] }
+        let(:track_list) { [track.id] }
 
         before { user.track_ids = track_list }
 
@@ -215,12 +216,12 @@ describe User do
       it { expect(user.track_ids).to eql(user.tracks.ids) }
     end
 
-    describe '#admin' do
-      it { expect(user.admin).to eql(user.account_admin?) }
+    describe '#is_admin' do
+      it { expect(user.is_admin).to eql(user.account_admin?) }
     end
 
-    describe '#admin=' do
-      before { user.admin = '1' }
+    describe '#is_admin=' do
+      before { user.is_admin = '1' }
       it { expect(user.has_role?(:account_admin, user.company)).to eql(true) }
     end
 
@@ -256,7 +257,10 @@ describe User do
     end
 
     describe '#ensure_only_one_account_owner' do
+      let(:company) { create(:company) }
       let(:user) { create(:user, company: company) }
+
+      before { company.reload }
 
       it { expect { user.add_role(:account_owner, company) }.to raise_error("There can be only one account owner") }
     end
@@ -266,7 +270,7 @@ describe User do
     describe '#ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
 
-      it { expect { company.owner.first.remove_role :account_owner }.to raise_error('Cannot remove account_owner role') }
+      it { expect { company.reload.owner.remove_role(:account_owner, company) }.to raise_error('Cannot remove account_owner role') }
     end
 
     describe '#display_user_details' do
