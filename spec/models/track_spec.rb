@@ -75,6 +75,51 @@ describe Track do
     end
   end
 
+  describe '#class methods' do
+    describe '#extract' do
+      let(:company) { create(:company) }
+      let(:track2) { build(:track, name: 'Track', company: company) }
+      let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
+      let(:user) { build(:user, company: company) }
+
+      context 'track_runner_given' do
+        before do
+          track.company_id = company.id
+          user.add_role(:track_runner, track)
+          track.save
+          user.save
+        end
+
+        it { expect(Track.extract('runner', user).include?(track)).to eql(true) }
+        it { expect(Track.extract('runner', user).include?(track2)).to eql(false) }
+      end
+
+      context 'track_reviewer_given' do
+        before do
+          track.company_id = company.id
+          user.add_role(:track_reviewer, track)
+          track.save
+          user.save
+        end
+
+        it { expect(Track.extract('reviewer', user).include?(track)).to eql(true) }
+        it { expect(Track.extract('reviewer', user).include?(track2)).to eql(false) }
+      end
+
+      context 'track_owner_given' do
+        before do
+          track.company_id = company.id
+          user.add_role(:track_owner, track)
+          track.save
+          user.save
+        end
+
+        it { expect(Track.extract('owner', user).include?(track)).to eql(true) }
+        it { expect(Track.extract('owner', user).include?(track2)).to eql(false) }
+      end
+    end
+  end
+
   describe '#instance methods' do
     describe '#assign_track_owner_role' do
       let(:company) { create(:company) }
