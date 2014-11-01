@@ -6,8 +6,12 @@
       <table class="sortable_table table table-bordered table-striped ">
         <thead>
           <tr>
-            <%= content_tag :th, sort_link(@search, :name, 'Name', default_order: :desc) %>
-            <%= content_tag :th, sort_link(@search, :owner_name, 'Owner Name') %>
+            <th class="disabled">
+              Name
+            </th>
+            <th class="disabled">
+              Owner
+            </th>
             <th class="disabled">
               Actions
             </th>
