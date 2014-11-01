@@ -11,6 +11,5 @@
 <% end %>
 
 <li><%= link_to 'Account', edit_user_registration_path %></li>
-<li><%= link_to "Hello, #{ current_user.name }", user_path(current_user), { class: 'user_details' } %></li>
-<li><%= link_to 'Sign out', destroy_user_session_path, { method: :delete } %></li>
-
+<li class='pull-right'><%= link_to 'Sign out', destroy_user_session_path, { method: :delete } %></li>
+<li class='pull-right m-top'><%= "Hello, #{ current_user.name }" %></li>
