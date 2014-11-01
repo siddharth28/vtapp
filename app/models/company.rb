@@ -29,6 +29,10 @@ class Company < ActiveRecord::Base
     #FIXME_AB: should not use .first here, return the arel object
   end
 
+  def status
+    enabled ? 'Enabled' : 'Disabled'
+  end
+
   private
     def build_owner
       #Here we are creating a owner before a company is created we cannot use this syntax

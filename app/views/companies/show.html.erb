@@ -16,6 +16,10 @@
 </p>
 
 <p>
-  <%= render partial: 'link_to_enabled', locals: { company: @company } %>
+  <strong>Company Status:</strong>
+  <%= @company.status %>
+</p>
+
+<p>
   <%= link_to 'Back', companies_path %>
 </p>
