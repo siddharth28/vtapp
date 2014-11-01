@@ -1,30 +1,32 @@
 <div class="track_form form-group col-md-8">
-  <h2>
+  <h2 class='m-left'>
     Edit Track : <%= @track.name.to_s.humanize %>
   </h2>
 
   <%= form_for(:track, as: @track,  html: { method: :put }) do |track| %>
 
-    <%= render partial: 'errors', locals: { object_with_errors: @track } if @track.errors.any? %>
-
     <div class="field">
       <%= track.label :name %>
       <%= track.text_field :name %>
+      <%= errors_for_field(@track, :name) %>
     </div>
 
     <div class="field">
       <%= track.label :description %>
       <%= track.cktext_area :description %>
+      <%= errors_for_field(@track, :description) %>
     </div>
 
     <div class="field">
       <%= track.label :instructions %>
       <%= track.cktext_area :instructions %>
+      <%= errors_for_field(@track, :instructions) %>
     </div>
 
     <div class="field">
       <%= track.label :references %>
       <%= track.cktext_area :references %>
+      <%= errors_for_field(@track, :references) %>
     </div>
 
     <div class="field">
@@ -33,15 +35,8 @@
       <%= track.hidden_field :owner_id, value: :owner_email, class:"owner_email" %>
     </div>
 
-    <% if (current_user.has_role?(:account_owner) || current_user.has_role?(:account_admin)) %>
-      <div class="field">
-        <%= track.label :track_status %>
-        <%= track.check_box :enabled %>
-      </div>
-    <% end %>
-
     <div class="actions">
-      <%= track.submit %>
+      <%= track.submit class: 'btn btn-default btn-lg m-top' %>
     </div>
   <% end %>
 </div>

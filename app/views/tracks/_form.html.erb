@@ -1,4 +1,4 @@
-<div class="form-group col-md-10">
+<div class="form-group col-md-10 m-top">
   <%= form_for(@track) do |track| %>
 
     <div class="field">
@@ -7,39 +7,32 @@
       <%= errors_for_field(@track, :name) %>
     </div>
 
-    <div class="field">
+    <div class="field m-top">
       <%= track.label :description %>
       <%= track.cktext_area :description %>
       <%= errors_for_field(@track, :description) %>
     </div>
 
-    <div class="field">
+    <div class="field m-top">
       <%= track.label :instructions %>
       <%= track.cktext_area :instructions %>
       <%= errors_for_field(@track, :instructions) %>
     </div>
 
-    <div class="field">
+    <div class="field m-top">
       <%= track.label :references %>
       <%= track.cktext_area :references %>
       <%= errors_for_field(@track, :references) %>
     </div>
 
-    <div class="field">
+    <div class="field m-top">
       <%= track.label :track_owner %>
       <%= track.autocomplete_field :owner, autocomplete_user_name_tracks_path, id_element: '#track_owner_id', value: '' %>
       <%= track.hidden_field :owner_id %>
     </div>
 
-    <% if (current_user.has_role?(:account_owner) || current_user.has_role?(:account_admin)) %>
-      <div class="field">
-        <%= track.label :track_status %>
-        <%= track.check_box :enabled %>
-      </div>
-    <% end %>
-
     <div class="actions">
-      <%= track.submit %>
+      <%= track.submit class: 'btn btn-default btn-lg m-top' %>
     </div>
   <% end %>
 </div>
