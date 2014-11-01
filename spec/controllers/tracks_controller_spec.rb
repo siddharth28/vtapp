@@ -122,31 +122,6 @@ describe TracksController do
     end
   end
 
-  describe '#toggle_enabled' do
-    before do
-      allow(Track).to receive(:find).and_return(track)
-      allow(track).to receive(:toggle!).and_return(true)
-    end
-
-    def send_request
-      xhr :patch, :toggle_enabled, id: track.id
-    end
-
-    describe 'expects to receive' do
-      it { expect(track).to receive(:toggle!).and_return(true) }
-
-      after { send_request }
-    end
-
-    describe 'response' do
-      before { send_request }
-
-      it { expect(response).to render_template :toggle_enabled }
-      it { expect(response).to have_http_status(200) }
-    end
-  end
-
-
   describe '#assign_reviewer' do
     before do
       allow(controller).to receive(:set_track).and_return(track)

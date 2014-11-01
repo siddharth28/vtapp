@@ -18,12 +18,12 @@ class Track < ActiveRecord::Base
   strip_fields :name
 
   def owner
-    company.users.with_role(ROLES[:track_owner], self).first
+    company_users.with_role(ROLES[:track_owner], self).first
   end
-
+  # FIXED
   # FIXME : method name should be plural as it returns activerelation
-  def reviewer
-    company.users.with_role(ROLES[:track_reviewer], self)
+  def reviewers
+    company_users.with_role(ROLES[:track_reviewer], self)
   end
 
   def add_reviewer(user_id)
@@ -41,7 +41,7 @@ class Track < ActiveRecord::Base
     def assign_track_owner_role
       #FIXED
       # FIXME : This code can be simplified
-      if company.users.ids.include?(owner_id.to_i)
+      if company_users.ids.include?(owner_id.to_i)
         user = find_user(owner_id)
       else
         user = company.owner
@@ -50,6 +50,10 @@ class Track < ActiveRecord::Base
     end
 
     def find_user(user_id)
-      company.users.find_by(id: user_id)
+      company_users.find_by(id: user_id)
+    end
+
+    def company_users
+      company.users
     end
 end

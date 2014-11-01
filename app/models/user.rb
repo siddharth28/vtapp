@@ -4,7 +4,6 @@ class User < ActiveRecord::Base
   #FIXED
   #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class
 
-
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
 
   devise :database_authenticatable, :registerable, :async,
@@ -35,7 +34,7 @@ class User < ActiveRecord::Base
   scope :group_by_department, -> { group(:department) }
   scope :with_company, ->(company_id) { where(company_id: company_id) }
 
-
+  # FIXED
   # TIP : Put define_method before other methods but after callbacks/validations
   ROLES.each do |key, method|
     define_method "#{ method }?" do

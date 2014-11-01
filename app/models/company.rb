@@ -1,4 +1,5 @@
 class Company < ActiveRecord::Base
+  #FIXED
   #FIXME: ROLES constant is not needed here, can be accesses from User class
 
   resourcify

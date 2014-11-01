@@ -106,7 +106,7 @@ describe Track do
         track.add_reviewer(user.id)
       end
 
-      it { expect(track.reviewer.ids.include?(user.id)).to eql(true) }
+      it { expect(track.reviewers.ids.include?(user.id)).to eql(true) }
     end
 
     describe '#remove reviewer' do
@@ -121,7 +121,7 @@ describe Track do
 
       #example for find user
       it { expect(track.send(:find_user, user.id)).to eql(user) }
-      it { expect(track.reviewer.ids.include?(user.id)).not_to eql(true) }
+      it { expect(track.reviewers.ids.include?(user.id)).not_to eql(true) }
     end
 
 
@@ -144,7 +144,7 @@ describe Track do
         user.add_role(:track_reviewer, track)
       end
 
-      it { expect(track.reviewer.ids.include?(user.id)).to eql(true) }
+      it { expect(track.reviewers.ids.include?(user.id)).to eql(true) }
 
     end
   end

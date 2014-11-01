@@ -1,7 +1,7 @@
-<div class = 'reviewer'>
-  <div class = 'reviewer_form'>
-    <%= form_for(@track, url: assign_reviewer_track_path, remote: true, class: 'review_form') do |track| %>
-      <div class="field">
+<div class = 'reviewer form-group col-md-10 m-top'>
+  <div class = class='m-form-left'>
+    <%= form_for(@track, url: assign_reviewer_track_path, remote: true, class: 'form-horizontal') do |track| %>
+      <div class="field  m-top">
         <%= track.label :track_reviewer %>
         <%= track.autocomplete_field :reviewer_name, autocomplete_user_name_tracks_path, id_element: '#track_reviewer_id', value: '' %>
         <%= track.hidden_field :reviewer_id %>
@@ -24,7 +24,7 @@
             </tr>
           </thead>
           <tbody>
-            <% @track.reviewer.each do |reviewer| %>
+            <% @track.reviewers.each do |reviewer| %>
               <tr>
                 <td><%= link_to reviewer.name, reviewer %></td>
                 <td><%= link_to reviewer.email, reviewer %></td>
