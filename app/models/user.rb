@@ -58,13 +58,13 @@ class User < ActiveRecord::Base
     if track_ids.sort != track_list.sort
       remove_track_objects = track_ids.reject { |track| track_list.include? track }.map { |track| Track.find_by(id: track) }
       add_track_objects = track_list.reject { |track| track_ids.include? track }.map { |track| Track.find_by(id: track) }
-      add_track_objects.each { |track| add_role TRACK::ROLES[:track_runner], track }
-      remove_track_objects.each { |track| remove_role TRACK::ROLES[:track_runner], track }
+      add_track_objects.each { |track| add_role Track::ROLES[:track_runner], track }
+      remove_track_objects.each { |track| remove_role Track::ROLES[:track_runner], track }
     end
   end
 
   def track_ids
-    self.persisted? ? Track.with_role(TRACK::ROLES[:track_runner], self).ids : []
+    self.persisted? ? Track.with_role(Track::ROLES[:track_runner], self).ids : []
   end
 
   def mentor_name

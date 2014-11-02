@@ -7,7 +7,7 @@ describe Track do
   let(:user) { build(:user, mentor_id: mentor.id, company: company) }
 
   describe 'constants' do
-    it { Track.should have_constant(:TRACK_ROLES) }
+    it { Track.should have_constant(:ROLES) }
   end
 
   describe 'validation' do

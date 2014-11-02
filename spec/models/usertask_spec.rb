@@ -19,10 +19,10 @@ describe Usertask do
   end
 
   describe 'task states' do
-    it { Usertask.should have_constant(:TASK_STATES) }
-    it { expect(Usertask::TASK_STATES[:in_progress]).to eql('Started') }
-    it { expect(Usertask::TASK_STATES[:submitted]).to eql('Pending for review') }
-    it { expect(Usertask::TASK_STATES[:completed]).to eql('Completed') }
+    it { Usertask.should have_constant(:STATE) }
+    it { expect(Usertask::STATE[:in_progress]).to eql('Started') }
+    it { expect(Usertask::STATE[:submitted]).to eql('Pending for review') }
+    it { expect(Usertask::STATE[:completed]).to eql('Completed') }
   end
 
   describe 'state_machine' do
