@@ -7,7 +7,7 @@ class UsertasksController < ResourceController
 
   def submit_task
     @usertask.submit_task(params[:usertask])
-    redirect_to action: :task_description, id: params[:id]
+    redirect_to action: :task_description, id: @usertask
   end
 
   def task_description

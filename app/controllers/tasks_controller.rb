@@ -8,7 +8,6 @@ class TasksController < ResourceController
   autocomplete :task, :title
   autocomplete :user, :name
 
-
   def index
     @tasks = @track.tasks.includes(:actable).nested_set.all
   end

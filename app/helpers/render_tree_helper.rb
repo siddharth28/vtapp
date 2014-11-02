@@ -2,10 +2,8 @@
 # We use Helper Methods for tree building,
 # because it's faster than View Templates and Partials
 
-# SECURITY note
-# Prepare your data on server side for rendering
-# or use h.html_escape(node.content)
-# for escape potentially dangerous content
+# use h.html_escape(node.content) for safe content
+
 module RenderTreeHelper
   class Render
     class << self
@@ -13,11 +11,19 @@ module RenderTreeHelper
 
       def render_node(h, options)
         @h, @options = h, options
-
         node = options[:node]
+        class_based_on_state = ''
+        if Usertask::STATE[options[:user].current_task_state(options[:node].id)] == Usertask::STATE[:completed]
+          class_based_on_state = "bg-success"
+        elsif Usertask::STATE[options[:user].current_task_state(options[:node].id)] == Usertask::STATE[:in_progress]
+          class_based_on_state = "bg-warning"
+        else
+          class_based_on_state = "bg-danger"
+        end
+
         "
           <li>
-            <div class='item'>
+            <div class=#{ class_based_on_state }>
               #{ show_link }
               #{ controls }
             </div>
@@ -39,7 +45,7 @@ module RenderTreeHelper
         link_text = options[:node].specific ? 'Exercise' : 'Task'
         usertask = options[:user].usertasks.find_by(task_id: options[:node].id)
         if options[:user].current_task_state?(options[:node].id)
-          link_text = options[:user].current_task_state(options[:node])
+          link_text = Usertask::STATE[options[:user].current_task_state(options[:node])]
           url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
           method = :get
         else
