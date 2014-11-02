@@ -1,27 +1,23 @@
-<div class="form-group col-md-8">
+<div class="span8 offset1">
   <h2 class='m-left m-top'>
     Show <%= @track.name.to_s.humanize %>
   </h2>
 
-  <div class="field m-top">
-    Track: <%= @track.name %>
-  </div>
+  <dl class="dl-horizontal">
+    <dt><strong>Track:</strong></dt>
+    <dd><%= @track.name %></dd>
 
-  <div class="field m-top">
-    Description: <%= @track.description %>
-  </div>
+    <dt><strong>Description:</strong></dt>
+    <dd><%= @track.description %></dd>
 
-  <div class="field m-top">
-    Instructions: <%= @track.instructions %>
-  </div>
+    <dt><strong>Instructions:</strong></dt>
+    <dd><%= @track.instructions %></dd>
 
-  <div class="field m-top">
-    References: <%= @track.references %>
-  </div>
+    <dt><strong>References:</strong></dt>
+    <dd><%= @track.references %></dd>
 
-  <div class="field m-top">
-    Track Owner: <%= @track.owner.name %>
-  </div>
-
+    <dt><strong>Track Owner:</strong></dt>
+    <dd><%= @track.owner.name %></dd>
+  </dl>
   <%= link_to 'Back', tracks_path(company: @track.company_id) %>
 </div>
