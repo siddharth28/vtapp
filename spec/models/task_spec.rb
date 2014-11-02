@@ -6,13 +6,20 @@ describe Task do
   let(:track) { create(:track, company: company) }
   let(:task) { create(:task, track: track) }
 
+  describe 'task states' do
+    it { Task.should have_constant(:STATE) }
+    it { expect(Task::STATE[:in_progress]).to eql('Started') }
+    it { expect(Task::STATE[:submitted]).to eql('Pending for review') }
+    it { expect(Task::STATE[:completed]).to eql('Completed') }
+  end
+
   describe 'association' do
     describe 'belongs_to' do
       it { should belong_to(:track) }
     end
 
     describe 'has_many' do
-      it { should have_many(:usertasks) }
+      it { should have_many(:usertasks).dependent(:destroy) }
       it { should have_many(:users).through(:usertasks) }
     end
   end

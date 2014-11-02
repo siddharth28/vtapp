@@ -3,12 +3,13 @@ class Task < ActiveRecord::Base
   acts_as_nested_set
   include TheSortableTree::Scopes
 
+  STATE = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
+
   belongs_to :track
-  has_many :usertasks
+  has_many :usertasks, dependent: :destroy
   has_many :users, through: :usertasks
 
-  validates :title, presence: true
-  validates :track, presence: true
+  validates :title, :track, presence: true
 
   [:instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer].each do |method|
     define_method(method) do

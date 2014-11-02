@@ -300,34 +300,34 @@ describe User do
 
       describe '#current_task_state' do
         context 'task not started' do
-          it { expect(Usertask::STATE[user.current_task_state(task.id)]).to eql(nil) }
+          it { expect(Task::STATE[user.current_task_state(task.id)]).to eql(nil) }
         end
 
         context 'task started' do
           context 'theory task' do
             before { usertask.save }
-            it { expect(Usertask::STATE[user.current_task_state(task.id)]).to eql('Started') }
+            it { expect(Task::STATE[user.current_task_state(task.id)]).to eql('Started') }
 
             context 'task submitted' do
-              it { expect{ usertask.submit! }.to change{ Usertask::STATE[user.current_task_state(task.id)] }.from('Started').to('Completed') }
+              it { expect{ usertask.submit! }.to change{ Task::STATE[user.current_task_state(task.id)] }.from('Started').to('Completed') }
             end
           end
 
           context 'exercise task' do
             before { exercise_usertask.save }
-            it { expect(Usertask::STATE[user.current_task_state(exercise_task.id)]).to eql('Started') }
+            it { expect(Task::STATE[user.current_task_state(exercise_task.id)]).to eql('Started') }
 
             context 'task submitted' do
-              it { expect{ exercise_usertask.submit! }.to change{ Usertask::STATE[user.current_task_state(exercise_task.id)] }.from('Started').to('Pending for review') }
+              it { expect{ exercise_usertask.submit! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Started').to('Pending for review') }
 
               context 'task accepted' do
                 before { exercise_usertask.submit! }
-                it { expect{ exercise_usertask.accept! }.to change{ Usertask::STATE[user.current_task_state(exercise_task.id)] }.from('Pending for review').to('Completed') }
+                it { expect{ exercise_usertask.accept! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Pending for review').to('Completed') }
               end
 
               context 'task accepted' do
                 before { exercise_usertask.submit! }
-                it { expect{ exercise_usertask.reject! }.to change{ Usertask::STATE[user.current_task_state(exercise_task.id)] }.from('Pending for review').to('Started') }
+                it { expect{ exercise_usertask.reject! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Pending for review').to('Started') }
               end
             end
           end

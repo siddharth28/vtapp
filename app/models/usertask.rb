@@ -1,8 +1,6 @@
 class Usertask < ActiveRecord::Base
   include AASM
 
-  STATE = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
-
   belongs_to :user
   belongs_to :task
 

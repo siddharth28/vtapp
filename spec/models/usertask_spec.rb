@@ -18,13 +18,6 @@ describe Usertask do
     end
   end
 
-  describe 'task states' do
-    it { Usertask.should have_constant(:STATE) }
-    it { expect(Usertask::STATE[:in_progress]).to eql('Started') }
-    it { expect(Usertask::STATE[:submitted]).to eql('Pending for review') }
-    it { expect(Usertask::STATE[:completed]).to eql('Completed') }
-  end
-
   describe 'state_machine' do
     context 'exercise task' do
       before { exercise_usertask.save }

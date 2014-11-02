@@ -13,9 +13,9 @@ module RenderTreeHelper
         @h, @options = h, options
         node = options[:node]
         class_based_on_state = ''
-        if Usertask::STATE[options[:user].current_task_state(options[:node].id)] == Usertask::STATE[:completed]
+        if Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:completed]
           class_based_on_state = "bg-success"
-        elsif Usertask::STATE[options[:user].current_task_state(options[:node].id)] == Usertask::STATE[:in_progress]
+        elsif Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:in_progress]
           class_based_on_state = "bg-warning"
         else
           class_based_on_state = "bg-danger"
@@ -45,7 +45,7 @@ module RenderTreeHelper
         link_text = options[:node].specific ? 'Exercise' : 'Task'
         usertask = options[:user].usertasks.find_by(task_id: options[:node].id)
         if options[:user].current_task_state?(options[:node].id)
-          link_text = Usertask::STATE[options[:user].current_task_state(options[:node])]
+          link_text = Task::STATE[options[:user].current_task_state(options[:node])]
           url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
           method = :get
         else

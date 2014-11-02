@@ -1,6 +1,8 @@
 class TracksController < ResourceController
   autocomplete :user, :name, extra_data: [:email],  display_value: :display_user_details
 
+  before_action :set_track, only: [:reviewers, :assign_reviewer, :remove_reviewer]
+
   def index
     @search = current_company.tracks.search(params[:q])
     @tracks = @search.result.page(params[:page]).per(20)
@@ -20,16 +22,13 @@ class TracksController < ResourceController
   end
 
   def reviewers
-    set_track
   end
 
   def assign_reviewer
-    set_track
     @user = @track.add_reviewer(params[:track][:reviewer_id])
   end
 
   def remove_reviewer
-    set_track
     @track.remove_reviewer(params[:format])
   end
 
