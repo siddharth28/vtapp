@@ -1,7 +1,7 @@
 class Usertask < ActiveRecord::Base
   include AASM
 
-  TASK_STATES = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed' }
+  STATE = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
 
   belongs_to :user
   belongs_to :task
@@ -9,9 +9,9 @@ class Usertask < ActiveRecord::Base
   has_many :urls, dependent: :destroy
   has_many :comments, dependent: :destroy
 
-  attr_accessor :url, :comment
-
   after_create :add_start_time
+
+  attr_accessor :url, :comment
 
   aasm do
     state :in_progress, initial: true
@@ -36,8 +36,8 @@ class Usertask < ActiveRecord::Base
     task.specific ? submit_data(args[0][:url], args[0][:comment]) : submit!
   end
 
-  def submit_data(url, comment)
-    urls.find_or_create_by(name: url)
+  def submit_data(solution, comment)
+    urls.find_or_create_by(name: solution)
     comments.create(data: comment)
     submit! unless(aasm_state == 'submitted')
   end

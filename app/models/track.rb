@@ -1,6 +1,6 @@
 class Track < ActiveRecord::Base
 
-  TRACK_ROLES = { track_owner: :track_owner, track_reviewer: :track_reviewer, track_runner: :track_runner }
+  ROLES = { track_owner: :track_owner, track_reviewer: :track_reviewer, track_runner: :track_runner }
 
   resourcify
 

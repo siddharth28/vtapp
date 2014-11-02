@@ -10,22 +10,18 @@ class Task < ActiveRecord::Base
   validates :title, presence: true
   validates :track, presence: true
 
-  def parent_title
-    parent.try(:title)
-  end
-
-  def need_review
-    specific ? 1 : 0
-  end
-
   [:instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer].each do |method|
     define_method(method) do
       specific.try(method)
     end
   end
 
-  def reviewer_name
-    specific.try(:reviewer).try(:name)
+  def parent_title
+    parent.try(:title)
+  end
+
+  def need_review
+    specific ? 1 : 0
   end
 
   def reviewer_name
