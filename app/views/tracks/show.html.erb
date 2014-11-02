@@ -8,16 +8,23 @@
   <% end %>
 
   <p>Track Name: <%= @track.name %></p>
+
   <p>Description: <%= @track.description %></p>
+
   <p>Instructions: <%= @track.instructions %></p>
+
   <p>References: <%= @track.references %></p>
+
   <p>Track Owner: <%= @track.owner.name %></p>
+
   <p>Status: <%= @track.enabled ? 'Enabled' : 'Disabled' %></p>
 
   <%= link_to 'Back', tracks_path(company: @track.company_id) %>
+
   <% if current_user.has_role?(:track_owner, @track) %>
     <%= link_to 'New Task', new_track_task_path(@track) %>
   <% end %>
+
   <%= link_to 'Tasks', track_tasks_path(@track) %>
 
 </div>

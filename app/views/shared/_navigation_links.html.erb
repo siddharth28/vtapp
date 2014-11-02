@@ -9,11 +9,13 @@
   <li><%= link_to 'Create Track', new_track_path %></li>
 <% end %>
 
-<% if !(current_user.super_admin?) %>
-  <li><%= link_to 'Tracks', tracks_path %></li>
+<% if !current_user.super_admin? %>
+  <li class="dropdown mainmenu">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tracks<b class="caret"></b></a>
+    <%= render 'shared/track_navigation_links' %>
+  </li>
 <% end %>
 
 <li><%= link_to 'Account', edit_user_registration_path %></li>
 <li><%= link_to "Hello, #{ current_user.name }", user_path(current_user), { class: 'user_details' } %></li>
 <li><%= link_to 'Sign out', destroy_user_session_path, { method: :delete } %></li>
-

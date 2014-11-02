@@ -40,6 +40,7 @@ describe TracksController do
 
     describe 'assigns' do
       before { send_request }
+      it { expect(assigns(:current_company_tracks)).to eq(tracks) }
       it { expect(assigns(:track)).to eq(track) }
     end
 
@@ -89,7 +90,7 @@ describe TracksController do
 
     describe 'assigns' do
       before { send_request }
-      it { expect(assigns(:search)).to eq(tracks) }
+      it { expect(assigns(:current_company_tracks)).to eq(tracks) }
       it { expect(assigns(:tracks)).to eq(tracks) }
     end
 
@@ -212,6 +213,24 @@ describe TracksController do
     end
 
     it { expect(controller.send(:set_track)).to eql(track) }
+
+    describe 'assigns' do
+      before { controller.send(:set_track) }
+      it { expect(assigns(:track)).to eq(track) }
+    end
+  end
+
+  describe '#current_company_tracks' do
+    before do
+      allow(current_company).to receive(:tracks).and_return(tracks)
+    end
+
+    it { expect(controller.send(:current_company_tracks)).to eql(tracks) }
+
+    describe 'assigns' do
+      before { controller.send(:current_company_tracks) }
+      it { expect(assigns(:current_company_tracks)).to eq(tracks) }
+    end
   end
 
   describe '#track_params' do
@@ -230,6 +249,45 @@ describe TracksController do
       it { expect(Track).to receive(:new).with({ name: 'Test Track', description: 'Owner', instructions: 'Abcd', references: 'ABCD', enabled: false }.with_indifferent_access).and_return(track) }
 
       after { send_request }
+    end
+  end
+
+  describe '#tracks_search' do
+    before do
+      allow(current_company).to receive(:tracks).and_return(tracks)
+      allow(tracks).to receive(:extract).with('Owner', nil).and_return(tracks)
+      allow(tracks).to receive(:search).with('example').and_return(tracks)
+      allow(tracks).to receive(:result).and_return(tracks)
+      allow(tracks).to receive(:page).with(nil).and_return(tracks)
+      allow(tracks).to receive(:per).with(20).and_return(tracks)
+    end
+
+    def send_request
+      get :tracks_search, { type: 'Owner', q: 'example',  page: nil }
+    end
+
+    describe 'expects to receive' do
+      it{ expect(current_company).to receive(:tracks).and_return(tracks) }
+      it{ expect(tracks).to receive(:extract).with('Owner', nil).and_return(tracks) }
+      it{ expect(tracks).to receive(:search).with('example').and_return(tracks) }
+      it{ expect(tracks).to receive(:result).and_return(tracks) }
+      it{ expect(tracks).to receive(:page).with(nil).and_return(tracks) }
+      it{ expect(tracks).to receive(:per).with(20).and_return(tracks) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:current_company_tracks)).to eq(tracks) }
+      it { expect(assigns(:tracks)).to eq(tracks) }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to render_template :index }
+      it { expect(response).to have_http_status(200) }
+      it { expect(flash[:notice]).to be_nil }
     end
   end
 end

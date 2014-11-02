@@ -16,6 +16,11 @@ class Track < ActiveRecord::Base
 
   after_create :assign_track_owner_role
 
+  def self.extract(type, user)
+    role = "track_#{ type }".to_sym
+    with_roles(role, user)
+  end
+
   def owner
     company.users.with_role(:track_owner, self).first
   end
