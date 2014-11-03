@@ -4,4 +4,4 @@ function checkAutoSuggest(autoSuggestField, autoSuggestHiddenField) {
       $(this).val('');
     };
   });
-});
+}
