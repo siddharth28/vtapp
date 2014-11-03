@@ -1,6 +1,6 @@
 <td><%= link_to company.name, company %></td>
-<% #FIXME_AB: Why displaying first user's email? any specific reason -%>
-<td><%= link_to company.owner.email, company %></td>
+<% #FIXME_AB: Why displaying first user's email? any specific reason %>
+<td><%= link_to company.owner.try(:email), company %></td>
 <td>
   <%= link_to 'Show', company %>
   <%= render partial: 'link_to_enabled', locals: { company: company } %>
