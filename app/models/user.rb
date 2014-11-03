@@ -110,11 +110,6 @@ class User < ActiveRecord::Base
       UserMailer.delay.welcome_email(email, password)
     end
 
-    def ensure_only_one_account_owner(role)
-      if role.name == ROLES[:account_owner] && company.owner
-        raise 'There can be only one account owner'
-      end
-    end
     #rolify callback
     #FIXED because this functionality is only for console view it's not in app so it won't occur in view
     #FIXME_AB: I could not get you by console view, Please elaborate
@@ -122,9 +117,7 @@ class User < ActiveRecord::Base
     ## So these actions can be performed only from the console.
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
-      if role.name == ROLES[:account_owner] && company.owner.first
-        #FIXED
-        #FIXME_AB: WE can avoid this nested if statement.
+      if role.name == ROLES[:account_owner] && company.owner
         raise 'There can be only one account owner'
       end
     end
