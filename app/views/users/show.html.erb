@@ -1,14 +1,24 @@
-<div class="authform">
-  <h3 class='m-left'>User</h3>
-  <% if(current_user.account_owner?) %>
-    <p><%= link_to 'Edit', edit_user_path(@user), class: 'button' %></p>
-  <% elsif (current_user.account_admin? && !@user.account_owner?) %>
-    <p><%= link_to 'Edit', edit_user_path(@user), class: 'button' %></p>
+<div class="col-md-10 m-top">
+  <h3 class='m-left-5x'>User</h3>
+  <% if current_user.account_owner? %>
+    <label class='col-md-6'><span>Company Name:</span><span class='form-control', readonly><%= current_company.name %></span></label>
   <% end %>
-  <p>Name: <%= @user.name %></p>
-  <p>Email: <%= @user.email %></p>
-  <p>Department: <%= @user.department %></p>
-  <p>Mentor: <%= @user.mentor_name %></p>
-  <p>Is Admin?: <%= @user.account_admin? ? 'Yes' : 'No' %></p>
-  <p>Status: <%= @user.enabled ? 'Enabled' : 'Disabled' %></p>
+
+  <label class='col-md-6'><span>Name:</span><span class='form-control', readonly><%= @user.name %></span></label>
+
+  <label class='col-md-6'><span>Email:</span><span class='form-control', readonly><%= @user.email %></span></label>
+
+  <label class='col-md-6'><span>Department:</span><span class='form-control', readonly><%= @user.department %></span></label>
+
+  <label class='col-md-6'><span>Mentor:</span><span class='form-control', readonly><%= @user.mentor_name %></span></label>
+
+  <label class='col-md-6'><span>Is Admin?:</span><span class='form-control', readonly><%= @user.account_admin? ? 'Yes' : 'No' %></label>
+
+  <label class='col-md-6'><span>Status:</span><span class='form-control', readonly><%= @user.enabled ? 'Enabled' : 'Disabled' %></span></label>
+
+  <% if(current_user.account_owner?) %>
+    <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default btn-lg m-left-5x m-top' %></p>
+  <% elsif (current_user.account_admin? && !@user.account_owner?) %>
+    <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default btn-lg m-left-5x m-top' %></p>
+  <% end %>
 </div>

@@ -1,44 +1,31 @@
 <div class="span8 offset1">
-  <h2 class='m-left m-top m-left-4x'>
+  <h2 class='m-left m-top m-left-5x'>
     Show <%= @track.name.to_s.humanize %>
   </h2>
 
-  <dl class="dl-horizontal form-horizontal">
+  <div class="form-group">
+    <label class='control-label'><strong>Track:</strong></label>
+    <span class='form-control', readonly><%= @track.name %></span>
+  </div>
 
-    <div class="form-group">
-      <dt class='col-sm-2 control-label'><strong>Track:</strong></dt>
-      <div class="col-sm-4">
-        <dd><%= @track.name %></dd>
-      </div>
-    </div>
+  <div class="form-group">
+    <label class='control-label'><strong>Description:</strong></label>
+    <span class='form-control', readonly><%= @track.description %></span>
+  </div>
 
-    <div class="form-group">
-      <dt class='col-sm-2 control-label'><strong>Description:</strong></dt>
-      <div class="col-sm-4">
-        <dd><%= @track.description %></dd>
-      <div>
-    </div>
+  <div class="form-group">
+    <label class='control-label'><strong>Instructions:</strong></label>
+    <span class='form-control', readonly><%= @track.instructions %></span>
+  </div>
 
-    <div class="form-group">
-      <dt class='col-sm-2 control-label'><strong>Instructions:</strong></dt>
-      <div class="col-sm-4">
-        <dd><%= @track.instructions %></dd>
-      </div>
-    </div>
+  <div class="form-group">
+    <label class='control-label'><strong>References:</strong></label>
+    <span class='form-control', readonly><%= @track.references %></span>
+  </div>
 
-    <div class="form-group">
-      <dt class='col-sm-2 control-label'><strong>References:</strong></dt>
-      <div class="col-sm-4">
-        <dd><%= @track.references %></dd>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <dt class='col-sm-2 control-label'><strong>Track Owner:</strong></dt>
-      <div class="col-sm-4">
-        <dd><%= @track.owner.name %></dd>
-      </div>
-    </div>
-  </dl>
-  <%= link_to 'Back', tracks_path(company: @track.company_id), class: 'btn btn-default btn-lg m-top m-left-2x' %>
+  <div class="form-group">
+    <label class='control-label'><strong>Track Owner:</strong></label>
+    <span class='form-control', readonly><%= @track.owner.name %></span>
+  </div>
+  <%= link_to 'Back', tracks_path(company: @track.company_id), class: 'btn btn-default btn-lg m-top m-left-5x' %>
 </div>
