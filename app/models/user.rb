@@ -1,30 +1,36 @@
 class User < ActiveRecord::Base
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
+
   #FIXED
   #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class
+  if ActiveRecord::Base.connection.table_exists?(:roles)
+    rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
+  end
 
-  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
-
-  devise :database_authenticatable, :registerable, :async,
-    :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :registerable, :async, :recoverable, :rememberable, :trackable, :validatable
 
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
+  has_many :usertasks, dependent: :destroy
+  has_many :tasks, through: :usertasks
+
   belongs_to :company
   belongs_to :mentor, class_name: User
 
+  #FIXED
+  #FIXME -> Write rspec of this line.
   attr_readonly :email, :company_id
 
-  attr_accessor :password, :password_confirmation
-
-  validates :name, presence: true
-  validates :password, presence: true
-  validates :password_confirmation, presence: true, allow_blank: true
   validates :mentor, presence: true, if: :mentor_id?
   #FIXED
   #FIXME -> Write rspec of this validation.
   validates :company, presence: true, unless: :super_admin?
+  validates :name, presence: true
+  validates :password, presence: true, on: :create
+  validates :password_confirmation, presence: true, allow_blank: true
+  #email validation is provided by devise
+  #FIXME_AB: no validation on email
 
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
@@ -37,12 +43,15 @@ class User < ActiveRecord::Base
 
   # FIXED
   # TIP : Put define_method before other methods but after callbacks/validations
+
   ROLES.each do |key, method|
     define_method "#{ method }?" do
       roles.any? { |role| role.name == "#{ method }" }
     end
   end
 
+  #FIXED
+  #FIXME : method name not correct
   alias_method :is_admin, :account_admin?
 
   def active_for_authentication?
@@ -67,15 +76,27 @@ class User < ActiveRecord::Base
     add_role_track_runner(add_track_object_ids) if !add_track_object_ids.blank?
   end
 
+  def track_ids
+    self.persisted? ? Track.with_role(Track::ROLES[:track_runner], self).ids : []
+  end
+
   def mentor_name
+    #CHANGED
+    #TIP : we can use mentor.try(:name) and can eliminate if mentor
     mentor.try(:name)
   end
-  #FIXED
-  #FIXME : method name not correct
 
   #FIXME : create reader for this
   def is_admin=(value)
-    value == '1' ? add_role_account_admin : remove_role_account_admin
+    value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
+  end
+
+  def current_task_state?(task_id)
+    !!current_task_state(task_id)
+  end
+
+  def current_task_state(task_id)
+    find_users_task(task_id).try(:aasm_state).try(:to_sym)
   end
 
   private
@@ -89,11 +110,9 @@ class User < ActiveRecord::Base
       UserMailer.delay.welcome_email(email, password)
     end
 
-    def ensure_an_account_owners_and_super_admin_remains
-      if super_admin?
-        raise 'Can\'t delete Super Admin'
-      elsif account_owner?
-        raise 'Can\'t delete Account Owner'
+    def ensure_only_one_account_owner(role)
+      if role.name == ROLES[:account_owner] && company.owner
+        raise 'There can be only one account owner'
       end
     end
     #rolify callback
@@ -103,7 +122,9 @@ class User < ActiveRecord::Base
     ## So these actions can be performed only from the console.
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_only_one_account_owner(role)
-      if role.name == ROLES[:account_owner] && company.owner
+      if role.name == ROLES[:account_owner] && company.owner.first
+        #FIXED
+        #FIXME_AB: WE can avoid this nested if statement.
         raise 'There can be only one account owner'
       end
     end
@@ -117,6 +138,10 @@ class User < ActiveRecord::Base
 
     def display_user_details
       "#{ name } : #{ email }"
+    end
+
+    def find_users_task(task_id)
+      usertasks.find_by(task_id: task_id)
     end
 
     def add_role_account_admin
