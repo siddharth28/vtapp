@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
 
   #FIXED
   #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class
-  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
+  # rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, if: ActiveRecord::Base.connection.table_exists?(:roles)
 
   devise :database_authenticatable, :registerable, :async, :recoverable, :rememberable, :trackable, :validatable
 
