@@ -4,16 +4,12 @@ class User < ActiveRecord::Base
 
   #FIXED
   #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class
-  if ActiveRecord::Base.connection.table_exists?(:roles)
-    rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
-  end
+  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role
 
   devise :database_authenticatable, :registerable, :async, :recoverable, :rememberable, :trackable, :validatable
 
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
-  has_many :usertasks, dependent: :destroy
-  has_many :tasks, through: :usertasks
 
   belongs_to :company
   belongs_to :mentor, class_name: User
@@ -91,14 +87,6 @@ class User < ActiveRecord::Base
     value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
   end
 
-  def current_task_state?(task_id)
-    !!current_task_state(task_id)
-  end
-
-  def current_task_state(task_id)
-    find_users_task(task_id).try(:aasm_state).try(:to_sym)
-  end
-
   private
     def set_random_password
       self.password_confirmation = self.password = Devise.friendly_token.first(8)
@@ -116,6 +104,14 @@ class User < ActiveRecord::Base
     ## Sir actually we cannot perform these actions from the application. these are just model level validations.
     ## So these actions can be performed only from the console.
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
+    def ensure_an_account_owners_and_super_admin_remains
+      if super_admin?
+        raise 'Can\'t delete Super Admin'
+      elsif account_owner?
+        raise 'Can\'t delete Account Owner'
+      end
+    end
+
     def ensure_only_one_account_owner(role)
       if role.name == ROLES[:account_owner] && company.owner
         raise 'There can be only one account owner'
@@ -131,10 +127,6 @@ class User < ActiveRecord::Base
 
     def display_user_details
       "#{ name } : #{ email }"
-    end
-
-    def find_users_task(task_id)
-      usertasks.find_by(task_id: task_id)
     end
 
     def add_role_account_admin
