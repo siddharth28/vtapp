@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
 
   attr_accessor :password, :password_confirmation
 
-  validates :password, :name, presence: true
+  validates :password, :name, presence: true, on: :create
   validates :password_confirmation, presence: true, allow_blank: true
   validates :mentor, presence: true, if: :mentor_id?
   #FIXED
@@ -51,7 +51,6 @@ class User < ActiveRecord::Base
       super && enabled && company.enabled
     end
   end
-
 
   def track_ids=(track_list)
     track_list.map!(&:to_i)

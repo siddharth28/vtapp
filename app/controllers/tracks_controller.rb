@@ -37,6 +37,14 @@ class TracksController < ResourceController
     @track.remove_reviewer(params[:format])
   end
 
+  def update
+    if @track.update(track_params)
+      redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
+    else
+      render action: 'edit'
+    end
+  end
+
   private
     def track_params
       params.require(:track).permit(:name, :description, :instructions, :references, :owner_id, :enabled, :reviewer_id)

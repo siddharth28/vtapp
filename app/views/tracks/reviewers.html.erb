@@ -1,14 +1,17 @@
-<div class = 'reviewer form-group col-md-10 m-top'>
-  <div class = class='m-form-left'>
-    <%= form_for(@track, url: assign_reviewer_track_path, remote: true, class: 'form-horizontal') do |track| %>
-      <div class="field  m-top">
-        <%= track.label :track_reviewer %>
-        <%= track.autocomplete_field :reviewer_name, autocomplete_user_name_tracks_path, id_element: '#track_reviewer_id', value: '' %>
-        <%= track.hidden_field :reviewer_id %>
-      </div>
-      <br>
-      <%= track.submit "Add", class: "reviewer btn btn-primary add_reviewer" %>
-    <% end %>
+<div class = 'reviewer'>
+  <div class = 'form-group col-md-10 m-top'>
+    <div class='m-left-4x'>
+      <%= form_for(@track, url: assign_reviewer_track_path, remote: true, class: 'form-horizontal') do |track| %>
+        <div class="field m-top">
+          <%= track.label :track_reviewer %>
+          <%= track.autocomplete_field :reviewer_name, autocomplete_user_name_tracks_path, id_element: '#track_reviewer_id', value: '' %>
+          <%= track.hidden_field :reviewer_id %>
+          <%= errors_for_field(@track, :reviewer_name) %>
+        </div>
+        <br>
+        <%= track.submit "Add", class: "m-left-x reviewer btn btn-primary add_reviewer" %>
+      <% end %>
+    </div>
   </div>
 
   <div class="container">

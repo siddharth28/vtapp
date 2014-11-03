@@ -11,7 +11,7 @@
     <%= user.label :user_email, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
       <%= user.text_field :email, class: 'form-control' %>
-      <%= errors_for_field(@user, :email) %>
+      <%= errors_for_field(@user, :email), readonly: true %>
     </div>
   </div>
 

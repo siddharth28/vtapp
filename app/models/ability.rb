@@ -12,10 +12,9 @@ class Ability
       can :manage, User, company: user.company
       can :manage, Track, company: user.company
     elsif user.account_admin?
-      can :read, User
-      can :create, User
+      can [:read, :create, :autocomplete_user_name, :autocomplete_user_department], User, company: user.company
       can :update, User do |other_user|
-        !(other_user.account_owner? || other_user.account_admin?)
+        !(other_user.account_owner?)
       end
       can :manage, Track, company: user.company
     end
