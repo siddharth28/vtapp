@@ -30,6 +30,7 @@ group :development do
   gem 'capistrano-bundler',                     '~>1.1.3'
   gem 'capistrano-rails',                       '~>1.1.2'
   gem 'spring',                               '1.1.3'
+  gem 'bullet'
 end
 
 group :test, :development do
