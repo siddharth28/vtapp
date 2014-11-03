@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   attr_accessor :password, :password_confirmation
 
   validates :name, presence: true
-  validates :password, presence: true, on: :create
+  validates :password, presence: true
   validates :password_confirmation, presence: true, allow_blank: true
   validates :mentor, presence: true, if: :mentor_id?
   #FIXED

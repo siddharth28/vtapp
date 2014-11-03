@@ -1,54 +1,50 @@
-<div class="form-group col-md-10 m-top">
-  <h2 class="m-left-2x">
+<div class="authform">
+
+  <h2>
     Edit <%= resource_name.to_s.humanize %>
   </h2>
 
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'form-horizontal' }) do |f| %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
     <%= devise_error_messages! %>
 
-    <div class="form-group">
-      <%= f.label :email, class: 'col-sm-4 control-label' %>
-      <div class="col-sm-4">
-        <%= f.email_field :email, autofocus: true, readonly: true, class: 'form-control' %>
-      </div>
+    <div>
+      <%= f.label :email %>
+      <br />
+      <%= f.email_field :email, autofocus: true, readonly: true %>
     </div>
 
     <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-      <div class="form-group">
+      <div>
         Currently waiting confirmation for: <%= resource.unconfirmed_email %>
       </div>
     <% end %>
 
-    <div class="form-group">
-      <%= f.label :name, class: 'col-sm-4 control-label' %>
-      <div class="col-sm-4">
-        <%= f.text_field :name, readonly: true, class: 'form-control'%>
-      </div>
+    <div>
+      <%= f.label :name %>
+      <br />
+      <%= f.text_field :name %>
     </div>
 
-    <div class="form-group">
-      <%= f.label :new_password, class: 'col-sm-4 control-label'%>
-      <div class="col-sm-4">
-        <%= f.password_field :password, autocomplete: "off", class: 'form-control' %>
-      </div>
+    <div>
+      <%= f.label :new_password %>
+      <br />
+      <%= f.password_field :password, autocomplete: "off" %>
     </div>
 
-    <div class="form-group">
-      <%= f.label :password_confirmation, class: 'col-sm-4 control-label' %>
-      <div class="col-sm-4">
-        <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control' %>
-      </div>
+    <div>
+      <%= f.label :password_confirmation %>
+      <br />
+      <%= f.password_field :password_confirmation, autocomplete: "off" %>
     </div>
 
-    <div class="form-group">
-      <%= f.label :current_password, class: 'col-sm-4 control-label' %>
-      <div class="col-sm-4">
-        <%= f.password_field :current_password, autocomplete: "off", class: 'form-control' %>
-      </div>
+    <div>
+      <%= f.label :current_password %>
+      <br />
+      <%= f.password_field :current_password, autocomplete: "off" %>
     </div>
 
-    <div class="form-group">
-      <%= f.submit "Save", class: 'btn btn-default btn-lg m-top m-left-2x' %>
+    <div>
+      <%= f.submit "Save" %>
     </div>
   <% end %>
 

@@ -3,18 +3,17 @@
     Forgot your password?
   </h2>
 
-  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'form-horizontal' }) do |f| %>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
     <%= devise_error_messages! %>
 
-    <div class="form-group">
+    <div>
       <%= f.label :email %>
-      <div class="col-sm-4">
-        <%= f.email_field :email, autofocus: true %>
-      </div>
+      <br />
+      <%= f.email_field :email, autofocus: true %>
     </div>
 
-    <div class="form-group">
-      <%= f.submit "Send me reset password instructions", class: 'btn btn-default btn-lg m-top m-left-2x' %>
+    <div>
+      <%= f.submit "Send me reset password instructions" %>
     </div>
   <% end %>
 
