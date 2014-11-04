@@ -1,6 +1,5 @@
 class CompaniesController < ResourceController
-  #FIXME Rspecs of this line.
-  skip_load_resource only: [:index, :create]
+
   before_action :build_user, only: [:new]
 
   def index

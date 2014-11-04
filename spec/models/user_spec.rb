@@ -7,10 +7,15 @@ describe User do
   #FIXED
   #FIXME -> Check constant value.
   describe 'constants' do
-    it { User.should have_constant(:ROLES) }
-    it { expect(User::ROLES[:super_admin]).to eql('super_admin') }
-    it { expect(User::ROLES[:account_owner]).to eql('account_owner') }
-    it { expect(User::ROLES[:account_admin]).to eql('account_admin') }
+    describe 'adminstrator roles' do
+      it { User.should have_constant(:ROLES) }
+      it { expect(User::ROLES[:super_admin]).to eql('super_admin') }
+      it { expect(User::ROLES[:account_owner]).to eql('account_owner') }
+      it { expect(User::ROLES[:account_admin]).to eql('account_admin') }
+      it { expect(User::ROLES[:track_owner]).to eql('track_owner') }
+      it { expect(User::ROLES[:track_runner]).to eql('track_runner') }
+      it { expect(User::ROLES[:track_reviewer]).to eql('track_reviewer') }
+    end
   end
 
   describe 'associations' do
@@ -19,6 +24,8 @@ describe User do
     describe 'has_many association' do
       it { should have_many(:mentees).class_name(User).with_foreign_key(:mentor_id).dependent(:restrict_with_error) }
       it { should have_many(:tracks).through(:roles).source(:resource) }
+      it { should have_many(:tasks).through(:usertasks) }
+      it { should have_many(:usertasks).dependent(:destroy) }
     end
 
     describe 'belongs_to' do
@@ -133,6 +140,7 @@ describe User do
       end
     end
 
+
     describe '#account_admin?' do
       context 'is an account_admin' do
         before { user.add_role(:account_admin) }
@@ -142,6 +150,43 @@ describe User do
 
       context 'not an account_admin' do
         it { expect(user.account_admin?).to eql(false) }
+      end
+    end
+
+    describe '#track_runner?' do
+      context 'is a track_runner' do
+        before { user.add_role(:track_runner) }
+
+        it { expect(user.track_runner?).to eql(true) }
+      end
+
+      context 'not a track_runner' do
+        it { expect(user.track_runner?).to eql(false) }
+      end
+    end
+
+    describe '#track_owner?' do
+      context 'is an track_owner' do
+        before { user.add_role(:track_owner) }
+
+        it { expect(user.track_owner?).to eql(true) }
+      end
+
+      context 'not an track_owner' do
+        it { expect(user.track_owner?).to eql(false) }
+      end
+    end
+
+
+    describe '#track_reviewer?' do
+      context 'is an track_reviewer' do
+        before { user.add_role(:track_reviewer) }
+
+        it { expect(user.track_reviewer?).to eql(true) }
+      end
+
+      context 'not an track_reviewer' do
+        it { expect(user.track_reviewer?).to eql(false) }
       end
     end
 
@@ -202,6 +247,7 @@ describe User do
 
         it { expect(user.tracks.include?(track)).to eql(true) }
       end
+
       context 'remove tracks' do
         let(:track_list) { [] }
         before do
@@ -275,6 +321,74 @@ describe User do
 
     describe '#display_user_details' do
       it { expect(user.send(:display_user_details)).to eql("#{ user.name } : #{ user.email }") }
+    end
+
+    describe 'usertask' do
+      let(:track) { create(:track, company: company) }
+      let(:user) { create(:user, company: company) }
+      let(:task) { create(:task, track: track) }
+      let(:usertask) { build(:usertask, user: user, task: task) }
+      let(:exercise_task) { create(:exercise_task, reviewer: mentor, track: track) }
+      let(:exercise_usertask) { build(:usertask, user: user, task: exercise_task) }
+
+
+      describe '#current_task_state?' do
+        context 'task not started' do
+          it { expect(user.current_task_state?(task.id)).to eql(false) }
+        end
+
+        context 'task started' do
+          before { usertask.save }
+          it { expect(user.current_task_state?(task.id)).to eql(true) }
+        end
+      end
+
+      describe '#current_task_state' do
+        context 'task not started' do
+          it { expect(Task::STATE[user.current_task_state(task.id)]).to eql(nil) }
+        end
+
+        context 'task started' do
+          context 'theory task' do
+            before { usertask.save }
+            it { expect(Task::STATE[user.current_task_state(task.id)]).to eql('Started') }
+
+            context 'task submitted' do
+              it { expect{ usertask.submit! }.to change{ Task::STATE[user.current_task_state(task.id)] }.from('Started').to('Completed') }
+            end
+          end
+
+          context 'exercise task' do
+            before { exercise_usertask.save }
+            it { expect(Task::STATE[user.current_task_state(exercise_task.id)]).to eql('Started') }
+
+            context 'task submitted' do
+              it { expect{ exercise_usertask.submit! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Started').to('Pending for review') }
+
+              context 'task accepted' do
+                before { exercise_usertask.submit! }
+                it { expect{ exercise_usertask.accept! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Pending for review').to('Completed') }
+              end
+
+              context 'task accepted' do
+                before { exercise_usertask.submit! }
+                it { expect{ exercise_usertask.reject! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Pending for review').to('Started') }
+              end
+            end
+          end
+        end
+      end
+
+      describe '#find_users_task' do
+        context 'user has task' do
+          before { usertask.save }
+          it { expect(user.send(:find_users_task, task.id)).to eql(usertask) }
+        end
+
+        context 'user does not have task' do
+          it { expect(mentor.send(:find_users_task, task.id)).to eql(nil) }
+        end
+      end
     end
   end
 end

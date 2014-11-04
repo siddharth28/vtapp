@@ -13,4 +13,8 @@
  *= require bootstrap
  *= require framework
  *= require overrides
- */
+ *= require_tree .
+ *= require_self
+ *= require sortable_tree
+ *= require nested_options
+*/

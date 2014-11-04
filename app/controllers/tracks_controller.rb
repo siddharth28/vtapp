@@ -4,8 +4,7 @@ class TracksController < ResourceController
   before_action :set_track, only: [:reviewers, :assign_reviewer, :remove_reviewer]
 
   def index
-    @search = current_company.tracks.search(params[:q])
-    @tracks = @search.result.page(params[:page]).per(20)
+    @tracks = current_company.tracks.search(params[:q]).result.page(params[:page]).per(20)
   end
 
   def create
@@ -33,6 +32,11 @@ class TracksController < ResourceController
 
   # FIXED
   # FIXME : extract set_track to a before_action
+  def tracks_search
+    @tracks = current_company.tracks.extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
+    render action: :index
+  end
+
   def remove_reviewer
     @track.remove_reviewer(params[:format])
   end

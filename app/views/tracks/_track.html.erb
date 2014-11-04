@@ -1,5 +1,7 @@
 <td><%= link_to track.name, track %></td>
+
 <td><%= link_to track.owner.name, track %></td>
+
 <td>
   <%= link_to 'Assign Track Reviewer', reviewers_track_path(track), class: 'm-right m-left' %>
   <%= link_to 'Show', track, class: 'm-right m-left' %>

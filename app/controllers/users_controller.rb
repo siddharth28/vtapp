@@ -1,5 +1,5 @@
 class UsersController < ResourceController
-  skip_load_resource only: [:index, :create]
+
   before_action :authenticate_user!
   before_action :remove_empty_element_multiple_select, only: [:create, :update]
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
@@ -16,7 +16,7 @@ class UsersController < ResourceController
     if @user.save
       redirect_to @user, notice: "User #{ @user.name } is successfully created."
     else
-      render action: 'new'
+      render action: :new
     end
   end
 
@@ -26,7 +26,7 @@ class UsersController < ResourceController
     if @user.update(user_params)
       redirect_to @user, notice: "User #{ @user.name } is successfully updated."
     else
-      render action: 'edit'
+      render action: :edit
     end
   end
 
@@ -40,7 +40,7 @@ class UsersController < ResourceController
     end
 
     def remove_empty_element_multiple_select
-      params[:user][:track_ids].reject!(&:empty?)
+      params[:user][:track_ids].reject!(&:blank?)
     end
 
     def get_autocomplete_items(parameters)

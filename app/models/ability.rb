@@ -11,12 +11,21 @@ class Ability
     elsif user.account_owner?
       can :manage, User, company: user.company
       can :manage, Track, company: user.company
+      can :manage, Task
     elsif user.account_admin?
       can [:read, :create, :autocomplete_user_name, :autocomplete_user_department], User, company: user.company
       can :update, User do |other_user|
         !(other_user.account_owner?)
       end
       can :manage, Track, company: user.company
+    elsif
+      can :manage, Track, company: user.company
+      can :read, Task
+      can :start_task, User
+      can :task_description, User
+      can :submit_task, User
+      can :manage, Task
+      can :manage, Usertask
     end
   end
 end

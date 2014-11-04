@@ -1,0 +1,71 @@
+<%= form_for([@track, @task], html: { class: 'form-horizontal'}) do |task| %>
+  <div class="form-group">
+    <%= task.label :task_title, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= task.text_field :title, class: 'form-control' %>
+      <%= errors_for_field(@task, :title) %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= task.label :task_description, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= task.text_area :description, class: 'form-control' %>
+      <%= errors_for_field(@task, :description) %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= task.label :parent_task, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= task.hidden_field :parent_id %>
+      <%= task.autocomplete_field :parent_title, autocomplete_task_title_track_tasks_path, id_element: '#task_parent_id', class: 'form-control' %>
+      <%= errors_for_field(@task, :parent) %>
+    </div>
+  </div>
+
+
+  <div class="form-group label_with_check_box">
+    <%= task.label :need_review?, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= task.check_box :need_review %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= task.label :task_instructions, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= task.text_area :instructions, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group label_with_check_box">
+    <%= task.label :is_hidden?, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= task.check_box :is_hidden %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= task.label :default_reviewer, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= task.hidden_field :reviewer_id %>
+      <%= task.autocomplete_field :reviewer_name, autocomplete_user_name_track_tasks_path, id_element: '#task_reviewer_id', class: 'form-control' %>
+      <%= errors_for_field(@exercise_task, :reviewer) if @exercise_task %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= task.label :sample_solution, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+      <%= task.file_field :sample_solution %>
+      <%= errors_for_field(@exercise_task, :sample_solution) if @exercise_task %>
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="col-sm-2"></div>
+    <%= task.submit 'Save task', class: 'btn btn-default btn-lg' %>
+    <%= link_to 'Cancel', track_tasks_path, class: 'btn btn-default btn-lg' %>
+  </div>
+<% end %>

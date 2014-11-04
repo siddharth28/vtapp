@@ -5,6 +5,7 @@ class Track < ActiveRecord::Base
   resourcify
 
   belongs_to :company
+  has_many :tasks, dependent: :destroy
 
   after_create :assign_track_owner_role
 
@@ -16,6 +17,11 @@ class Track < ActiveRecord::Base
   attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
   strip_fields :name
+
+  def self.extract(type, user)
+    role = "track_#{ type }".to_sym
+    with_roles(role, user)
+  end
 
   def owner
     company_users.with_role(ROLES[:track_owner], self).first

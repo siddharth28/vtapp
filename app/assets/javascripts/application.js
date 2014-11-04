@@ -20,3 +20,6 @@
 //= require autoSuggestBlur
 //= require autoSuggest
 //= require autocomplete_event
+//= require jquery.ui.nestedSortable
+//= require sortable_tree/initializer
+//= require track_navigation

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="span8 offset1">
   <h2 class='m-left m-top m-left-5x'>
     Show <%= @track.name.to_s.humanize %>
@@ -27,5 +28,16 @@
     <label class='control-label'><strong>Track Owner:</strong></label>
     <span class='form-control', readonly><%= @track.owner.name %></span>
   </div>
+
+  <% if(current_user.has_role?(:track_owner, @track)) %>
+    <p><%= link_to 'Edit', edit_track_path(@track), class: 'btn btn-default btn-lg m-top m-left-5x' %></p>
+  <% end %>
+
+  <% if current_user.has_role?(:track_owner, @track) %>
+    <%= link_to 'New Task', new_track_task_path(@track), class: 'btn btn-default btn-lg m-top m-left-5x' %>
+  <% end %>
+
+  <%= link_to 'Tasks', track_tasks_path(@track), class: 'btn btn-default btn-lg m-top m-left-5x' %>
+
   <%= link_to 'Back', tracks_path(company: @track.company_id), class: 'btn btn-default btn-lg m-top m-left-5x' %>
 </div>

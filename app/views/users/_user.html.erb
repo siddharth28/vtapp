@@ -1,6 +1,9 @@
 <td><%= link_to user.name, user %></td>
+
 <td><%= link_to user.email, user %></td>
+
 <td><%= user.department %></td>
+
 <td>
   <% if user.account_owner? %>
     <%= 'Account Owner' %>
@@ -10,6 +13,7 @@
     <%= '-' %>
   <% end %>
 </td>
+
 <td>
   <%= link_to 'Show', user , class: 'p-right p-left' %>
   <%= link_to 'Edit', edit_user_path(user), class: 'p-right p-left' %>

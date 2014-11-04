@@ -17,6 +17,16 @@ Rails.application.routes.draw do
         get :autocomplete_user_department, on: :collection
       end
 
+      namespace :usertasks do
+        get :start_task
+        get :task_description
+        patch :submit_task
+      end
+
+      namespace :tracks do
+        get :tracks_search
+      end
+
       resources :tracks do
         member do
           patch :enable, to: :toggle_enabled
@@ -25,7 +35,17 @@ Rails.application.routes.draw do
           patch :assign_reviewer
           get :remove_reviewer
         end
+
         get :autocomplete_user_name, on: :collection
+
+        resources :tasks do
+          get :autocomplete_task_title, on: :collection
+          get :autocomplete_user_name, on: :collection
+          get :manage, on: :collection
+          get :sample_solution, on: :member
+          # required for Sortable GUI server side actions
+          post :rebuild, on: :collection
+        end
       end
 
       resources :companies, except: [:edit, :update, :destroy] do

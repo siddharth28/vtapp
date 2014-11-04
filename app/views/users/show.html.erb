@@ -21,4 +21,5 @@
   <% elsif (current_user.account_admin? && !@user.account_owner?) %>
     <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default btn-lg m-left-5x m-top' %></p>
   <% end %>
+
 </div>

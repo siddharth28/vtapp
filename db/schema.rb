@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141028095416) do
+ActiveRecord::Schema.define(version: 20141031091907) do
+
+  create_table "comments", force: true do |t|
+    t.text     "data"
+    t.integer  "usertask_id"
+    t.integer  "commenter_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -36,6 +44,18 @@ ActiveRecord::Schema.define(version: 20141028095416) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+  create_table "exercise_tasks", force: true do |t|
+    t.text     "instructions"
+    t.string   "sample_solution_file_name"
+    t.string   "sample_solution_content_type"
+    t.integer  "sample_solution_file_size"
+    t.datetime "sample_solution_updated_at"
+    t.integer  "reviewer_id"
+    t.boolean  "is_hidden"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "roles", force: true do |t|
     t.string   "name"
     t.integer  "resource_id"
@@ -47,6 +67,19 @@ ActiveRecord::Schema.define(version: 20141028095416) do
   add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
   add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
 
+  create_table "tasks", force: true do |t|
+    t.string   "title"
+    t.integer  "parent_id"
+    t.text     "description"
+    t.integer  "track_id"
+    t.integer  "lft"
+    t.integer  "rgt"
+    t.integer  "actable_id"
+    t.string   "actable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "tracks", force: true do |t|
     t.string   "name"
     t.text     "description"
@@ -56,6 +89,11 @@ ActiveRecord::Schema.define(version: 20141028095416) do
     t.integer  "company_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "urls", force: true do |t|
+    t.string  "name"
+    t.integer "usertask_id"
   end
 
   create_table "users", force: true do |t|
@@ -88,5 +126,15 @@ ActiveRecord::Schema.define(version: 20141028095416) do
   end
 
   add_index "users_roles", ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
+
+  create_table "usertasks", force: true do |t|
+    t.integer  "task_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "aasm_state"
+    t.datetime "start_time"
+    t.datetime "end_time"
+  end
 
 end

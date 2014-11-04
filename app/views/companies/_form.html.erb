@@ -9,6 +9,7 @@
       <%= errors_for_field(@company, :name) %>
     </div>
   </div>
+
   <div class="form-group">
     <%= company.label :owner_name, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
@@ -16,6 +17,7 @@
       <%= errors_for_field(@company.users.first, :name) %>
     </div>
   </div>
+
   <div class="form-group">
     <%= company.label :owner_email, class: 'col-sm-2 control-label' %>
     <div class="col-sm-4">
@@ -23,10 +25,9 @@
       <%= errors_for_field(@company.users.first, :email) %>
     </div>
   </div>
+
   <div class="actions">
     <div class="col-sm-2"></div>
     <%= company.submit 'Save Company', class: 'btn btn-default btn-lg' %>
   </div>
-</div>
 <% end %>
-

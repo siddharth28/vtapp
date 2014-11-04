@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
+  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin', track_owner: 'track_owner', track_reviewer: 'track_reviewer', track_runner: 'track_runner' }
 
   #FIXED
   #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class
@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
 
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
   has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
+  has_many :usertasks, dependent: :destroy
+  has_many :tasks, through: :usertasks
 
   belongs_to :company
   belongs_to :mentor, class_name: User
@@ -87,6 +89,14 @@ class User < ActiveRecord::Base
     value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
   end
 
+  def current_task_state?(task_id)
+    !!current_task_state(task_id)
+  end
+
+  def current_task_state(task_id)
+    find_users_task(task_id).try(:aasm_state).try(:to_sym)
+  end
+
   private
     def set_random_password
       self.password_confirmation = self.password = Devise.friendly_token.first(8)
@@ -143,5 +153,9 @@ class User < ActiveRecord::Base
 
     def remove_role_track_runner(remove_track_object_ids)
       remove_track_object_ids.each { |track| remove_role Track::ROLES[:track_runner], Track.find(track) }
+    end
+
+    def find_users_task(task_id)
+      usertasks.find_by(task_id: task_id)
     end
 end
