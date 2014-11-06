@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20141031091907) do
 
   create_table "comments", force: true do |t|
     t.text     "data"
-    t.integer  "usertask_id"
+    t.integer  "task_id"
     t.integer  "commenter_id"
     t.datetime "created_at"
     t.datetime "updated_at"
