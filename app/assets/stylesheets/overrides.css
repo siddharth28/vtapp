@@ -77,3 +77,8 @@ tr th:last-child {
 .active { color: white !important; }
 
 .user-detail { color: white !important; }
+
+.side_nav {
+  position: absolute;
+  left: 0px;
+}
