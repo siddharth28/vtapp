@@ -1,12 +1,38 @@
 .m-top { margin-top: 15px; }
+.m-top-x { margin-top: 100px; }
+.m-top-150x { margin-top: 150px; }
+.m-top-2x { margin-top: 200px; }
+
+
+.m-down-x { margin-bottom: 10px; }
+.m-down-2x { margin-bottom: 20px; }
+
+.alert {
+  margin-left: 350px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  width: 1200px;
+}
+
 .m-form-left { margin-left: 150px; }
 .m-left { margin-left: 15px; }
+.m-left-0x { margin-left: 50px; }
 .m-left-x { margin-left: 100px; }
 .m-left-2x { margin-left: 200px; }
 .m-left-3x { margin-left: 250px; }
+.m-left-35x { margin-left: 275px; }
+.m-left-375x { margin-left: 300px; }
 .m-left-4x { margin-left: 350px; }
 .m-left-45x { margin-left: 400px; }
+.m-left-475x { margin-left: 425px; }
 .m-left-5x { margin-left: 450px; }
+.m-left-5.5x { margin-left: 550px; }
+.m-left-6x { margin-left: 600px; }
+.m-left-7x { margin-left: 700px; }
+.m-left-8x { margin-left: 800px; }
+
 
 .m-right { margin-right: 15px; }
 
@@ -39,6 +65,6 @@ tr th:last-child {
   border-bottom-right-radius: 6px;
 }
 
-.active {
-  color: white !important
-}
+.active { color: white !important; }
+
+.user-detail { color: white !important; }

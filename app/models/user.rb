@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin', track_owner: 'track_owner', track_reviewer: 'track_reviewer', track_runner: 'track_runner' }
+  ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
 
   #FIXED
   #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class

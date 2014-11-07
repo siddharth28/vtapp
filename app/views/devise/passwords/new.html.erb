@@ -1,5 +1,5 @@
-<div class="authform">
-  <h2>
+<div class="form-group col-md-10 m-top">
+  <h2 class="m-left-3x">
     Forgot your password?
   </h2>
 
@@ -7,14 +7,14 @@
     <%= devise_error_messages! %>
 
     <div class="form-group">
-      <%= f.label :email %>
+      <%= f.label :email, class: 'col-sm-4 control-label'  %>
       <div class="col-sm-4">
-        <%= f.email_field :email, autofocus: true %>
+        <%= f.email_field :email, autofocus: true, class: 'form-control' %>
       </div>
     </div>
 
     <div class="form-group">
-      <%= f.submit "Send me reset password instructions", class: 'btn btn-default btn-lg m-top m-left-2x' %>
+      <%= f.submit "Send me reset password instructions", class: 'btn btn-default btn-lg m-top m-left-35x' %>
     </div>
   <% end %>
 

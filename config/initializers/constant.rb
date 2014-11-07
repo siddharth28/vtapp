@@ -1,1 +1,1 @@
-DEFAULT_EMAIL = "siddharthvinsol@gmail.com"
+DEFAULT_EMAIL = "no-reply@vtapp.com"

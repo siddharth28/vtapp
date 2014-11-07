@@ -89,8 +89,10 @@ Rails.application.configure do
     :address => 'mailtrap.io',
     :domain => 'mailtrap.io',
     :port => '2525',
-    :authentication => :cram_md5
+    :authentication => :cram_md5,
+    :enable_starttls_auto => true
   }
+
 
   # ActionMailer Config
   config.action_mailer.default_url_options = { host: 'vtapp.domain4now.com' }
