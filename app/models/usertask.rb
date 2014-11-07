@@ -34,10 +34,18 @@ class Usertask < ActiveRecord::Base
     task.specific ? submit_data(args[0]) : submit!
   end
 
+  def submit_comment(comment)
+    comments.create(data: comment)
+  end
+
+  def submit_url(solution)
+    urls.find_or_create_by(name: solution)
+  end
+
   def submit_data(*args)
-    urls.find_or_create_by(name: args[0][:url])
-    comments.create(data: args[0][:comment])
-    submit! unless(aasm_state == 'submitted')
+    url = submit_url(args[0][:url]) unless(arg[0][url].blank?)
+    submit_comment(arg[0][comment]) unless(arg[0][comment].blank?)
+    submit! unless(aasm_state == 'submitted' || arg[0][url].blank?)
   end
 
   def add_start_time

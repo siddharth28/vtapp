@@ -2,12 +2,12 @@
   <div class="row">
     <div>
       <% if current_user.account_owner? || current_user.account_admin? %>
-        <%= link_to 'Create Track', new_track_path,  class: 'btn btn-primary btn-lg pull-right m-right' %>
+        <%= link_to 'Create Track', new_track_path,  class: 'btn btn-primary btn-lg pull-right m-right-150x' %>
       <% end %>
-      <h3 class='m-left'>Track</h3>
+      <h3 class="m-left-125x">Track</h3>
     </div>
 
-    <div class="column">
+    <div class="column m-left-x">
 
       <table class="sortable_table table table-bordered table-striped ">
         <thead>
