@@ -5,7 +5,6 @@ gem 'rails',                                  '4.1.6'
 gem 'mysql2',                                 '0.3.16'
 gem 'jquery-rails',                           '3.1.2'
 gem 'jquery-ui-rails',                        '5.0.0'
-gem 'jbuilder',                               '~> 2.0'
 gem 'devise',                                 '3.3.0'
 gem 'devise-async',                           '0.9.0'
 gem 'cancan',                                 '1.6.10'
@@ -39,7 +38,6 @@ group :development do
 end
 
 group :test, :development do
-  gem 'spring',                               '1.1.3'
   gem 'byebug',                               '3.5.0'
   gem 'quiet_assets',                         '1.0.3'
 end
@@ -48,8 +46,6 @@ group :test do
   gem 'rspec-rails',                          '3.1.0'
   gem 'rspec-activemodel-mocks',              '1.0.1'
   gem 'factory_girl_rails',                   '4.4.1'
-  gem 'guard-rspec',                          '4.3.1'
   gem 'shoulda-matchers',                     '2.7.0', require: false
   gem 'simplecov',                            '0.9.1', require: false
-  gem 'codeclimate-test-reporter',            '0.4.1', require: nil
 end
