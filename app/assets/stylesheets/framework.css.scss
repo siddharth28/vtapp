@@ -33,9 +33,9 @@ body {
   background-color: #eee;
 }
 main {
-  @extend .container;
-  padding-bottom: 80px;
-  margin-top: 51px; // accommodate the navbar
+  margin-top: 0px; // accommodate the navbar
+  margin-left: 0px;
+  padding-left: 0px;
   }
 section {
   @extend .row;
@@ -92,6 +92,9 @@ section {
   margin-left: 400px;
 }
 
+.table {
+  width: 80%;
+}
 .table th {
   text-align: center;
 }
@@ -217,4 +220,10 @@ section {
 
 textarea {
   resize: none;
+}
+
+.side_navigation {
+  padding-left: 0px;
+  padding-top: 0px;
+  margin-top: 0px;
 }

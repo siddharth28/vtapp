@@ -11,11 +11,7 @@ class Task < ActiveRecord::Base
 
   validates :title, :track, presence: true
 
-  [:instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer].each do |method|
-    define_method(method) do
-      specific.try(method)
-    end
-  end
+  delegate :instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
 
   def parent_title
     parent.try(:title)
@@ -25,11 +21,8 @@ class Task < ActiveRecord::Base
     specific ? 1 : 0
   end
 
-  def reviewer_name
-    specific.try(:reviewer).try(:name)
-  end
-
-  def reviewer_id
-    specific.try(:reviewer_id)
+  def move_to(target, position)
+    raise ActiveRecord::ActiveRecordError, "You cannot change the parent of a task" if parent_id != target.parent_id
+    super
   end
 end

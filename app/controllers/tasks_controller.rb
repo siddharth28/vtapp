@@ -46,6 +46,13 @@ class TasksController < ResourceController
     send_file @task.sample_solution.path
   end
 
+  rescue_from ActiveRecord::ActiveRecordError do |exception|
+    if request.format == :js
+      flash[:error] = exception.message
+      render :rebuild
+    end
+  end
+
   private
     def get_track
       @track = Track.find(params[:track_id])

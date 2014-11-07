@@ -148,11 +148,11 @@ class User < ActiveRecord::Base
     end
 
     def add_role_track_runner(add_track_object_ids)
-      add_track_object_ids.each { |track| add_role Track::ROLES[:track_runner], Track.find(track) }
+      add_track_object_ids.each { |track_id| add_role Track::ROLES[:track_runner], Track.find_by(id: track_id) }
     end
 
     def remove_role_track_runner(remove_track_object_ids)
-      remove_track_object_ids.each { |track| remove_role Track::ROLES[:track_runner], Track.find(track) }
+      remove_track_object_ids.each { |track_id| remove_role Track::ROLES[:track_runner], Track.find_by(id: track_id) }
     end
 
     def find_users_task(task_id)
