@@ -5,32 +5,32 @@ class Track < ActiveRecord::Base
   resourcify
 
   belongs_to :company
+  has_one :owner_role, -> { where(roles: { name: Track::ROLES[:track_owner], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
+  has_one :owner, through: :owner_role, source: :users
   has_many :tasks, dependent: :destroy
+  has_many :reviewer_role, -> { where(roles: { name: Track::ROLES[:reviewer], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
+  has_many :reviewers, through: :reviewer_role, source: :users
 
   after_create :assign_track_owner_role
 
-  validates :name, uniqueness: { case_sensitive: false }, presence: true
   # FIXED
   # FIXME : presence validations can ve clubbed in one
   validates :references, :description, :instructions, presence: true
+  validates :name, uniqueness: { scope: [:company_id], case_sensitive: false }, presence: true
 
   attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
   strip_fields :name
+
+  scope :load_with_owners, -> { includes(:owner) }
 
   def self.extract(type, user)
     role = "track_#{ type }".to_sym
     with_roles(role, user)
   end
 
-  def owner
-    company_users.with_role(ROLES[:track_owner], self).first
-  end
   # FIXED
   # FIXME : method name should be plural as it returns activerelation
-  def reviewers
-    company_users.with_role(ROLES[:track_reviewer], self)
-  end
 
   def add_reviewer(user_id)
     user = find_user(user_id)

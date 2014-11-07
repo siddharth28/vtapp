@@ -4,7 +4,7 @@ class TracksController < ResourceController
   before_action :set_track, only: [:reviewers, :assign_reviewer, :remove_reviewer]
 
   def index
-    @tracks = current_company.tracks.search(params[:q]).result.page(params[:page]).per(20)
+    @tracks = current_company.tracks.load_with_owners.page(params[:page]).per(20)
   end
 
   def create

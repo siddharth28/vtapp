@@ -7,27 +7,27 @@
 
     <div class="form-group">
       <label class='control-label'><strong>Track:</strong></label>
-      <span class='form-control', readonly><%= @track.name %></span>
+      <p class='form-control'><%= @track.name %></p>
     </div>
 
     <div class="form-group">
       <label class='control-label'><strong>Description:</strong></label>
-      <span class='form-control', readonly><%= @track.description %></span>
+      <p class='form-control'><%= @track.description.html_safe %></p>
     </div>
 
     <div class="form-group">
       <label class='control-label'><strong>Instructions:</strong></label>
-      <span class='form-control', readonly><%= @track.instructions %></span>
+      <p class='form-control'><%= @track.instructions.html_safe %></p>
     </div>
 
     <div class="form-group">
       <label class='control-label'><strong>References:</strong></label>
-      <span class='form-control', readonly><%= @track.references %></span>
+      <p class='form-control'><%= @track.references.html_safe %></p>
     </div>
 
     <div class="form-group">
       <label class='control-label'><strong>Track Owner:</strong></label>
-      <span class='form-control', readonly><%= @track.owner.name %></span>
+      <p class='form-control'><%= @track.owner.name %></p>
     </div>
 
     <div class='pull-right'>
