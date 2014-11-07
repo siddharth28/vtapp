@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       end
 
       namespace :tracks do
-        get :tracks_search
+        get :search
       end
 
       resources :tracks do

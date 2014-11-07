@@ -1,6 +1,0 @@
-<div class="list-group">
-  <%= link_to 'Track Details', @track, class: 'list-group-item active' %>
-  <% if current_user.account_owner? || current_user.account_admin? %>
-    <%= link_to 'Track Reviewer', reviewers_track_path(@track), class: 'list-group-item active' %>
-  <% end %>
-</div>

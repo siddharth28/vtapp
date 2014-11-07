@@ -32,7 +32,7 @@ class TracksController < ResourceController
 
   # FIXED
   # FIXME : extract set_track to a before_action
-  def tracks_search
+  def search
     @tracks = current_company.tracks.extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
     render action: :index
   end
