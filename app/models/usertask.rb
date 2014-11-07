@@ -31,12 +31,12 @@ class Usertask < ActiveRecord::Base
   end
 
   def submit_task(*args)
-    task.specific ? submit_data(args[0][:url], args[0][:comment]) : submit!
+    task.specific ? submit_data(args[0]) : submit!
   end
 
-  def submit_data(solution, comment)
-    urls.find_or_create_by(name: solution)
-    comments.create(data: comment)
+  def submit_data(*args)
+    urls.find_or_create_by(name: args[0][:url])
+    comments.create(data: args[0][:comment])
     submit! unless(aasm_state == 'submitted')
   end
 
