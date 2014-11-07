@@ -86,7 +86,7 @@ class TasksController < ResourceController
       if parameters[:method] == :name
         super(parameters).with_company(current_company)
       elsif parameters[:method] == :title
-        super(parameters).where(track: @track, parent_id: nil)
+        super(parameters).with_track(@track).with_no_parent
       end
     end
 end

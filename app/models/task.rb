@@ -11,6 +11,10 @@ class Task < ActiveRecord::Base
 
   validates :title, :track, presence: true
 
+  scope :with_no_parent, -> { where(parent_id: nil) }
+  scope :with_track, ->(track) { where(track: track) }
+
+
   delegate :instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
 
   def parent_title
