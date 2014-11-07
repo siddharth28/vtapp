@@ -18,6 +18,7 @@ class Ability
         !(other_user.account_owner?)
       end
       can :manage, Track, company: user.company
+      can :manage, Task
     elsif
       can :manage, Track, company: user.company
       can :read, Task
