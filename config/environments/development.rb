@@ -33,19 +33,18 @@ Rails.application.configure do
   config.assets.raise_runtime_errors = true
 
   config.serve_static_assets = false
-
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
-    port: 587,
-    domain: "gmail.com",
-    authentication: "plain",
-    enable_starttls_auto: true,
-    user_name: "siddharthvinsol@gmail.com",
-    password: "9711949986"
+    :user_name => '2606800570160af55',
+    :password => 'd2dd77e10adf4a',
+    :address => 'mailtrap.io',
+    :domain => 'mailtrap.io',
+    :port => '2525',
+    :authentication => :cram_md5
   }
+
   # ActionMailer Config
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
-  config.action_mailer.delivery_method = :smtp
   config.action_mailer.raise_delivery_errors = true
   # Send email in development mode?
   config.action_mailer.perform_deliveries = true
