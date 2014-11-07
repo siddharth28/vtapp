@@ -26,7 +26,7 @@ class Task < ActiveRecord::Base
   end
 
   def move_to(target, position)
-    raise ActiveRecord::ActiveRecordError, "You cannot change the parent of a task" if parent_id != target.parent_id
+    raise ActiveRecord::ActiveRecordError, "You cannot change the parent of a task" if target.class == Task && parent_id != target.parent_id
     super
   end
 end

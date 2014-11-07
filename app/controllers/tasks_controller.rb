@@ -38,6 +38,11 @@ class TasksController < ResourceController
     end
   end
 
+  def destroy
+    @task.destroy
+    redirect_to track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
+  end
+
   def manage
     @tasks = @track.tasks.nested_set.all
   end
@@ -68,7 +73,7 @@ class TasksController < ResourceController
 
     def save_task(task)
       if task.save
-        redirect_to track_tasks_path, notice: "Task #{ task.title } is successfully created."
+        redirect_to manage_track_tasks_path, notice: "Task #{ task.title } is successfully created."
       else
         render action: 'new'
       end
@@ -76,7 +81,7 @@ class TasksController < ResourceController
 
     def update_task(task)
       if task.update(task_params)
-        redirect_to track_tasks_path, notice: "Task #{ task.title } is successfully updated."
+        redirect_to manage_track_tasks_path, notice: "Task #{ task.title } is successfully updated."
       else
         render action: 'edit'
       end
@@ -84,7 +89,7 @@ class TasksController < ResourceController
 
     def get_autocomplete_items(parameters)
       if parameters[:method] == :name
-        super(parameters).with_company(current_company)
+        super(parameters).with_company(current_company).with_role(:track_reviewer, @track)
       elsif parameters[:method] == :title
         super(parameters).with_track(@track).with_no_parent
       end
