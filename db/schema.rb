@@ -11,15 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141031091907) do
+ActiveRecord::Schema.define(version: 20141107084807) do
 
   create_table "comments", force: true do |t|
-    t.text     "data"
-    t.integer  "task_id"
+    t.string   "data"
     t.integer  "commenter_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "usertask_id"
   end
+
+  add_index "comments", ["usertask_id"], name: "index_comments_on_usertask_id", using: :btree
 
   create_table "companies", force: true do |t|
     t.string   "name"
