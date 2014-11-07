@@ -40,7 +40,7 @@ class TasksController < ResourceController
 
   def destroy
     @task.destroy
-    redirect_to track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
+    redirect_to manage_track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
   end
 
   def manage
