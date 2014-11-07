@@ -84,3 +84,15 @@ tr th:last-child {
   position: absolute;
   left: 0px;
 }
+
+.readonly {
+  background-color: #BDBDBD;
+  border-radius: 6px;
+  border: 1px solid #cccccc;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+p.form-control {
+  height: auto;
+}

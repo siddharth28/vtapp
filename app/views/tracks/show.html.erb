@@ -1,33 +1,43 @@
 <%= render partial: 'side_navigation' %>
 <div class="col-md-9">
   <div class="m-top m-form-left">
-    <h3 class='m-left-2x'>
+    <h3 class='m-left-3x'>
       <%= @track.name.to_s.humanize %>
     </h3 >
 
     <div class="form-group">
-      <label class='control-label'><strong>Track:</strong></label>
-      <p class='form-control'><%= @track.name %></p>
+      <label class='control-label col-md-3 m-top m-down-x '><strong>Track:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @track.name %></p>
+      </div>
     </div>
 
     <div class="form-group">
-      <label class='control-label'><strong>Description:</strong></label>
-      <p class='form-control'><%= @track.description.html_safe %></p>
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Description:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @track.description.html_safe %></p>
+      </div>
     </div>
 
     <div class="form-group">
-      <label class='control-label'><strong>Instructions:</strong></label>
-      <p class='form-control'><%= @track.instructions.html_safe %></p>
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Instructions:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @track.instructions.html_safe %></p>
+      </div>
     </div>
 
     <div class="form-group">
-      <label class='control-label'><strong>References:</strong></label>
-      <p class='form-control'><%= @track.references.html_safe %></p>
+      <label class='control-label col-md-3 m-top m-down-x'><strong>References:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @track.references.html_safe %></p>
+      </div>
     </div>
 
     <div class="form-group">
-      <label class='control-label'><strong>Track Owner:</strong></label>
-      <p class='form-control'><%= @track.owner.name %></p>
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Track Owner:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @track.owner.name %></p>
+      </div>
     </div>
 
     <div class='pull-right'>
