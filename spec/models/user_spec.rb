@@ -12,9 +12,6 @@ describe User do
       it { expect(User::ROLES[:super_admin]).to eql('super_admin') }
       it { expect(User::ROLES[:account_owner]).to eql('account_owner') }
       it { expect(User::ROLES[:account_admin]).to eql('account_admin') }
-      it { expect(User::ROLES[:track_owner]).to eql('track_owner') }
-      it { expect(User::ROLES[:track_runner]).to eql('track_runner') }
-      it { expect(User::ROLES[:track_reviewer]).to eql('track_reviewer') }
     end
   end
 
@@ -150,43 +147,6 @@ describe User do
 
       context 'not an account_admin' do
         it { expect(user.account_admin?).to eql(false) }
-      end
-    end
-
-    describe '#track_runner?' do
-      context 'is a track_runner' do
-        before { user.add_role(:track_runner) }
-
-        it { expect(user.track_runner?).to eql(true) }
-      end
-
-      context 'not a track_runner' do
-        it { expect(user.track_runner?).to eql(false) }
-      end
-    end
-
-    describe '#track_owner?' do
-      context 'is an track_owner' do
-        before { user.add_role(:track_owner) }
-
-        it { expect(user.track_owner?).to eql(true) }
-      end
-
-      context 'not an track_owner' do
-        it { expect(user.track_owner?).to eql(false) }
-      end
-    end
-
-
-    describe '#track_reviewer?' do
-      context 'is an track_reviewer' do
-        before { user.add_role(:track_reviewer) }
-
-        it { expect(user.track_reviewer?).to eql(true) }
-      end
-
-      context 'not an track_reviewer' do
-        it { expect(user.track_reviewer?).to eql(false) }
       end
     end
 

@@ -40,7 +40,6 @@ describe TracksController do
 
     describe 'assigns' do
       before { send_request }
-      it { expect(assigns(:current_company_tracks)).to eq(tracks) }
       it { expect(assigns(:track)).to eq(track) }
     end
 
@@ -90,7 +89,6 @@ describe TracksController do
 
     describe 'assigns' do
       before { send_request }
-      it { expect(assigns(:current_company_tracks)).to eq(tracks) }
       it { expect(assigns(:tracks)).to eq(tracks) }
     end
 
@@ -195,19 +193,6 @@ describe TracksController do
     end
   end
 
-  describe '#current_company_tracks' do
-    before do
-      allow(current_company).to receive(:tracks).and_return(tracks)
-    end
-
-    it { expect(controller.send(:current_company_tracks)).to eql(tracks) }
-
-    describe 'assigns' do
-      before { controller.send(:current_company_tracks) }
-      it { expect(assigns(:current_company_tracks)).to eq(tracks) }
-    end
-  end
-
   describe '#track_params' do
     before do
       allow(Track).to receive(:new).with({ name: 'Test Track', description: 'Owner', instructions: 'Abcd', references: 'ABCD', enabled: false }.with_indifferent_access).and_return(track)
@@ -227,7 +212,7 @@ describe TracksController do
     end
   end
 
-  describe '#tracks_search' do
+  describe '#search' do
     before do
       allow(current_company).to receive(:tracks).and_return(tracks)
       allow(tracks).to receive(:extract).with('Owner', nil).and_return(tracks)
@@ -238,7 +223,7 @@ describe TracksController do
     end
 
     def send_request
-      get :tracks_search, { type: 'Owner', q: 'example',  page: nil }
+      get :search, { type: 'Owner', q: 'example',  page: nil }
     end
 
     describe 'expects to receive' do
@@ -254,7 +239,6 @@ describe TracksController do
 
     describe 'assigns' do
       before { send_request }
-      it { expect(assigns(:current_company_tracks)).to eq(tracks) }
       it { expect(assigns(:tracks)).to eq(tracks) }
     end
 
