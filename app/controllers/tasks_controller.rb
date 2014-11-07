@@ -38,6 +38,11 @@ class TasksController < ResourceController
     end
   end
 
+  def destroy
+    @task.destroy
+    redirect_to track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
+  end
+
   def manage
     @tasks = @track.tasks.nested_set.all
   end
@@ -84,7 +89,7 @@ class TasksController < ResourceController
 
     def get_autocomplete_items(parameters)
       if parameters[:method] == :name
-        super(parameters).with_company(current_company)
+        super(parameters).with_company(current_company).with_role(:track_reviewer, @track)
       elsif parameters[:method] == :title
         super(parameters).with_track(@track).with_no_parent
       end
