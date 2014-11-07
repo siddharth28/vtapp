@@ -4,10 +4,11 @@ class UsersController < ResourceController
   before_action :remove_empty_element_multiple_select, only: [:create, :update]
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
   autocomplete :user, :department
+  # rspec remaining
+  skip_load_resource only: [:create]
 
   def index
-    params[:q] ||= { s: "name {name:'asc'}" }
-    @search = current_company.users.includes(:roles).search(params[:q])
+    @search = current_company.users.includes(:roles).search(params[:q] || { s: "name {name:'asc'}" })
     @users = @search.result.page(params[:page]).per(20)
   end
 
@@ -23,7 +24,7 @@ class UsersController < ResourceController
   def update
     # Only a account_admin or account_owner can edit
     # FIXME : What if normal or any other user updates ?
-    if @user.update(user_params)
+    if @user.update(update_user_params)
       redirect_to @user, notice: "User #{ @user.name } is successfully updated."
     else
       render action: :edit
@@ -36,6 +37,14 @@ class UsersController < ResourceController
         params.require(:user).permit(:name, :email, :department, :mentor_id, :is_admin, :enabled, track_ids: [])
       elsif current_user.account_admin?
         params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, track_ids: [])
+      end
+    end
+
+    def update_user_params
+      if current_user.account_owner?
+        params.require(:user).permit(:name, :department, :mentor_id, :is_admin, :enabled, track_ids: [])
+      elsif current_user.account_admin?
+        params.require(:user).permit(:name, :department, :mentor_id, :enabled, track_ids: [])
       end
     end
 

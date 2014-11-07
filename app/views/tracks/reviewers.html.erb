@@ -1,4 +1,5 @@
-<div class = 'reviewer'>
+<%= render partial: 'side_navigation' %>
+<div class = 'col-md-10'>
   <div class = 'form-group col-md-10 m-top'>
     <div >
       <%= form_for(@track, url: assign_reviewer_track_path, remote: true, class: 'form-horizontal') do |track| %>
@@ -14,28 +15,26 @@
     </div>
   </div>
 
-  <div class="container">
-    <div class="row">
-      <div class="column">
-        <table class="sortable_table table table-bordered table-striped reviewer_table ">
-          <thead>
+  <div class="row">
+    <div class="column">
+      <table class="sortable_table table table-bordered table-striped reviewer_table ">
+        <thead>
+          <tr>
+            <th>Reviewer</th>
+            <th>Reviewer Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @track.reviewers.each do |reviewer| %>
             <tr>
-              <th>Reviewer</th>
-              <th>Reviewer Name</th>
-              <th>Actions</th>
+              <td><%= link_to reviewer.name, reviewer %></td>
+              <td><%= link_to reviewer.email, reviewer %></td>
+              <td><%= link_to 'Remove', remove_reviewer_track_path(@track, reviewer), remote: true, data: { confirm: "Are you sure?" } %></td>
             </tr>
-          </thead>
-          <tbody>
-            <% @track.reviewers.each do |reviewer| %>
-              <tr>
-                <td><%= link_to reviewer.name, reviewer %></td>
-                <td><%= link_to reviewer.email, reviewer %></td>
-                <td><%= link_to 'Remove', remove_reviewer_track_path(@track, reviewer), remote: true, data: { confirm: "Are you sure?" } %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

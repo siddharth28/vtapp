@@ -28,6 +28,7 @@ describe CompaniesController do
     after { send_request }
   end
 
+
   describe '#create' do
     before do
       allow(Company).to receive(:new).and_return(company)
@@ -39,12 +40,6 @@ describe CompaniesController do
     end
 
     #FIXME -> Fix rspec of skip_load_resource
-    describe 'skip_load_resource' do
-      it { expect(assigns(:company)).not_to eq(company) }
-
-      after { send_request }
-    end
-
     describe 'expects to send' do
       it { expect(Company).to receive(:new).and_return(company) }
       after { send_request }

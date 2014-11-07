@@ -1,6 +1,8 @@
 class CompaniesController < ResourceController
 
   before_action :build_user, only: [:new]
+  #rspec remaining
+  skip_load_resource only: [:create]
 
   def index
     @search = Company.load_with_owners.search(params[:q])
