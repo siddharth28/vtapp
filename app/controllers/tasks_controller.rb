@@ -51,6 +51,12 @@ class TasksController < ResourceController
     send_file @task.sample_solution.path
   end
 
+  def remove_sample_solution
+    @task.specific.sample_solution = nil
+    @task.save
+    redirect_to track_task_path
+  end
+
   rescue_from ActiveRecord::ActiveRecordError do |exception|
     if request.format == :js
       flash[:error] = exception.message

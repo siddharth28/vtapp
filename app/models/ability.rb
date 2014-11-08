@@ -15,18 +15,21 @@ class Ability
     elsif user.account_admin?
       can [:read, :create, :autocomplete_user_name, :autocomplete_user_department], User, company: user.company
       can :update, User do |other_user|
-        !(other_user.account_owner?)
+        !(other_user.account_owner? || other_user.account_admin?)
       end
       can :manage, Track, company: user.company
       can :manage, Task
     elsif
-      can :manage, Track, company: user.company
-      can :read, Task
-      can :start_task, User
-      can :task_description, User
-      can :submit_task, User
-      can :manage, Task
-      can :manage, Usertask
+      can :manage, Track do |track|
+        track.owner == user
+      end
+      can :read, Track do |track|
+        user.is_track_runner_of?(track)
+      end
+      can :index, Task
+      can :manage, Usertask do |user_task|
+        user_task.user_id == user.id
+      end
     end
   end
 end

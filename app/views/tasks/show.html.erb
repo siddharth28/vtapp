@@ -26,6 +26,7 @@
       <div class="col-md-9 readonly">
         <% if @task.sample_solution.path %>
           <p><%= link_to 'Download',[:sample_solution, @track, @task] %></p>
+          <%= link_to 'Remove',[:remove_sample_solution, @track, @task] %>
         <% end %>
       </div>
     </div>

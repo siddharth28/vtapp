@@ -10,6 +10,7 @@ class Task < ActiveRecord::Base
   has_many :users, through: :usertasks
 
   validates :title, :track, presence: true
+  validates :title, length: { maximum: 255 }
 
   scope :with_no_parent, -> { where(parent_id: nil) }
   scope :with_track, ->(track) { where(track: track) }
