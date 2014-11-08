@@ -19,12 +19,14 @@ describe Track do
     describe 'uniqueness' do
       let(:company) { create(:company) }
       let(:track_owner_user) { create(:track_owner_user, company: company) }
+      let(:track2) { build(:track) }
+
       before do
         track_owner_user
         track.company_id = company.id
         track.save
       end
-      it { should validate_uniqueness_of(:name).case_insensitive }
+      it { expect(track2.save).to eql(false) }
     end
   end
 
@@ -142,31 +144,54 @@ describe Track do
       end
     end
 
-    describe '#add reviewer' do
+    describe '#add_track_role' do
       let(:company) { create(:company) }
       let(:user) { create(:user, company: company)}
       let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
 
-      before do
-        track.add_reviewer(user.id)
+      context 'add reviewer' do
+        before do
+          track.add_track_role(:track_reviewer, user.id)
+        end
+
+        it { expect(track.reviewers.ids.include?(user.id)).to eql(true) }
       end
 
-      it { expect(track.reviewers.ids.include?(user.id)).to eql(true) }
+      context 'add owner' do
+        before do
+          track.add_track_role(:track_owner, user.id)
+        end
+
+        it { expect(track.owner).to eql(user) }
+      end
     end
 
-    describe '#remove reviewer' do
+    describe '#remove_track_role' do
       let(:company) { create(:company) }
       let(:user) { create(:user, company: company)}
       let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
 
-      before do
-        user.add_role(:track_reviewer, track)
-        track.remove_reviewer(user.id)
+      context 'remove reviewer' do
+        before do
+          user.add_role(:track_reviewer, track)
+          track.remove_track_role(:track_reviewer, user.id)
+        end
+
+        #example for find user
+        it { expect(track.send(:find_user, user.id)).to eql(user) }
+        it { expect(track.reviewers.ids.include?(user.id)).not_to eql(true) }
       end
 
-      #example for find user
-      it { expect(track.send(:find_user, user.id)).to eql(user) }
-      it { expect(track.reviewers.ids.include?(user.id)).not_to eql(true) }
+      context 'remove owner' do
+        before do
+          user.add_role(:track_owner, track)
+          track.remove_track_role(:track_owner, user.id)
+        end
+
+        #example for find user
+        it { expect(track.send(:find_user, user.id)).to eql(user) }
+        it { expect(track.owner).to be_nil }
+      end
     end
 
 

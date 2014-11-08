@@ -67,20 +67,18 @@ describe TracksController do
   describe '#index' do
     before do
       allow(current_company).to receive(:tracks).and_return(tracks)
-      allow(tracks).to receive(:search).with('example').and_return(tracks)
-      allow(tracks).to receive(:result).and_return(tracks)
+      allow(tracks).to receive(:load_with_owners).and_return(tracks)
       allow(tracks).to receive(:page).with(nil).and_return(tracks)
       allow(tracks).to receive(:per).with(20).and_return(tracks)
     end
 
     def send_request
-      get :index, { q: 'example', page: nil }
+      get :index, { page: nil }
     end
 
     describe 'expects to receive' do
       it { expect(current_company).to receive(:tracks).and_return(tracks) }
-      it { expect(tracks).to receive(:search).with('example').and_return(tracks) }
-      it { expect(tracks).to receive(:result).and_return(tracks) }
+      it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
       it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
       it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
@@ -125,7 +123,7 @@ describe TracksController do
     before do
       allow(controller).to receive(:set_track).and_return(track)
       allow(Track).to receive(:find).and_return(track)
-      allow(track).to receive(:add_reviewer).with("123").and_return(user)
+      allow(track).to receive(:add_track_role).with(:track_reviewer, "123").and_return(user)
     end
 
     def send_request
@@ -133,7 +131,7 @@ describe TracksController do
     end
 
     describe 'expects to receive' do
-      it { expect(track).to receive(:add_reviewer).with("123").and_return(true) }
+      it { expect(track).to receive(:add_track_role).with(:track_reviewer, "123").and_return(true) }
 
       after { send_request }
     end
@@ -154,7 +152,7 @@ describe TracksController do
     before do
       allow(controller).to receive(:set_track).and_return(track)
       allow(Track).to receive(:find).and_return(track)
-      allow(track).to receive(:remove_reviewer).with("123").and_return(user)
+      allow(track).to receive(:remove_track_role).with(:track_reviewer, "123").and_return(user)
     end
 
     def send_request
@@ -162,7 +160,7 @@ describe TracksController do
     end
 
     describe 'expects to receive' do
-      it { expect(track).to receive(:remove_reviewer).with("123").and_return(true) }
+      it { expect(track).to receive(:remove_track_role).with(:track_reviewer, "123").and_return(user) }
 
       after { send_request }
     end

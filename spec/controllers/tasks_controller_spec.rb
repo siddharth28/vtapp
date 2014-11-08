@@ -30,7 +30,7 @@ describe TasksController do
       end
 
       def send_request
-        post :create, track_id: '1', task: { title: 'Test Title', need_review: '0' }
+        post :create, track_id: track, task: { title: 'Test Title', need_review: '0' }
       end
 
       describe 'expects to send' do
@@ -48,7 +48,7 @@ describe TasksController do
       describe 'response' do
         context "when response is successfully created" do
           before { send_request }
-          it { expect(response).to redirect_to track_tasks_path }
+          it { expect(response).to redirect_to manage_track_tasks_path(track) }
           it { expect(response).to have_http_status(302) }
           it { expect(flash[:notice]).to eq("Task #{ task.title } is successfully created.") }
         end
@@ -76,7 +76,7 @@ describe TasksController do
       end
 
       def send_request
-        post :create, track_id: '1', task: { title: 'Test Title', need_review: '1' }
+        post :create, track_id: track, task: { title: 'Test Title', need_review: '1' }
       end
 
       describe 'expects to send' do
@@ -94,7 +94,7 @@ describe TasksController do
       describe 'response' do
         context "when response is successfully created" do
           before { send_request }
-          it { expect(response).to redirect_to track_tasks_path }
+          it { expect(response).to redirect_to manage_track_tasks_path(track) }
           it { expect(response).to have_http_status(302) }
           it { expect(flash[:notice]).to eq("Task #{ exercise_task.title } is successfully created.") }
         end
@@ -124,7 +124,7 @@ describe TasksController do
       end
 
       def send_request
-        patch :update, id: task, track_id: '1', task: { title: 'Test Title', need_review: '1' }
+        patch :update, id: task, track_id: track, task: { title: 'Test Title', need_review: '1' }
       end
 
       describe 'assigns' do
@@ -135,7 +135,7 @@ describe TasksController do
       describe 'response' do
         context "when response is successfully created" do
           before { send_request }
-          it { expect(response).to redirect_to track_tasks_path }
+          it { expect(response).to redirect_to manage_track_tasks_path(track) }
           it { expect(response).to have_http_status(302) }
           it { expect(flash[:notice]).to eq("Task #{ task.title } is successfully updated.") }
         end
@@ -162,7 +162,7 @@ describe TasksController do
       end
 
       def send_request
-        patch :update, id: task, track_id: '1', task: { title: 'Test Title', need_review: '0' }
+        patch :update, id: task, track_id: track, task: { title: 'Test Title', need_review: '0' }
       end
 
       describe 'assigns' do
@@ -173,7 +173,7 @@ describe TasksController do
       describe 'response' do
         context "when response is successfully created" do
           before { send_request }
-          it { expect(response).to redirect_to track_tasks_path }
+          it { expect(response).to redirect_to manage_track_tasks_path(track) }
           it { expect(response).to have_http_status(302) }
           it { expect(flash[:notice]).to eq("Task #{ task.title } is successfully updated.") }
         end
