@@ -91,7 +91,8 @@ tr th:last-child {
   border: 1px solid #cccccc;
   margin-top: 10px;
   margin-bottom: 10px;
-  padding: 10px;
+  padding: 6px;
+  padding-left: 10px;
 }
 
 p.form-control {
