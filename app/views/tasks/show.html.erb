@@ -1,31 +1,42 @@
-<div class="form-group">
-  <strong>Task Title:</strong>
-  <%= @task.title %>
-</div>
-
-<div class="form-group">
-  <strong>Task Description:</strong>
-  <%= @task.description %>
-</div>
-
-<% if @task.specific %>
+<div class="form-well col-md-10 m-top m-left-x">
   <div class="form-group">
-    <strong>Task Instructions:</strong>
-    <%= @task.instructions %>
+    <label class='col-md-6'><strong>Task Title:</strong></label>
+    <div class="col-md-9 readonly">
+      <p><%= @task.title %></p>
+    </div>
   </div>
 
   <div class="form-group">
-    <strong>Task sample solution:</strong>
-    <% if @task.sample_solution.path %>
-      <%= link_to 'Download',[:sample_solution, @track, @task] %>
-      <%= link_to 'Remove',[:remove_sample_solution, @track, @task] %>
-    <% end %>
-  </p>
-
-  <p>
-    <strong>Task Reviewer:</strong>
-    <%= @task.reviewer_name %>
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Task Description:</strong></label>
+    <div class="col-md-9 readonly">
+      <p><%= @task.description %></p>
+    </div>
   </div>
 
-  <%= link_to 'Edit', edit_track_task_path(@track, @task)%>
-<% end %>
+  <% if @task.specific %>
+    <div class="form-group">
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Task Instructions:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @task.instructions %></p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Task sample solution:</strong></label>
+      <div class="col-md-9 readonly">
+        <% if @task.sample_solution.path %>
+          <p><%= link_to 'Download',[:sample_solution, @track, @task] %></p>
+          <%= link_to 'Remove',[:remove_sample_solution, @track, @task] %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Task Reviewer:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @task.reviewer_name %></p>
+      </div>
+    </div>
+
+    <%= link_to 'Edit', edit_track_task_path(@track, @task), class: 'btn btn-default m-left-5x m-top' %>
+  <% end %>

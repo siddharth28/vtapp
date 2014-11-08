@@ -1,5 +1,5 @@
 <div class="form-group col-md-10 m-top">
-  <%= form_for(@track, html: { class: 'form-horizontal'}) do |track| %>
+  <%= form_for(@track, html: { class: 'form-well form-horizontal'}) do |track| %>
 
     <div class="field">
       <%= track.label :name %>
@@ -27,7 +27,7 @@
 
     <div class="field m-top">
       <%= track.label :track_owner %>
-      <%= track.autocomplete_field :owner, autocomplete_user_name_tracks_path, id_element: '#track_owner_id', value: '' %>
+      <%= track.autocomplete_field :owner, autocomplete_user_name_tracks_path, id_element: '#track_owner_id', value: "#{ @track.owner.name }" %>
       <%= track.hidden_field :owner_id %>
     </div>
 
