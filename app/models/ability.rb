@@ -23,6 +23,9 @@ class Ability
       can :manage, Track do |track|
         track.owner == user
       end
+      can :manage, Task do |task|
+        user.is_track_owner_of?(task.track)
+      end
       can :read, Track do |track|
         user.is_track_runner_of?(track)
       end

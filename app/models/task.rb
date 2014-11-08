@@ -10,6 +10,7 @@ class Task < ActiveRecord::Base
   has_many :users, through: :usertasks
 
   validates :title, :track, presence: true
+  validates :title, uniqueness: { scope: [:track_id], case_sensitive: false }
   validates :title, length: { maximum: 255 }
 
   scope :with_no_parent, -> { where(parent_id: nil) }
@@ -18,7 +19,15 @@ class Task < ActiveRecord::Base
   strip_fields :title, :description
 
 
-  delegate :instructions, :is_hidden, :sample_solution, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
+  delegate :is_hidden, :sample_solution, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
+
+  def instructions
+    @instructions ||= specific.try(:instructions)
+  end
+
+  def instructions=(value)
+    @instructions = value
+  end
 
   def parent_title
     parent.try(:title)
