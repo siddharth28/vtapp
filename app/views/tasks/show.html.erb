@@ -15,19 +15,23 @@
   <% end %>
 
   <% if @task.specific %>
-    <div class="form-group">
-      <label class='control-label col-md-3 m-top m-down-x'><strong>Task Instructions:</strong></label>
-      <div class="col-md-9 readonly">
-        <p><%= @task.instructions %></p>
+    <% if @task.instructions %>
+      <div class="form-group">
+        <label class='control-label col-md-3 m-top m-down-x'><strong>Task Instructions:</strong></label>
+        <div class="col-md-9 readonly">
+          <p><%= @task.instructions %></p>
+        </div>
       </div>
-    </div>
+    <% end %>
 
-    <div class="form-group">
-      <label class='control-label col-md-3 m-top m-down-x'><strong>Task sample solution:</strong></label>
-      <div class="col-md-9 readonly">
-        <p><%= link_to 'Download',[:sample_solution, @track, @task] if @task.sample_solution.path %></p>
+    <% if @task.sample_solution.path %>
+      <div class="form-group">
+        <label class='control-label col-md-3 m-top m-down-x'><strong>Task sample solution:</strong></label>
+        <div class="col-md-9 readonly">
+          <p><%= link_to 'Download',[:sample_solution, @track, @task] %></p>
+        </div>
       </div>
-    </div>
+    <% end %>
 
     <div class="form-group">
       <label class='control-label col-md-3 m-top m-down-x'><strong>Task Reviewer:</strong></label>
