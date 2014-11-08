@@ -5,6 +5,8 @@ class RolesController < ApplicationController
       redirect_to companies_path
     elsif current_user.account_owner? || current_user.account_admin?
       redirect_to users_path
+    else
+      redirect_to user_path(current_user)
     end
   end
 end

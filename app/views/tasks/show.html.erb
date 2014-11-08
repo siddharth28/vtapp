@@ -18,6 +18,7 @@
     <strong>Task sample solution:</strong>
     <% if @task.sample_solution.path %>
       <%= link_to 'Download',[:sample_solution, @track, @task] %>
+      <%= link_to 'Remove',[:remove_sample_solution, @track, @task] %>
     <% end %>
   </p>
 

@@ -43,6 +43,7 @@ Rails.application.routes.draw do
           get :autocomplete_user_name, on: :collection
           get :manage, on: :collection
           get :sample_solution, on: :member
+          get :remove_sample_solution, on: :member
           # required for Sortable GUI server side actions
           post :rebuild, on: :collection
         end
