@@ -60,7 +60,7 @@
     <div class="col-sm-4">
       <%= task.file_field :sample_solution %>
       <%= errors_for_field(@exercise_task, :sample_solution) if @exercise_task %>
-      <%= link_to 'Remove',[:remove_sample_solution, @track, @task] if @task.sample_solution.path %>
+      <%= link_to 'Remove',[:remove_sample_solution, @track, @task] if @task.try(:sample_solution).try(:path) %>
     </div>
   </div>
 
