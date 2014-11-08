@@ -80,11 +80,6 @@ tr th:last-child {
 
 .user-detail { color: white !important; }
 
-.side_nav {
-  position: absolute;
-  left: 0px;
-}
-
 .readonly {
   background-color: #BDBDBD;
   border-radius: 6px;

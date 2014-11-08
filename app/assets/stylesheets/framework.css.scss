@@ -32,9 +32,6 @@ img {
 body {
   background-color: #eee;
 }
-main {
-  margin: 0 auto;
-  }
 section {
   @extend .row;
   margin-top: 20px;
@@ -215,8 +212,17 @@ textarea {
   resize: none;
 }
 
-.side_navigation {
-  padding-left: 0px;
-  padding-top: 0px;
-  margin-top: 0px;
+.bg-fff {
+  background-color: #ffffff;
 }
+
+.pt0 {
+  padding-top: 0 !important;
+}
+.h500 {
+  min-height: 500px !important;
+}
+.p20 {
+  padding: 20px;
+}
+

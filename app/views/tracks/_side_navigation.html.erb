@@ -1,16 +1,18 @@
-<div class="col-md-2 side_navigation side_nav">
-  <nav class="navbar-inverse">
-    <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav nav-pills nav-stacked">
-        <li><%= link_to 'Track Details', track_path(@track) %></li><br>
-        <% if current_user.is_track_runner_of?(@track) %>
-          <li><%= link_to 'Task List', track_tasks_path(@track) %></li><br>
-        <% end %>
-        <% if current_user.has_any_role?({ :name => :account_owner, resource: current_company }, { :name => :account_admin, resource: current_company }, { name: :track_owner, resource: @track })%>
-        <li><%= link_to 'Manage Task List', manage_track_tasks_path(@track) %></li><br>
-        <li><%= link_to 'Track Reviewer', reviewers_track_path(@track) %></li><br>
-        <% end %>
-      </ul>
-    </div>
-  </nav>
+<div class="col-md-2 pt0">
+  <div class="row">
+    <nav class="navbar-inverse nav-tabs h500">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav nav-pills nav-stacked">
+          <li><%= link_to 'Track Details', track_path(@track) %></li><br>
+          <% if current_user.is_track_runner_of?(@track) %>
+            <li><%= link_to 'Task List', track_tasks_path(@track) %></li><br>
+          <% end %>
+          <% if current_user.has_any_role?({ :name => :account_owner, resource: current_company }, { :name => :account_admin, resource: current_company }, { name: :track_owner, resource: @track })%>
+          <li><%= link_to 'Manage Task List', manage_track_tasks_path(@track) %></li><br>
+          <li><%= link_to 'Track Reviewer', reviewers_track_path(@track) %></li><br>
+          <% end %>
+        </ul>
+      </div>
+    </nav>
+  </div>
 </div>

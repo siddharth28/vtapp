@@ -24,10 +24,7 @@
     <div class="form-group">
       <label class='control-label col-md-3 m-top m-down-x'><strong>Task sample solution:</strong></label>
       <div class="col-md-9 readonly">
-        <% if @task.sample_solution.path %>
-          <p><%= link_to 'Download',[:sample_solution, @track, @task] %></p>
-          <%= link_to 'Remove',[:remove_sample_solution, @track, @task] %>
-        <% end %>
+        <p><%= link_to 'Download',[:sample_solution, @track, @task] if @task.sample_solution.path %></p>
       </div>
     </div>
 

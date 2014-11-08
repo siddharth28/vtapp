@@ -13,8 +13,10 @@
       <%= render 'shared/navigation' if user_signed_in? %>
     </header>
     <main role="main">
-       <%= render 'shared/messages' %>
-       <%= yield %>
+      <div class="row">
+        <%= render 'shared/messages' %>
+        <%= yield %>
+      </div>
     </main>
   </body>
 </html>

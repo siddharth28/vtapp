@@ -22,8 +22,8 @@ class Task < ActiveRecord::Base
     parent.try(:title)
   end
 
-  def need_review
-    specific ? 1 : 0
+  def need_review?
+    specific.present?
   end
 
   def move_to(target, position)

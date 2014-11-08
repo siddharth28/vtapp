@@ -54,7 +54,7 @@ class TasksController < ResourceController
   def remove_sample_solution
     @task.specific.sample_solution = nil
     @task.save
-    redirect_to track_task_path
+    redirect_to edit_track_task_path
   end
 
   rescue_from ActiveRecord::ActiveRecordError do |exception|
