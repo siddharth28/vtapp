@@ -69,9 +69,6 @@ namespace :deploy do
   end
 
   desc "Run migrations"
-  task :migrations do
-    execute :rake, 'db:migrate', roles: :db
-  end
+  after :finishing, 'deploy:cleanup'
   after :publishing, 'deploy:restart'
-  after :finishing, 'deploy:cleanup', 'deploy:migrations'
 end
