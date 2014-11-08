@@ -8,6 +8,8 @@ class ExerciseTask < ActiveRecord::Base
   validates_attachment :sample_solution, content_type: { content_type: "application/zip" }
   validates :reviewer, presence: true
 
+  strip_fields :instructions
+
   def reviewer_name
     reviewer.try(:name)
   end
