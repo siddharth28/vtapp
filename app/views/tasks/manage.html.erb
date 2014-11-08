@@ -1,6 +1,6 @@
 <%= render partial: 'tracks/side_navigation' %>
 <div class="col-md-10 bg-fff h500">
-  <%= link_to 'New Task', new_track_task_path(@track), class: 'btn btn-default btn-lg' %>
+  <%= link_to 'New Task', new_track_task_path(@track), class: 'btn btn-default m-down-2x' %>
   <ol class="sortable_tree" data-max_levels='2' data-rebuild_url='rebuild'>
     <%= sortable_tree(@tasks, namespace: @track) %>
   </ol>
