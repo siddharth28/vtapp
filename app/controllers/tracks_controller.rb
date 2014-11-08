@@ -27,7 +27,7 @@ class TracksController < ResourceController
   # FIXED
   # FIXME : extract set_track to a before_action
   def assign_reviewer
-    @user = @track.add_reviewer(params[:track][:reviewer_id])
+    @track.add_reviewer(params[:track][:reviewer_id])
   end
 
   # FIXED

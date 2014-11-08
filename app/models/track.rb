@@ -8,7 +8,7 @@ class Track < ActiveRecord::Base
   has_one :owner_role, -> { where(roles: { name: Track::ROLES[:track_owner], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
   has_one :owner, through: :owner_role, source: :users
   has_many :tasks, dependent: :destroy
-  has_many :reviewer_role, -> { where(roles: { name: Track::ROLES[:reviewer], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
+  has_many :reviewer_role, -> { where(roles: { name: Track::ROLES[:track_reviewer], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
   has_many :reviewers, through: :reviewer_role, source: :users
 
   after_create :assign_track_owner_role
