@@ -13,7 +13,7 @@
   margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;
-  width: 1150px;
+  width: 1170px;
 }
 
 .m-form-left { margin-left: 150px; }
@@ -31,7 +31,8 @@
 .m-left-450x { margin-left: 450px; }
 .m-left-475x { margin-left: 475px; }
 .m-left-5x { margin-left: 450px; }
-.m-left-5.5x { margin-left: 550px; }
+.m-left-525x { margin-left: 525px; }
+.m-left-550x { margin-left: 550px; }
 .m-left-6x { margin-left: 600px; }
 .m-left-7x { margin-left: 700px; }
 .m-left-8x { margin-left: 800px; }
@@ -49,6 +50,9 @@
 
 .p-right { padding-right: 6px; }
 .p-left { padding-left: 6px; }
+.p-left-x { padding-left: 13px; }
+
+
 
 table {
   border-collapse: separate;
@@ -95,7 +99,7 @@ p.form-control {
 }
 
 .form-well {
-  padding: 10px;
+  padding: 20px;
   background-image: linear-gradient(to bottom, #D8D8D8 0%, #E5E5E5 100%);
   background-repeat: repeat-x;
   border-color: #CBCBCB;
