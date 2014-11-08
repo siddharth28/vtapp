@@ -32,15 +32,15 @@ class Track < ActiveRecord::Base
   # FIXED
   # FIXME : method name should be plural as it returns activerelation
 
-  def add_reviewer(user_id)
+  def add_track_role(role, user_id)
     user = find_user(user_id)
     # FIXME : dynamic track_runner? method can be used here
     # FIXME : No need to check for role here.
-    user.add_role(ROLES[:track_reviewer], self)
+    user.add_role(ROLES[role], self)
   end
 
-  def remove_reviewer(user_id)
-    find_user(user_id).remove_role(ROLES[:track_reviewer], self)
+  def remove_track_role(role, user_id)
+    find_user(user_id).remove_role(ROLES[role], self)
   end
 
   private
