@@ -27,7 +27,11 @@ class TracksController < ResourceController
   # FIXED
   # FIXME : extract set_track to a before_action
   def assign_reviewer
-    @track.add_track_role(:track_reviewer, params[:track][:reviewer_id])
+    if params[:track][:reviewer_id].blank?
+       @track.errors[:reviewer_name] << "can't be blank"
+    else
+      @track.add_track_role(:track_reviewer, params[:track][:reviewer_id])
+    end
   end
 
   # FIXED

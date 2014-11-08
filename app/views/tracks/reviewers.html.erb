@@ -8,7 +8,9 @@
             <p class='m-left-45x col-md-6'><%= track.label :track_reviewer %></p>
             <%= track.autocomplete_field :reviewer_name, autocomplete_user_name_tracks_path, id_element: '#track_reviewer_id', value: '', class: 'form-control m-left-3x' %>
             <%= track.hidden_field :reviewer_id %>
-            <%= errors_for_field(@track, :reviewer_name) %>
+            <div class="m-left-3x">
+              <%= errors_for_field(@track, :reviewer_name) %>
+            </div>
             <%= track.submit "Add", class: "m-left-5x reviewer btn btn-primary add_reviewer m-top m-down-2x" %>
           </div>
           <br>
