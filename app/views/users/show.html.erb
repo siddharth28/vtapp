@@ -1,25 +1,62 @@
-<div class="col-md-10 m-top m-left-x">
-  <h3 class='m-left-5x'>User</h3>
+<div class="form-well col-md-10 m-top m-left-x">
+  <h3 class='m-left-5x'>
+    User
+  </h3>
+
   <% if current_user.account_owner? %>
-    <label class='col-md-6'><span>Company Name:</span><span class='form-control', readonly><%= current_company.name %></span></label>
+    <div class="form-group">
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Company Name:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= current_company.name %></p>
+      </div>
   <% end %>
 
-  <label class='col-md-6'><span>Name:</span><span class='form-control', readonly><%= @user.name %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Name:</strong></label>
+    <div class="col-md-9 readonly">
+      <p><%= @user.name %></p>
+    </div>
+  </div>
 
-  <label class='col-md-6'><span>Email:</span><span class='form-control', readonly><%= @user.email %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Email:</strong></label>
+    <div class="col-md-9 readonly">
+      <p><%= @user.email %></p>
+    </div>
+  </div>
 
-  <label class='col-md-6'><span>Department:</span><span class='form-control', readonly><%= @user.department %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Department:</strong></label>
+    <div class="col-md-9 readonly">
+      <p><%= @user.department %></p>
+    </div>
+  </div>
 
-  <label class='col-md-6'><span>Mentor:</span><span class='form-control', readonly><%= @user.mentor_name %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Mentor:</strong></label>
+    <div class="col-md-9 readonly">
+      <p><%= @user.mentor_name %></p>
+    </div>
+  </div>
 
-  <label class='col-md-6'><span>Is Admin?:</span><span class='form-control', readonly><%= @user.account_admin? ? 'Yes' : 'No' %></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Is Admin?:</strong></label>
+    <div class="col-md-9 readonly">
+      <p><%= @user.account_admin? ? 'Yes' : 'No' %></p>
+    </div>
+  </div>
 
-  <label class='col-md-6'><span>Status:</span><span class='form-control', readonly><%= @user.enabled ? 'Enabled' : 'Disabled' %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Status:</strong></label>
+    <div class="col-md-9 readonly">
+      <p><%= @user.enabled ? 'Enabled' : 'Disabled' %></p>
+    </div>
+  </div>
 
   <% if(current_user.account_owner?) %>
-    <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default btn-lg m-left-5x m-top' %></p>
+    <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default m-left-5x m-top' %></p>
   <% elsif (current_user.account_admin? && !@user.account_owner?) %>
-    <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default btn-lg m-left-5x m-top' %></p>
+    <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default m-left-5x m-top' %></p>
   <% end %>
 
 </div>

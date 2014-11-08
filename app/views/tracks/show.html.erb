@@ -1,12 +1,12 @@
 <%= render partial: 'side_navigation' %>
-<div class="col-md-9">
+<div class="col-md-9 form-well">
   <div class="m-top m-form-left">
-    <h3 class='m-left-3x'>
+    <h3 class='m-left-2x'>
       <%= @track.name.to_s.humanize %>
     </h3 >
 
     <div class="form-group">
-      <label class='control-label col-md-3 m-top m-down-x '><strong>Track:</strong></label>
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Track:</strong></label>
       <div class="col-md-9 readonly">
         <p><%= @track.name %></p>
       </div>

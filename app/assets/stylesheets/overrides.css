@@ -91,8 +91,19 @@ tr th:last-child {
   border: 1px solid #cccccc;
   margin-top: 10px;
   margin-bottom: 10px;
+  padding: 10px;
 }
 
 p.form-control {
   height: auto;
+}
+
+.form-well {
+  padding: 10px;
+  background-image: linear-gradient(to bottom, #D8D8D8 0%, #E5E5E5 100%);
+  background-repeat: repeat-x;
+  border-color: #CBCBCB;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 1px 0px rgba(255, 255, 255, 0.1);
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
 }

@@ -1,23 +1,32 @@
-<div class="col-md-10 m-top m-left-x">
-  <h3 class='m-left-475x'>Company</h3>
+<div class="col-md-10 form-well m-top m-left-x">
+  <h3 class='m-left-425x'>Company</h3>
 
-  <div class='col-md-10'>
-    <label class='col-md-6 m-left-35x'><span>Company Name:</span><span class='form-control', readonly><%= @company.name %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Company Name:</strong></label>
+    <div class="col-md-8 readonly">
+      <p><%= @company.name %>
   </div>
 
-  <div class='col-md-10'>
-    <label class='col-md-6 m-left-35x'><span>Company Owner:</span><span class='form-control', readonly><%= @company.owner.name %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Company Owner:</strong></label>
+    <div class="col-md-8 readonly">
+      <p><%= @company.owner.name %></p>
+    </div>
   </div>
 
-  <div class='col-md-10'>
-    <label class='col-md-6 m-left-35x'><span>Email-ID:</span><span class='form-control', readonly><%= @company.owner.email %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Email-ID:</strong></label>
+    <div class="col-md-8 readonly">
+      <p><%= @company.owner.email %></p>
+    </div>
   </div>
 
-  <div class='col-md-10'>
-    <label class='col-md-6 m-left-35x'><span>Company Status:</span><span class='form-control', readonly><%= @company.status %></span></label>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Company Status:</strong></label>
+    <div class="col-md-8 readonly">
+      <p><%= @company.status %></p>
+    </div>
   </div>
 
-  <p>
-    <%= link_to 'Back', companies_path, class: 'btn btn-default btn-lg m-left-475x m-top' %>
-  </p>
+  <%= link_to 'Back', companies_path, class: 'btn btn-default m-left-425x m-top' %>
 </div>

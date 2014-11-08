@@ -1,17 +1,27 @@
-<div class="authform">
+<div class="form-well form-group col-md-10 m-top-x m-left-x">
 
-  <h2>Change your password</h2>
+  <h2 class="m-left-3x">
+    Change your password
+  </h2>
 
   <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: 'form-horizontal' }) do |f| %>
     <%= devise_error_messages! %>
     <%= f.hidden_field :reset_password_token %>
 
-    <div><%= f.label :password, "New password" %><br />
-      <%= f.password_field :password, autofocus: true, autocomplete: "off" %></div>
+    <div class="form-group">
+      <%= f.label :password, "New password", class: 'col-sm-4 control-label'  %>
+      <div class="col-sm-4">
+        <%= f.password_field :password, autofocus: true, autocomplete: "off", class: 'form-control' %>
+      </div>
+    </div>
 
-    <div><%= f.label :password_confirmation, "Confirm new password" %><br />
-      <%= f.password_field :password_confirmation, autocomplete: "off" %></div>
+    <div class="form-group">
+      <%= f.label :password_confirmation, "Confirm new password", class: 'col-sm-4 control-label'  %>
+      <div class="col-sm-4">
+        <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control' %>
+      </div>
+    </div>
 
-    <div><%= f.submit "Change my password", class: 'btn btn-default btn-lg m-top m-left-2x' %></div>
+    <div><%= f.submit "Change my password", class: 'btn btn-default m-top m-left-2x' %></div>
   <% end %>
 </div>
