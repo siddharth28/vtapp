@@ -6,7 +6,7 @@ class TasksController < ResourceController
   skip_load_resource only: [:create, :index]
 
   autocomplete :task, :title
-  autocomplete :user, :name, display_value: :display_user_details
+  autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
 
   def index
     @tasks = @track.tasks.includes(:actable).nested_set.all
