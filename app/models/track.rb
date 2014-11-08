@@ -8,7 +8,7 @@ class Track < ActiveRecord::Base
   has_one :owner_role, -> { where(roles: { name: Track::ROLES[:track_owner], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
   has_one :owner, through: :owner_role, source: :users
   has_many :tasks, dependent: :destroy
-  has_many :reviewer_role, -> { where(roles: { name: Track::ROLES[:reviewer], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
+  has_many :reviewer_role, -> { where(roles: { name: Track::ROLES[:track_reviewer], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
   has_many :reviewers, through: :reviewer_role, source: :users
 
   after_create :assign_track_owner_role
@@ -32,15 +32,15 @@ class Track < ActiveRecord::Base
   # FIXED
   # FIXME : method name should be plural as it returns activerelation
 
-  def add_reviewer(user_id)
+  def add_track_role(role, user_id)
     user = find_user(user_id)
     # FIXME : dynamic track_runner? method can be used here
     # FIXME : No need to check for role here.
-    user.add_role(ROLES[:track_reviewer], self)
+    user.add_role(ROLES[role], self)
   end
 
-  def remove_reviewer(user_id)
-    find_user(user_id).remove_role(ROLES[:track_reviewer], self)
+  def remove_track_role(role, user_id)
+    find_user(user_id).remove_role(ROLES[role], self)
   end
 
   private

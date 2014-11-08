@@ -27,7 +27,7 @@ class TracksController < ResourceController
   # FIXED
   # FIXME : extract set_track to a before_action
   def assign_reviewer
-    @user = @track.add_reviewer(params[:track][:reviewer_id])
+    @track.add_track_role(:track_reviewer, params[:track][:reviewer_id])
   end
 
   # FIXED
@@ -38,11 +38,13 @@ class TracksController < ResourceController
   end
 
   def remove_reviewer
-    @track.remove_reviewer(params[:format])
+    @track.remove_track_role(:track_reviewer, params[:format])
   end
 
   def update
     if @track.update(track_params)
+      @track.remove_track_role(:track_owner, @track.owner)
+      @track.add_track_role(:track_owner, params[:track][:owner_id])
       redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
     else
       render action: 'edit'

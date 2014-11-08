@@ -7,4 +7,5 @@
   <% if current_user.has_any_role?({ :name => :account_owner, resource: current_company }, { :name => :account_admin, resource: current_company }, { name: :track_owner, resource: @track })%>
     <%= link_to 'Edit', edit_track_path(track), class: 'm-right m-left' %>
   <% end %>
+  <%= link_to 'Progress', class: 'p-right p-left' %>
 </td>
