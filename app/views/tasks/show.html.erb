@@ -40,6 +40,7 @@
       </div>
     </div>
   <% end %>
-  <%= link_to 'Edit', edit_track_task_path(@track, @task), class: 'btn btn-default m-left-5x m-top' %>
-  <%= link_to 'Cancel', manage_track_tasks_path, class: 'btn btn-default m-left-5x m-top' %>
+  <div class='col-md-3 m-top'></div>
+  <%= link_to 'Edit', edit_track_task_path(@track, @task), class: 'btn btn-default m-top' %>
+  <%= link_to 'Cancel', manage_track_tasks_path, class: 'btn btn-default m-top' %>
 </div>

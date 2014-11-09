@@ -35,26 +35,26 @@ module RenderTreeHelper
       def show_link
         node = options[:node]
         ns = options[:namespace]
-        title_field = options[:title]
-        "<h4>#{ node.send(title_field) }</h4>"
+        title_field = node.send(options[:title])
+        usertask = options[:user].usertasks.find_by(task_id: node.id)
+        if options[:user].current_task_state?(node.id)
+          url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
+          title_field = h.link_to(title_field, url, method: :get)
+        end
+        "<h4>#{ title_field }</h4>"
       end
 
       def controls
-        link_text = options[:node].specific ? 'Exercise' : 'Task'
-        usertask = options[:user].usertasks.find_by(task_id: options[:node].id)
+        link_text = "Start #{ options[:node].specific ? 'Exercise' : 'Task' } "
         if options[:user].current_task_state?(options[:node].id)
           link_text = Task::STATE[options[:user].current_task_state(options[:node])]
-          url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
-          method = :get
         else
-          link_text = "Start #{ link_text }"
           url = h.url_for(controller: :usertasks, action: :start_task, usertask: { user_id: options[:user], task_id: options[:node] })
-          method = :get
+          link_text = h.link_to(link_text, url, method: :get)
         end
-
         "
           <div>
-            #{ h.link_to((link_text), url, method: method ) }
+            #{ link_text }
           </div>
         "
       end
