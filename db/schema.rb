@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141107084807) do
+ActiveRecord::Schema.define(version: 20141109101719) do
 
   create_table "comments", force: true do |t|
     t.text     "data"
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 20141107084807) do
   end
 
   create_table "urls", force: true do |t|
-    t.string  "name"
+    t.text    "name"
     t.integer "usertask_id"
   end
 
