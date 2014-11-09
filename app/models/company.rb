@@ -16,8 +16,7 @@ class Company < ActiveRecord::Base
   before_validation :build_owner, on: :create
   after_create :make_owner
 
-  validates :name, presence: true
-  validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }, length: { maximum: 255 }
 
   strip_fields :name
 

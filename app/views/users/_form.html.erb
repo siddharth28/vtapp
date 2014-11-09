@@ -10,11 +10,11 @@
   <div class="form-group">
     <%= user.label :user_email, class: 'col-sm-3 control-label' %>
     <div class="col-sm-8">
-      <% if @user.email.blank? %>
+      <% if @user.persisted? %>
+        <%= user.text_field :email, class: 'form-control', readonly: true%>
+      <% else %>
         <%= user.text_field :email, class: 'form-control' %>
         <%= errors_for_field(@user, :email)%>
-      <% else %>
-        <%= user.text_field :email, class: 'form-control', readonly: true%>
       <% end %>
     </div>
   </div>
@@ -23,6 +23,7 @@
     <%= user.label :user_department, class: 'col-sm-3 control-label' %>
     <div class="col-sm-8">
       <%= user.autocomplete_field :department, autocomplete_user_department_users_path, class: 'form-control' %>
+      <%= errors_for_field(@user, :department)%>
     </div>
   </div>
 

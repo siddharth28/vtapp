@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   validates :name, presence: true
   validates :password, presence: true, on: :create
   validates :password_confirmation, presence: true, allow_blank: true
+  validates :email, :name, :department, length: { maximum: 255 }
   #email validation is provided by devise
   #FIXME_AB: no validation on email
 
