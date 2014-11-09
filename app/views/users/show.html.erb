@@ -24,20 +24,23 @@
       <p><%= @user.email %></p>
     </div>
   </div>
-
-  <div class="form-group">
-    <label class='control-label col-md-3 m-top m-down-x'><strong>Department:</strong></label>
-    <div class="col-md-9 readonly">
-      <p><%= @user.department %></p>
+  <% if !@user.department.blank?%>
+    <div class="form-group">
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Department:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @user.department %></p>
+      </div>
     </div>
-  </div>
+  <% end %>
 
-  <div class="form-group">
-    <label class='control-label col-md-3 m-top m-down-x'><strong>Mentor:</strong></label>
-    <div class="col-md-9 readonly">
-      <p><%= @user.mentor_name %></p>
+  <% if !@user.mentor.blank?%>
+    <div class="form-group">
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Mentor:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @user.mentor_name %></p>
+      </div>
     </div>
-  </div>
+  <% end %>
 
   <div class="form-group">
     <label class='control-label col-md-3 m-top m-down-x'><strong>Is Admin?:</strong></label>
@@ -52,10 +55,7 @@
       <p><%= @user.enabled ? 'Enabled' : 'Disabled' %></p>
     </div>
   </div>
-
-  <% if(current_user.account_owner?) %>
-    <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default m-left-5x m-top' %></p>
-  <% elsif (current_user.account_admin? && !@user.account_owner?) %>
+  <% if (current_user.account_admin? && !@user.account_admin? && !@user.account_owner?) || (current_user.account_owner?) %>
     <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default m-left-5x m-top' %></p>
   <% end %>
 
