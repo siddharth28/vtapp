@@ -17,6 +17,7 @@ class Track < ActiveRecord::Base
   # FIXME : presence validations can ve clubbed in one
   validates :references, :description, :instructions, presence: true
   validates :name, uniqueness: { scope: :company_id, case_sensitive: false }, presence: true, length: { maximum: 255 }
+  validates :owner_id, presence: true, on: :update
 
   attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
