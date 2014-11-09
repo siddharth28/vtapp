@@ -12,6 +12,7 @@ class Task < ActiveRecord::Base
   validates :title, :track, presence: true
   validates :title, uniqueness: { scope: [:track_id], case_sensitive: false }
   validates :title, length: { maximum: 255 }
+  validate :cannot_be_own_parent, on: :update
 
   scope :with_no_parent, -> { where(parent_id: nil) }
   scope :with_track, ->(track) { where(track: track) }
@@ -38,7 +39,15 @@ class Task < ActiveRecord::Base
   end
 
   def move_to(target, position)
-    raise ActiveRecord::ActiveRecordError, "You cannot change the parent of a task" if target.class == Task && (parent_id != target.parent_id || position == :child)
-    super
+    if target.class == Task && (parent_id != target.parent_id || position == :child)
+      raise ActiveRecord::ActiveRecordError, "You cannot change the parent of a task"
+    else
+      super
+    end
   end
+
+  private
+    def cannot_be_own_parent
+      errors.add(:parent, 'cannot be its own parent') if id == parent_id
+    end
 end

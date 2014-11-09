@@ -48,21 +48,22 @@
       <%= user.check_box :enabled %>
     <% end %>
   </div>
-
-  <div class="form-group">
-    <%= user.label :assign_tracks, class: 'col-sm-3 control-label h4 mbot20' %>
-    <div class="col-sm-12">
-      <%= user.collection_check_boxes :track_ids, current_user.company.tracks, :id, :name do |b| %>
-      <div class="track_check_box col-sm-4">
-        <label>
-          <%= b.text %>
-          <%= b.check_box %>
-        </label>
+  <% if current_company.tracks %>
+    <div class="form-group">
+      <%= user.label :assign_tracks, class: 'col-sm-3 control-label h4 mbot20' %>
+      <div class="col-sm-12">
+        <%= user.collection_check_boxes :track_ids, current_company.tracks, :id, :name do |b| %>
+        <div class="track_check_box col-sm-4">
+          <label>
+            <%= b.text %>
+            <%= b.check_box %>
+          </label>
+        </div>
+        <div class="col-sm-1"></div>
+        <% end %>
       </div>
-      <div class="col-sm-1"></div>
-      <% end %>
     </div>
-  </div>
+  <% end %>
 
   <div class="actions">
     <div class="col-sm-2 m-left-x"></div>
