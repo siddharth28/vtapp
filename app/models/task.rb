@@ -10,7 +10,7 @@ class Task < ActiveRecord::Base
   has_many :users, through: :usertasks
 
   validates :title, :track, presence: true
-  validates :title, uniqueness: { scope: [:track_id], case_sensitive: false }
+  validates :title, uniqueness: { scope: :track_id, case_sensitive: false }
   validates :title, length: { maximum: 255 }
   validate :cannot_be_own_parent, on: :update
 
