@@ -1,6 +1,8 @@
 class Usertask < ActiveRecord::Base
   include AASM
 
+  STATE = { submitted: 'Task Submitted', resubmitted: 'Task Resubmitted', completed: 'Task completed' }
+
   belongs_to :user
   belongs_to :task
 
@@ -22,7 +24,7 @@ class Usertask < ActiveRecord::Base
     end
 
     event :accept do
-      transitions from: :submitted, to: :completed
+      transitions from: :submitted, to: :completed, after: :task_completed
     end
 
     event :reject do
@@ -34,29 +36,39 @@ class Usertask < ActiveRecord::Base
     task.specific ? submit_data(args[0]) : submit!
   end
 
-  def submit_comment(comment)
-    comments.create(data: comment)
-  end
+  private
+    def submit_comment(comment)
+      comments.create(data: comment)
+    end
 
-  def submit_url(solution)
-    urls.find_or_create_by(name: solution)
-  end
+    def submit_url(solution)
+      urls.present? ? task_submitted(STATE[:resubmitted]) : task_submitted(STATE[:submitted])
+      urls.find_or_create_by(name: solution)
+    end
 
-  def submit_data(*args)
-    url = submit_url(args[0][:url]) unless(args[0][url].blank?)
-    submit_comment(args[0][comment]) unless(args[0][comment].blank?)
-    submit! unless(aasm_state == 'submitted' || args[0][url].blank?)
-  end
+    def submit_data(*args)
+      url = submit_url(args[0][:url]) if args[0][:url].present?
+      submit_comment(args[0][:comment]) if args[0][:comment].present?
+      submit! if (aasm_state != 'submitted' && url.present?)
+    end
 
-  def add_start_time
-    self.start_time = Time.now
-  end
+    def add_start_time
+      self.start_time = Time.now
+    end
 
-  def add_end_time
-    self.end_time = Time.now
-  end
+    def add_end_time
+      self.end_time = Time.now
+    end
 
-  def check_exercise?
-    !!task.specific
-  end
+    def check_exercise?
+      !!task.specific
+    end
+
+    def task_submitted(comment)
+      submit_comment(comment)
+    end
+
+    def task_completed
+      submit_comment(STATE[:completed])
+    end
 end
