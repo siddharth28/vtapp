@@ -47,8 +47,12 @@ class TracksController < ResourceController
 
   def update
     if @track.update(track_params)
-      @track.remove_track_role(:track_owner, @track.owner)
-      @track.add_track_role(:track_owner, params[:track][:owner_id])
+      if params[:track][:owner_id].present?
+        @track.remove_track_role(:track_owner, @track.owner)
+        @track.add_track_role(:track_owner, params[:track][:owner_id])
+      else
+        @track.assign_track_owner_role
+      end
       redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
     else
       render action: 'edit'

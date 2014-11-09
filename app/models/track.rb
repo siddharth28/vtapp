@@ -43,18 +43,18 @@ class Track < ActiveRecord::Base
     find_user(user_id).remove_role(ROLES[role], self)
   end
 
-  private
-    def assign_track_owner_role
-      #FIXED
-      # FIXME : This code can be simplified
-      if company_users.ids.include?(owner_id.to_i)
-        user = find_user(owner_id)
-      else
-        user = company.owner
-      end
-      user.try(:add_role, ROLES[:track_owner], self)
+  def assign_track_owner_role
+    #FIXED
+    # FIXME : This code can be simplified
+    if company_users.ids.include?(owner_id.to_i)
+      user = find_user(owner_id)
+    else
+      user = company.owner
     end
+    user.try(:add_role, ROLES[:track_owner], self)
+  end
 
+  private
     def find_user(user_id)
       company_users.find_by(id: user_id)
     end
