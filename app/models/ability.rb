@@ -19,7 +19,7 @@ class Ability
       end
       can :manage, Track, company: user.company
       can :manage, Task
-    elsif
+    else
       can :manage, Track do |track|
         track.owner == user
       end
