@@ -4,8 +4,8 @@
     <div class="form-group">
       <%= usertask.label :solution, class: 'col-sm-3 control-label' %>
       <div class="col-sm-8">
-        <%= usertask.url_field :url, :class => 'url_field', class: 'form-control' %>
-        <%= errors_for_field(@usertask, :url) %>
+        <%= usertask.url_field :url, class: 'url_field form-control' %>
+        <%= errors_for_field(@usertask, :base) %>
       </div>
     </div>
 
@@ -13,7 +13,7 @@
       <%= usertask.label :comment, class: 'col-sm-3 control-label' %>
       <div class="col-sm-8">
         <%= usertask.text_area :comment, class: 'form-control', rows: 3, placeholder: "Click to add in a comment.." %>
-          <%= errors_for_field(@usertask, :comment) %>
+          <%= errors_for_field(@usertask, :base) %>
       </div>
     </div>
   <% end %>

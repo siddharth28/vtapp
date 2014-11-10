@@ -48,17 +48,24 @@ class Usertask < ActiveRecord::Base
     end
 
     def submit_data(*args)
-      url = submit_url(args[0][:url]) if args[0][:url].present?
-      submit_comment(args[0][:comment]) if args[0][:comment].present?
-      submit! if (aasm_state != 'submitted' && url.present?)
+      if args[0][:url].present?
+        url = submit_url(args[0][:url])
+        submit! unless(aasm_state == 'submitted')
+      elsif args[0][:comment].present?
+        submit_comment(args[0][:comment])
+      else
+        errors[:base] = 'Either url or comment needs to be present for submission'
+      end
     end
 
     def add_start_time
+      # FIXED
       # FIXME : Do not use Time.now, start using Time.current
-      self.start_time = Time.now
+      self.start_time = Time.current
     end
 
     def add_end_time
+      # FIXED
       # FIXME : Do not use Time.now, start using Time.current
       self.end_time = Time.now
     end

@@ -1,13 +1,22 @@
 class TasksController < ResourceController
   include TheSortableTreeController::Rebuild
-
-  # FIXME : use before_action instead of before_filter everwhere. Do not repeat.
-  before_filter :get_track
-  skip_before_filter :receive_resource
+  # FIXED
+  # FIXME : use before_action instead of before_filter everywhere. Do not repeat.
+  before_action :get_track
+  skip_before_action :receive_resource
   skip_load_resource only: [:create, :index, :new]
 
   autocomplete :task, :title
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
+
+  # FIXED
+  # FIXME : This should be above other methods. Do not repeat.
+  rescue_from ActiveRecord::ActiveRecordError do |exception|
+    if request.format == :js
+      flash[:error] = exception.message
+      render :rebuild
+    end
+  end
 
   def index
     tasks = @track.tasks
@@ -70,13 +79,6 @@ class TasksController < ResourceController
     redirect_to edit_track_task_path
   end
 
-  # FIXME : This should be above othe methods. Do not repeat.
-  rescue_from ActiveRecord::ActiveRecordError do |exception|
-    if request.format == :js
-      flash[:error] = exception.message
-      render :rebuild
-    end
-  end
 
   private
 
