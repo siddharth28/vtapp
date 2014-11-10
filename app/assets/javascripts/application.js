@@ -18,7 +18,6 @@
 //= require ckeditor/init
 //= require ckeditor/ckeditor
 //= require autoSuggestBlur
-//= require autoSuggest
 //= require autocomplete_event
 //= require jquery.ui.nestedSortable
 //= require sortable_tree/initializer

@@ -9,11 +9,11 @@ class TasksController < ResourceController
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
 
   def index
-    @tasks = @track.tasks.includes(:actable).nested_set.all
-  end
-
-  def new
-    @task = @track.tasks.build(:parent_id => params[:parent_id])
+    tasks = @track.tasks
+    if tasks.blank?
+      flash[:alert] = "Track: #{ @track.name } has no tasks at this moment"
+    end
+    @tasks = tasks.includes(:actable).nested_set.all
   end
 
   def create
@@ -44,7 +44,11 @@ class TasksController < ResourceController
   end
 
   def manage
-    @tasks = @track.tasks.nested_set.all
+    tasks = @track.tasks
+    if tasks.blank?
+      flash[:alert] = "Track: #{ @track.name } has no tasks at this moment"
+    end
+    @tasks = tasks.nested_set.all
   end
 
   def sample_solution
