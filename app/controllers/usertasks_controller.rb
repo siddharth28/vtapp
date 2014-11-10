@@ -1,11 +1,13 @@
 class UsertasksController < ResourceController
 
   def start_task
+    # FIXME : Use build instead of create
     @usertask = current_user.usertasks.create(usertask_params)
     redirect_to action: :task_description, id: @usertask
   end
 
   def submit_task
+    # FIXME : Never add validations in controller.
     if @usertask.task.specific && params[:usertask][:url].blank? && params[:usertask][:comment].blank?
       @usertask.errors[:url] << 'Either url or comment needs to be present for submission'
       @usertask.errors[:comment] << 'Either url or comment needs to be present for submission'

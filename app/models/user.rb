@@ -2,8 +2,6 @@ class User < ActiveRecord::Base
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
 
-  #FIXED
-  #FIXME: TRACK_ROLES constant is not needed here, can be accesses from Track class
   rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role if ActiveRecord::Base.connection.table_exists?(:roles)
 
   devise :database_authenticatable, :registerable, :async, :recoverable, :rememberable, :trackable, :validatable
@@ -28,8 +26,6 @@ class User < ActiveRecord::Base
   validates :password, presence: true, on: :create
   validates :password_confirmation, presence: true, allow_blank: true
   validates :email, :name, :department, length: { maximum: 255 }
-  #email validation is provided by devise
-  #FIXME_AB: no validation on email
 
   before_destroy :ensure_an_account_owners_and_super_admin_remains
   before_validation :set_random_password, on: :create
@@ -40,15 +36,13 @@ class User < ActiveRecord::Base
   scope :group_by_department, -> { group(:department) }
   scope :with_company, ->(company_id) { where(company_id: company_id) }
 
-  # FIXED
-  # TIP : Put define_method before other methods but after callbacks/validations
-
   ROLES.each do |key, method|
     define_method "#{ method }?" do
       roles.any? { |role| role.name == "#{ method }" }
     end
   end
 
+  # Not Fixed
   #FIXED
   #FIXME : method name not correct
   alias_method :is_admin, :account_admin?
@@ -63,19 +57,20 @@ class User < ActiveRecord::Base
 
   def track_ids=(track_list)
     track_list.map!(&:to_i)
+    # FIXME : Where is comparison moved ?
     # FIXED
     # NOT FIXED
     #FIXED
     #FIXME : This comparison is not correct, arrays should not compared like this
-      #FIXED
-      # FIXME : This can be optimised
     remove_track_object_ids = track_ids - track_list
     add_track_object_ids = track_list - track_ids
+    # TIP : Can use unless here.
     remove_role_track_runner(remove_track_object_ids) if !remove_track_object_ids.blank?
     add_role_track_runner(add_track_object_ids) if !add_track_object_ids.blank?
   end
 
   def track_ids
+    # FIXME : use user scope here and change accordingly
     self.persisted? ? Track.with_role(Track::ROLES[:track_runner], self).ids : []
   end
 

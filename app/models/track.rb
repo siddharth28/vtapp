@@ -13,8 +13,6 @@ class Track < ActiveRecord::Base
 
   after_create :assign_track_owner_role
 
-  # FIXED
-  # FIXME : presence validations can ve clubbed in one
   validates :references, :description, :instructions, presence: true
   validates :name, uniqueness: { scope: :company_id, case_sensitive: false }, presence: true, length: { maximum: 255 }
   validates :owner_id, presence: true, on: :update
@@ -30,13 +28,8 @@ class Track < ActiveRecord::Base
     with_roles(role, user)
   end
 
-  # FIXED
-  # FIXME : method name should be plural as it returns activerelation
-
   def add_track_role(role, user_id)
     user = find_user(user_id)
-    # FIXME : dynamic track_runner? method can be used here
-    # FIXME : No need to check for role here.
     user.add_role(ROLES[role], self)
   end
 
@@ -45,6 +38,7 @@ class Track < ActiveRecord::Base
   end
 
   def assign_track_owner_role
+    # Not Fixed
     #FIXED
     # FIXME : This code can be simplified
     if company_users.ids.include?(owner_id.to_i)

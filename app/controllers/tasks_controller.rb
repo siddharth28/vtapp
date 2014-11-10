@@ -1,6 +1,7 @@
 class TasksController < ResourceController
   include TheSortableTreeController::Rebuild
 
+  # FIXME : use before_action instead of before_filter everwhere. Do not repeat.
   before_filter :get_track
   skip_before_filter :receive_resource
   skip_load_resource only: [:create, :index, :new]
@@ -13,6 +14,7 @@ class TasksController < ResourceController
     if tasks.blank?
       flash[:alert] = "Track: #{ @track.name } has no tasks at this moment"
     end
+    # FIXME : If task is blank, unnecessary queries will be fired.
     @tasks = tasks.includes(:actable).nested_set.all
   end
 
@@ -53,6 +55,7 @@ class TasksController < ResourceController
     if tasks.blank?
       flash[:alert] = "Track: #{ @track.name } has no tasks at this moment"
     end
+    # FIXME : If task is blank, unnecessary queries will be fired.
     @tasks = tasks.nested_set.all
     authorize! :manage, @track
   end
@@ -67,6 +70,7 @@ class TasksController < ResourceController
     redirect_to edit_track_task_path
   end
 
+  # FIXME : This should be above othe methods. Do not repeat.
   rescue_from ActiveRecord::ActiveRecordError do |exception|
     if request.format == :js
       flash[:error] = exception.message
@@ -75,6 +79,9 @@ class TasksController < ResourceController
   end
 
   private
+
+    # FIXME : use company scope to find track.
+    # FIXME : Do not use find.
     def get_track
       @track = Track.find(params[:track_id])
     end

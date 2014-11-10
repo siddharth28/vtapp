@@ -6,6 +6,7 @@ class Ability
     user ||= User.new # guest user (not logged in)
     can :read, user
     can :update, user if user.super_admin? || user.account_owner? || user.account_admin?
+    # FIXME : Extract ability for each role in separate method
     if user.super_admin?
       can :manage, Company
     elsif user.account_owner?

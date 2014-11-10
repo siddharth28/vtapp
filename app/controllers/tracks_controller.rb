@@ -19,14 +19,12 @@ class TracksController < ResourceController
   def toggle_enabled
     @track.toggle!(:enabled)
   end
-  # FIXED
-  # FIXME : extract set_track to a before_action
+
   def reviewers
   end
 
-  # FIXED
-  # FIXME : extract set_track to a before_action
   def assign_reviewer
+    # FIXME : This validation should be in model
     if params[:track][:reviewer_id].blank?
        @track.errors[:reviewer_name] << "can't be blank"
     else
@@ -34,8 +32,6 @@ class TracksController < ResourceController
     end
   end
 
-  # FIXED
-  # FIXME : extract set_track to a before_action
   def search
     @tracks = current_company.tracks.load_with_owners.extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
     render action: :index
@@ -47,6 +43,7 @@ class TracksController < ResourceController
 
   def update
     if @track.update(track_params)
+      # FIXME : Create a method for both by clubbing them
       @track.remove_track_role(:track_owner, @track.owner)
       @track.add_track_role(:track_owner, params[:track][:owner_id])
       redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
