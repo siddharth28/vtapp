@@ -1,16 +1,11 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
-  # FIXED
-  # FIXME : this should be before_action
   before_action :configure_permitted_parameters, if: :devise_controller?
-
   before_action :receive_resource
 
   helper_method :current_company
 
-  # FIXED
-  # FIXME : this should be above methods
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to '/', :alert => exception.message
   end
