@@ -3,7 +3,7 @@ class TasksController < ResourceController
 
   before_filter :get_track
   skip_before_filter :receive_resource
-  skip_load_resource only: [:create, :index]
+  skip_load_resource only: [:create, :index, :new]
 
   autocomplete :task, :title
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
@@ -13,7 +13,8 @@ class TasksController < ResourceController
   end
 
   def new
-    @task = @track.tasks.build(:parent_id => params[:parent_id])
+    @task = @track.tasks.build
+    authorize! :manage, @task
   end
 
   def create
@@ -45,6 +46,7 @@ class TasksController < ResourceController
 
   def manage
     @tasks = @track.tasks.nested_set.all
+    authorize! :manage, @track
   end
 
   def sample_solution
