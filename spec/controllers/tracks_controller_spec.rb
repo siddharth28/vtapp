@@ -97,6 +97,47 @@ describe TracksController do
     end
   end
 
+
+  describe '#update' do
+    context 'update exercise_task' do
+      before do
+        allow(Track).to receive(:find).and_return(track)
+        allow(track).to receive(:update).and_return(true)
+        allow(track).to receive(:remove_track_role).with(:track_owner, :user)
+        allow(track).to receive(:add_track_role).with(:track_owner, owner_id: '4')
+      end
+
+      def send_request
+        patch :update, track: { name: "Rails", description: "a", instructions: "b", references: "c", owner: "tanmay+1@vinsol.com", owner_id: "4" }, id: track
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:track).to eq(track) }
+      end
+
+      describe 'response' do
+        context "when response is successfully created" do
+          before { send_request }
+          it { expect(response).to redirect_to track }
+          it { expect(response).to have_http_status(302) }
+          it { expect(flash[:notice]).to eq("Track #{ @track.name } is successfully updated.") }
+        end
+
+        context "when task cannot be updated" do
+          before do
+            allow(track).to receive(:update).and_return(false)
+            send_request
+          end
+
+          it { expect(response).to render_template :edit }
+          it { expect(response).to have_http_status(200) }
+          it { expect(flash[:notice]).to be_nil }
+        end
+      end
+    end
+
+
   describe '#reviewers' do
     before do
       allow(controller).to receive(:set_track).and_return(track)
@@ -132,7 +173,6 @@ describe TracksController do
 
     describe 'expects to receive' do
       it { expect(track).to receive(:add_track_role).with(:track_reviewer, "123").and_return(true) }
-
       after { send_request }
     end
 
@@ -142,9 +182,19 @@ describe TracksController do
     end
 
     describe 'response' do
-      before { send_request }
-      it { expect(response).to have_http_status(200) }
-      it { expect(response).to render_template 'tracks/assign_reviewer' }
+      context 'reviewer_id not blank' do
+        before { send_request }
+        it { expect(response).to have_http_status(200) }
+        it { expect(response).to render_template 'tracks/assign_reviewer' }
+      end
+
+      context 'reviewer_id blank' do
+        before do
+          xhr :patch, :assign_reviewer, track: { reviewer_name: 'abc', reviewer_id: "" }, id: track.id, format: :js
+        end
+
+        it { expect(track.errors[:reviewer_name]).to eq(["can't be blank"]) }
+      end
     end
   end
 
@@ -213,6 +263,7 @@ describe TracksController do
   describe '#search' do
     before do
       allow(current_company).to receive(:tracks).and_return(tracks)
+      allow(tracks).to receive(:load_with_owners).and_return(tracks)
       allow(tracks).to receive(:extract).with('Owner', nil).and_return(tracks)
       allow(tracks).to receive(:search).with('example').and_return(tracks)
       allow(tracks).to receive(:result).and_return(tracks)
@@ -226,6 +277,7 @@ describe TracksController do
 
     describe 'expects to receive' do
       it{ expect(current_company).to receive(:tracks).and_return(tracks) }
+      it{ expect(tracks).to receive(:load_with_owners).and_return(tracks) }
       it{ expect(tracks).to receive(:extract).with('Owner', nil).and_return(tracks) }
       it{ expect(tracks).to receive(:search).with('example').and_return(tracks) }
       it{ expect(tracks).to receive(:result).and_return(tracks) }

@@ -25,8 +25,10 @@ module RenderTreeHelper
 
         "<li>
           <div class=#{ class_based_on_state } >
-            #{ show_link }
-            #{ controls }
+            <p>
+              #{ show_link }
+              #{ controls }
+            </p>
           </div>
           #{ children }
         </li>
@@ -42,7 +44,7 @@ module RenderTreeHelper
           url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
           title_field = h.link_to(title_field, url, method: :get)
         end
-        "<div class='m-top m-down'> #{ title_field } </div>"
+        "<div><h4> #{ title_field } </h4></div>"
       end
 
       def controls
@@ -55,7 +57,7 @@ module RenderTreeHelper
         end
         "
           <div>
-            #{ link_text }
+            <p>#{ link_text }</p>
           </div>
         "
       end
