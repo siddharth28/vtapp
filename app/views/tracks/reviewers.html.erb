@@ -4,14 +4,23 @@
     <div class = 'reviewer form-group'>
       <div >
         <%= form_for(@track, url: assign_reviewer_track_path, remote: true, class: 'form-horizontal') do |track| %>
-          <div class="field col-md-6">
-            <p class='m-left-45x col-md-6'><%= track.label :track_reviewer %></p>
-            <%= track.autocomplete_field :reviewer_name, autocomplete_user_name_tracks_path, id_element: '#track_reviewer_id', value: '', class: 'form-control m-left-3x' %>
+          <div class="field">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+              <%= track.label :track_reviewer %>
+            </div>
+            <div class="col-md-6">
+              <%= track.autocomplete_field :reviewer_name, autocomplete_user_name_tracks_path, id_element: '#track_reviewer_id', value: '', class: 'form-control' %>
+            </div>
             <%= track.hidden_field :reviewer_id %>
-            <div class="m-left-3x">
+            <div class="col-md-4"></div>
+            <div class="col-md-6">
               <%= errors_for_field(@track, :reviewer_name) %>
             </div>
-            <%= track.submit "Add", class: "m-left-5x reviewer btn btn-primary add_reviewer m-top m-down-2x" %>
+            <div class="col-md-4"></div>
+            <div class="col-md-6">
+              <%= track.submit "Add", class: "reviewer btn btn-primary add_reviewer m-top m-down-2x" %>
+            </div>
           </div>
           <br>
         <% end %>
