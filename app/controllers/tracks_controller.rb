@@ -16,9 +16,6 @@ class TracksController < ResourceController
     end
   end
 
-  def toggle_enabled
-    @track.toggle!(:enabled)
-  end
   # FIXED
   # FIXME : extract set_track to a before_action
   def reviewers
