@@ -1,4 +1,4 @@
-<%= form_for(@usertask, url: url_for(controller: :usertasks, action: 'submit_task', id: @usertask)) do |usertask| %>
+<%= form_for(@usertask, url: url_for(controller: :usertasks, action: 'submit_task', id: @usertask), remote: true) do |usertask| %>
 
   <% if @usertask.task.specific %>
     <div class="form-group">
@@ -33,5 +33,4 @@
       <%= usertask.submit 'Resubmit', class: 'btn btn-default' %>
     <% end %>
   <% end %>
-  <%= link_to 'Cancel', track_tasks_path(@usertask.task.track), class: 'btn btn-default' %>
 <% end %>
