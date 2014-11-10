@@ -16,6 +16,10 @@
   width: 1170px;
 }
 
+.space {
+  padding: 10px;
+}
+
 .m-form-left { margin-left: 150px; }
 .m-left { margin-left: 15px; }
 .m-left-0x { margin-left: 50px; }

@@ -17,18 +17,21 @@ module RenderTreeHelper
           class_based_on_state = "alert-success"
         elsif Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:in_progress]
           class_based_on_state = "alert-warning"
+        elsif Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:submitted]
+          class_based_on_state = "alert-warning"
         else
-          class_based_on_state = "alert-danger"
+          class_based_on_state = "alert-info"
         end
 
-        "
-          <li>
-            <div class=#{ class_based_on_state }>
+        "<li>
+          <div class=#{ class_based_on_state } >
+            <div class='m-top m-down-x'>
               #{ show_link }
-              #{ controls }
             </div>
-            #{ children }
-          </li>
+            #{ controls }
+          </div>
+          #{ children }
+        </li>
         "
       end
 
