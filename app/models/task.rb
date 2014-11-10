@@ -19,7 +19,6 @@ class Task < ActiveRecord::Base
 
   strip_fields :title, :description
 
-
   delegate :is_hidden, :sample_solution, :instructions, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
 
   def parent_title

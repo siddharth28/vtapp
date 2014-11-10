@@ -42,6 +42,7 @@ class Usertask < ActiveRecord::Base
     end
 
     def submit_url(solution)
+      # FIXME : I think this should be a callback in Url
       urls.present? ? task_submitted(STATE[:resubmitted]) : task_submitted(STATE[:submitted])
       urls.find_or_create_by(name: solution)
     end
@@ -53,10 +54,12 @@ class Usertask < ActiveRecord::Base
     end
 
     def add_start_time
+      # FIXME : Do not use Time.now, start using Time.current
       self.start_time = Time.now
     end
 
     def add_end_time
+      # FIXME : Do not use Time.now, start using Time.current
       self.end_time = Time.now
     end
 

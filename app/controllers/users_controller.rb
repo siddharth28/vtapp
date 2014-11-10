@@ -22,8 +22,6 @@ class UsersController < ResourceController
   end
 
   def update
-    # Only a account_admin or account_owner can edit
-    # FIXME : What if normal or any other user updates ?
     if @user.update(update_user_params)
       redirect_to @user, notice: "User #{ @user.name } is successfully updated."
     else
@@ -56,8 +54,6 @@ class UsersController < ResourceController
       if parameters[:method] == :department
         super(parameters).with_company(current_company).group_by_department
       else
-        # FIXED
-        # FIXME : use current_company here
         super(parameters).with_company(current_company)
       end
     end
