@@ -110,3 +110,9 @@ p.form-control {
   border: 1px solid #d3d3d3;
   border-radius: 4px;
 }
+
+.alert-start {
+  background-color: #BBC0C0;
+  border-color: #7f8c8d;
+  color: #31708f;
+}

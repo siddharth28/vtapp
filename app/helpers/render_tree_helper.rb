@@ -20,14 +20,12 @@ module RenderTreeHelper
         elsif Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:submitted]
           class_based_on_state = "alert-warning"
         else
-          class_based_on_state = "alert-info"
+          class_based_on_state = "alert-start"
         end
 
         "<li>
           <div class=#{ class_based_on_state } >
-            <div class='m-top m-down-x'>
-              #{ show_link }
-            </div>
+            #{ show_link }
             #{ controls }
           </div>
           #{ children }
@@ -44,7 +42,7 @@ module RenderTreeHelper
           url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
           title_field = h.link_to(title_field, url, method: :get)
         end
-        "<div class='m-top m-down'> <h4>#{ title_field }</h4></div>"
+        "<div class='m-top m-down'> #{ title_field } </div>"
       end
 
       def controls

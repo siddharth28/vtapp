@@ -6,7 +6,7 @@ class UsertasksController < ResourceController
   end
 
   def submit_task
-    if params[:usertask][:url].blank? && params[:usertask][:comment].blank?
+    if @usertask.task.specific && params[:usertask][:url].blank? && params[:usertask][:comment].blank?
       @usertask.errors[:url] << 'Either url or comment needs to be present for submission'
       @usertask.errors[:comment] << 'Either url or comment needs to be present for submission'
       render :task_description

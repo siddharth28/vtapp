@@ -63,10 +63,6 @@ section {
 .authform checkbox {
   padding-left: 40px;
 }
-#error_explanation {
-  @extend .alert;
-  @extend .alert-danger;
-}
 #error_explanation h2 {
   font-size: 16px;
 }
