@@ -16,17 +16,17 @@ describe Track do
     it { should validate_presence_of(:description) }
     it { should validate_presence_of(:instructions) }
 
+
     describe 'uniqueness' do
       let(:company) { create(:company) }
       let(:track_owner_user) { create(:track_owner_user, company: company) }
-      let(:track2) { build(:track) }
 
       before do
         track_owner_user
         track.company_id = company.id
         track.save
       end
-      it { expect(track2.save).to eql(false) }
+      it { should validate_uniqueness_of(:name).scoped_to(:company_id).case_insensitive }
     end
   end
 

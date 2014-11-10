@@ -85,21 +85,44 @@ describe Usertask do
       end
 
       context 'exercise' do
+        before do
+          exercise_usertask.save
+          debugger
+          exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' })
+        end
+        it { expect(user.usertasks.find(exercise_usertask.id).aasm_state).to eql("submitted") }
+        it { expect(exercise_usertask.comments.pluck(:data).include?(Usertask::STATE[:submitted])).to eql(true) }
+        it { expect(exercise_usertask.comments.pluck(:data).include?('Comment')).to eql(true)}
+        it { expect(exercise_usertask.urls.pluck(:name).include?('http://abc.com')).to eql(true) }
+
+        context 'resubmit' do
+          before { exercise_usertask.submit_task({ url: 'http://resubmit.com', comment: 'Comment2' }) }
+          it { expect(exercise_usertask.comments.include?(Usertask::STATE[:resubmitted])).to eql(true) }
+          it { expect(exercise_usertask.urls.include?('http://resubmit.com')).to eql(true) }
+          it { expect(exercise_usertask.comments.include?('Comment2')).to eql(true) }
+        end
+      end
+
+
+      context '#submit_data' do
         before { exercise_usertask.save }
-        it { expect{ exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' }) }.to change{ user.usertasks.find(exercise_usertask.id).aasm_state }.from("in_progress").to("submitted") }
-        it { expect( exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' })).to eql(true) }
+
+        context 'blank' do
+          it { expect{ exercise_usertask.submit_task({ url: '', comment: 'Comment' }) }.to change{ exercise_usertask.comments.count }.by(1) }
+          it { expect{ exercise_usertask.submit_task({ url: 'http://abc.com', comment: '' }) }.to change{ exercise_usertask.urls.count }.by(1) }
+        end
       end
     end
 
     describe '#check_exercise?' do
       context 'normal theory exercise' do
         before { usertask.save }
-        it { expect(usertask.check_exercise?).to eql(false) }
+        it { expect(usertask.send(:check_exercise?)).to eql(false) }
       end
 
       context 'exercise' do
         before { exercise_usertask.save }
-        it { expect(exercise_usertask.check_exercise?).to eql(true) }
+        it { expect(exercise_usertask.send(:check_exercise?)).to eql(true) }
       end
     end
 

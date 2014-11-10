@@ -17,16 +17,36 @@ describe CompaniesController do
     allow(ability).to receive(:has_block?).and_return(true)
   end
 
-  describe '#new' do
-    def send_request
-      get :new
-    end
-    before { allow(controller).to receive(:build_user) }
+  # describe '#new' do
+  #   before do
+  #     allow(Company).to receive(:find).and_return(company)
+  #     allow(company).to receive(:users).and_return(users)
+  #     allow(users).to receive(:build).and_return(user)
+  #   end
 
-    it { expect(controller).to receive(:build_user) }
+  #   def send_request
+  #     get :new
+  #   end
 
-    after { send_request }
-  end
+  #   describe 'expects to send' do
+  #     it { expect(Company).to receive(:find).and_return(company) }
+  #     it { expect(company).to receive(:users).and_return(users) }
+  #     it { expect(company).to receive(:build).and_return(user) }
+
+  #     after { send_request }
+  #   end
+
+  #   describe 'assigns' do
+  #     before { send_request }
+  #     it { expect(assigns(:company)).to eq(company) }
+  #   end
+
+  #   describe 'response' do
+  #     before { send_request }
+  #     it { expect(response).to redirect_to action: :create }
+  #     it { expect(response).to have_http_status(302) }
+  #   end
+  # end
 
 
   describe '#create' do
