@@ -14,11 +14,11 @@ module RenderTreeHelper
         node = options[:node]
         class_based_on_state = ''
         if Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:completed]
-          class_based_on_state = "bg-success"
+          class_based_on_state = "alert-success"
         elsif Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:in_progress]
-          class_based_on_state = "bg-warning"
+          class_based_on_state = "alert-warning"
         else
-          class_based_on_state = "bg-danger"
+          class_based_on_state = "alert-danger"
         end
 
         "
@@ -41,7 +41,7 @@ module RenderTreeHelper
           url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
           title_field = h.link_to(title_field, url, method: :get)
         end
-        "<h4>#{ title_field }</h4>"
+        "<div class='m-top m-down'> <h4>#{ title_field }</h4></div>"
       end
 
       def controls

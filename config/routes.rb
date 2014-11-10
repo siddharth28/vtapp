@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         put 'users' => 'devise/registrations#update', as: :user_registration
         get 'users/new' => 'users#new', as: :new_user
         post 'users' => 'users#create'
+        get '/users/sign_out' => 'devise/sessions#destroy'
       end
 
       root 'roles#home_page', as: :authenticated_root
