@@ -22,14 +22,6 @@ class Task < ActiveRecord::Base
 
   delegate :is_hidden, :sample_solution, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
 
-  def instructions
-    @instructions ||= specific.try(:instructions)
-  end
-
-  def instructions=(value)
-    @instructions = value
-  end
-
   def parent_title
     parent.try(:title)
   end
