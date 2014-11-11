@@ -21,7 +21,7 @@ class TasksController < ResourceController
   def index
     @tasks = @track.tasks
     if @tasks.blank?
-      flash[:alert] = "Track: #{ @track.name } has no tasks at this moment"
+      flash.now[:alert] = "Track: #{ @track.name } has no tasks at this moment"
     else
       @tasks = @tasks.includes(:actable).nested_set.all
     end
@@ -64,7 +64,7 @@ class TasksController < ResourceController
   def manage
     @tasks = @track.tasks
     if @tasks.blank?
-      flash[:alert] = "Track: #{ @track.name } has no tasks at this moment"
+      flash.now[:alert] = "Track: #{ @track.name } has no tasks at this moment"
     else
       @tasks = @tasks.nested_set.all
     end

@@ -1,30 +1,30 @@
-<%= form_for(@company, html: { class: 'form-well form-horizontal' }) do |company| %>
+<%= form_for(@company, html: { class: 'form-well form-horizontal col-sm-7' }) do |company| %>
   <div class="form-group">
-    <%= company.label :company_name, class: 'col-sm-2 control-label' %>
-    <div class="col-sm-4">
+    <%= company.label :company_name, class: 'col-sm-3 control-label' %>
+    <div class="col-sm-8">
       <%= company.text_field :name, class: 'form-control' %>
       <%= errors_for_field(@company, :name) %>
     </div>
   </div>
 
   <div class="form-group">
-    <%= company.label :owner_name, class: 'col-sm-2 control-label' %>
-    <div class="col-sm-4">
+    <%= company.label :owner_name, class: 'col-sm-3 control-label' %>
+    <div class="col-sm-8">
       <%= company.text_field :owner_name, class: 'form-control' %>
       <%= errors_for_field(@company.users.first, :name) %>
     </div>
   </div>
 
   <div class="form-group">
-    <%= company.label :owner_email, class: 'col-sm-2 control-label' %>
-    <div class="col-sm-4">
+    <%= company.label :owner_email, class: 'col-sm-3 control-label' %>
+    <div class="col-sm-8">
       <%= company.text_field :owner_email, class: 'form-control' %>
       <%= errors_for_field(@company.users.first, :email) %>
     </div>
   </div>
 
-  <div class="actions">
-    <div class="col-sm-2"></div>
+  <div class="actions m-top">
+    <div class="col-sm-3"></div>
     <%= company.submit 'Save Company', class: 'btn btn-default m-left-0x' %>
   </div>
 <% end %>
