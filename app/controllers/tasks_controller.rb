@@ -27,11 +27,12 @@ class TasksController < ResourceController
     end
     # FIXED
     # FIXME : If task is blank, unnecessary queries will be fired.
+    authorize! :read, @track
   end
 
   def new
     @task = @track.tasks.build
-    authorize! :manage, @task
+    authorize! :manage, @track
   end
 
   def create
