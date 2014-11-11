@@ -9,35 +9,42 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label class='col-sm-3'><strong>Task Description:</strong></label>
-      <div class="col-sm-8 readonly">
-        <%= @usertask.task.description %>
-      </div>
-    </div>
-
-    <% if @usertask.task.specific %>
+    <% unless @usertask.description.blank? %>
       <div class="form-group">
-        <label class='col-sm-3'><strong>Solutions Submitted:</strong></label>
+        <label class='col-sm-3'><strong>Task Description:</strong></label>
         <div class="col-sm-8 readonly">
-          <% @usertask.urls.each do |url| %>
-            <%= link_to url.name %><br>
-          <% end %>
+          <%= @usertask.task.description %>
         </div>
       </div>
+    <% end %>
+
+
+    <% if @usertask.task.specific %>
+      <% unless @usertask.urls.blank? %>
+        <div class="form-group">
+          <label class='col-sm-3'><strong>Solutions Submitted:</strong></label>
+          <div class="col-sm-8 readonly">
+            <% @usertask.urls.each do |url| %>
+              <%= link_to url.name %><br>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
     <% end %>
 
     <%= render 'form' %>
 
     <% if @usertask.task.specific %>
-      <div class="form-group m-top">
-        <label class='col-sm-3'><strong>Comments:</strong></label>
-        <div class="col-sm-8">
-          <% @usertask.comments.each do |comment| %>
-            <p class="alert-info"><%= "#{ comment.data } (#{ comment.created_at.strftime '%H:%M %d/%m' })" %></p><br>
-          <% end %>
+      <% unless @usertask.urls.blank? %>
+        <div class="form-group m-top">
+          <label class='col-sm-3'><strong>Comments:</strong></label>
+          <div class="col-sm-8">
+            <% @usertask.comments.each do |comment| %>
+              <p class="alert-info"><%= "#{ comment.data } (#{ comment.created_at.strftime '%H:%M %d/%m' })" %></p><br>
+            <% end %>
+          </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 </div>
