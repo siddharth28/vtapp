@@ -19,12 +19,14 @@ class TasksController < ResourceController
   end
 
   def index
-    tasks = @track.tasks
-    if tasks.blank?
+    @tasks = @track.tasks
+    if @tasks.blank?
       flash[:alert] = "Track: #{ @track.name } has no tasks at this moment"
+    else
+      @tasks = @tasks.includes(:actable).nested_set.all
     end
+    # FIXED
     # FIXME : If task is blank, unnecessary queries will be fired.
-    @tasks = tasks.includes(:actable).nested_set.all
   end
 
   def new
@@ -60,12 +62,14 @@ class TasksController < ResourceController
   end
 
   def manage
-    tasks = @track.tasks
-    if tasks.blank?
+    @tasks = @track.tasks
+    if @tasks.blank?
       flash[:alert] = "Track: #{ @track.name } has no tasks at this moment"
+    else
+      @tasks = @tasks.nested_set.all
     end
+    # FIXED
     # FIXME : If task is blank, unnecessary queries will be fired.
-    @tasks = tasks.nested_set.all
     authorize! :manage, @track
   end
 
@@ -81,11 +85,12 @@ class TasksController < ResourceController
 
 
   private
-
+    # FIXED
     # FIXME : use company scope to find track.
+    # FIXED
     # FIXME : Do not use find.
     def get_track
-      @track = Track.find(params[:track_id])
+      @track = current_company.tracks.find_by(id: params[:track_id])
     end
 
     def task_params

@@ -32,22 +32,22 @@ class UsersController < ResourceController
   private
     def user_params
       if current_user.account_owner?
-        params.require(:user).permit(:name, :email, :department, :mentor_id, :is_admin, :enabled, track_ids: [])
+        params.require(:user).permit(:name, :email, :department, :mentor_id, :is_admin, :enabled, tracks_with_role_runner_ids: [])
       elsif current_user.account_admin?
-        params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, track_ids: [])
+        params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
       end
     end
 
     def update_user_params
       if current_user.account_owner?
-        params.require(:user).permit(:name, :department, :mentor_id, :is_admin, :enabled, track_ids: [])
+        params.require(:user).permit(:name, :department, :mentor_id, :is_admin, :enabled, tracks_with_role_runner_ids: [])
       elsif current_user.account_admin?
-        params.require(:user).permit(:name, :department, :mentor_id, :enabled, track_ids: [])
+        params.require(:user).permit(:name, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
       end
     end
 
     def remove_empty_element_multiple_select
-      params[:user][:track_ids].reject!(&:blank?)
+      params[:user][:tracks_with_role_runner_ids].reject!(&:blank?)
     end
 
     def get_autocomplete_items(parameters)

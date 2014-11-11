@@ -22,6 +22,7 @@
 
 .m-form-left { margin-left: 150px; }
 .m-left { margin-left: 15px; }
+.m-left-75x { margin-left: 75px; }
 .m-left-0x { margin-left: 50px; }
 .m-left-x { margin-left: 100px; }
 .m-left-125x { margin-left: 125px; }
@@ -45,6 +46,7 @@
 .m-right { margin-right: 15px; }
 .m-right-x { margin-right: 100px; }
 .m-right-150x { margin-right: 150px; }
+.m-right-175x { margin-right: 175px; }
 .m-right-1x { margin-right: 200px; }
 .m-right-2x { margin-right: 300px; }
 .m-right-3x { margin-right: 400px; }
