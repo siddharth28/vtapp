@@ -34,7 +34,7 @@
         <label class='col-sm-3'><strong>Comments:</strong></label>
         <div class="col-sm-8">
           <% @usertask.comments.each do |comment| %>
-            <p class="bg-info"><%= "#{ comment.data } (#{ comment.created_at.strftime '%H:%M %d/%m' })" %></p><br>
+            <p class="alert-info"><%= "#{ comment.data } (#{ comment.created_at.strftime '%H:%M %d/%m' })" %></p><br>
           <% end %>
         </div>
       </div>

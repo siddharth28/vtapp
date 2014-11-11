@@ -38,22 +38,24 @@ class Usertask < ActiveRecord::Base
 
   private
     def submit_comment(comment)
-      comments.create(data: comment)
+      comments.try(:create, { data: comment, commenter: user })
     end
 
     def submit_url(solution)
-      urls.find_or_create_by(name: solution)
+      urls.try(:find_or_create_by, {name: solution})
       # FIXED
       # FIXME : I think this should be a callback in Url
     end
 
     def submit_data(*args)
       if args[0][:url].present? || args[0][:comment].present?
-        url = try(:submit_url, args[0][:url])
-        try(:submit_comment, args[0][:comment])
-        submit! if (aasm_state != 'submitted' && url.present?)
+        solution = submit_url(args[0][:url])
+        submit_comment(args[0][:comment])
+        submit! if (aasm_state != 'submitted' && solution.present?)
+        true
       else
         errors[:base] = 'Either url or comment needs to be present for submission'
+        false
       end
     end
 
