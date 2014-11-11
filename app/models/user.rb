@@ -78,9 +78,6 @@ class User < ActiveRecord::Base
   end
 
   #FIXME : create reader for this
-  def account_admin=(value)
-    value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
-  end
 
   def current_task_state?(task_id)
     !!current_task_state(task_id)
@@ -88,6 +85,14 @@ class User < ActiveRecord::Base
 
   def current_task_state(task_id)
     find_users_task(task_id).try(:aasm_state).try(:to_sym)
+  end
+
+  def add_role_account_admin
+    add_role(ROLES[:account_admin], company)
+  end
+
+  def remove_role_account_admin
+    remove_role(ROLES[:account_admin], company)
   end
 
   private
@@ -132,13 +137,6 @@ class User < ActiveRecord::Base
       "#{ name } : #{ email }"
     end
 
-    def add_role_account_admin
-      add_role(ROLES[:account_admin], company)
-    end
-
-    def remove_role_account_admin
-      remove_role(ROLES[:account_admin], company)
-    end
 
     def add_role_track_runner(add_track_object_ids)
       add_track_object_ids.each { |track_id| add_role Track::ROLES[:track_runner], Track.find_by(id: track_id) }
