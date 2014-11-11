@@ -19,202 +19,134 @@ describe UsertasksController do
     allow(ability).to receive(:has_block?).and_return(true)
   end
 
-  describe '#start_task' do
+  describe '#start' do
     before do
       allow(user).to receive(:usertasks).and_return(usertasks)
-      allow(usertasks).to receive(:create).and_return(usertask)
+      allow(usertasks).to receive(:build).and_return(usertask)
+      allow(usertask).to receive(:task).and_return(task)
       allow(usertasks).to receive(:find_by).with(task_id: "1").and_return(usertask)
     end
 
     def send_request
-      get :start_task, usertask: { task_id: 1, user_id: 1 }
+      get :start, usertask: { task_id: 1, user_id: 1 }
     end
 
-    describe 'expects to send' do
-      it { expect(user).to receive(:usertasks).and_return(usertasks) }
-      it { expect(usertasks).to receive(:create).and_return(usertask) }
-      after { send_request }
-    end
-
-    describe 'assigns' do
-      before { send_request }
-      it { expect(assigns(:usertask)).to eq(usertask) }
-    end
-
-    describe 'response' do
-      before { send_request }
-      it { expect(response).to redirect_to action: :task_description, id: usertask }
-      it { expect(response).to have_http_status(302) }
-    end
-  end
-
-  describe '#submit_task' do
-    before do
-      allow(Usertask).to receive(:find).and_return(usertask)
-    end
-
-    context 'ExerciseTask with no url && no comment' do
+    context 'save successful' do
       before do
-        allow(usertask).to receive(:task).and_return(task)
-        allow(task).to receive(:specific).and_return(exercise_task)
-      end
-
-      def send_request
-        xhr :patch, :submit_task, { usertask: { url: '', comment: '' }, id: usertask }
+        allow(usertask).to receive(:save).and_return(true)
       end
 
       describe 'expects to send' do
+        it { expect(user).to receive(:usertasks).and_return(usertasks) }
+        it { expect(usertasks).to receive(:build).and_return(usertask) }
+        it { expect(usertask).to receive(:save).and_return(true) }
         it { expect(usertask).to receive(:task).and_return(task) }
-        it { expect(task).to receive(:specific).and_return(exercise_task) }
         after { send_request }
       end
 
       describe 'assigns' do
         before { send_request }
         it { expect(assigns(:usertask)).to eq(usertask) }
-        it { expect(usertask.errors[:url]).to eq(['Either url or comment needs to be present for submission']) }
-        it { expect(usertask.errors[:comment]).to eq(['Either url or comment needs to be present for submission']) }
       end
 
       describe 'response' do
         before { send_request }
-        it { expect(response).to render_template :task_description }
+        it { expect(response).to redirect_to action: :description, id: usertask }
+        it { expect(response).to have_http_status(302) }
+        it { expect(flash[:notice]).to eq("Task #{ usertask.task.title } is successfully started") }
+      end
+    end
+
+    context 'save unsuccessful' do
+      before do
+        allow(usertask).to receive(:save).and_return(false)
+      end
+
+      describe 'expects to send' do
+        it { expect(user).to receive(:usertasks).and_return(usertasks) }
+        it { expect(usertasks).to receive(:build).and_return(usertask) }
+        it { expect(usertask).to receive(:save).and_return(false) }
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:usertask)).to eq(usertask) }
+      end
+
+      describe 'response' do
+        before { send_request }
+        it { expect(response).to render_template :description }
         it { expect(response).to have_http_status(200) }
       end
     end
-
-    context 'ExerciseTask with url && comment' do
-      before do
-        allow(usertask).to receive(:task).and_return(task)
-        allow(task).to receive(:specific).and_return(exercise_task)
-        allow(usertask).to receive(:submit_task).with({ url: 'http://Example.com', comment: 'Comment' }).and_return(usertasks)
-      end
-
-      def send_request
-        xhr :patch, :submit_task, { usertask: { url: 'http://Example.com', comment: 'Comment' }, id: usertask }
-      end
-
-      describe 'expects to send' do
-        it { expect(usertask).to receive(:task).and_return(task) }
-        it { expect(task).to receive(:specific).and_return(exercise_task) }
-        it { expect(usertask).to receive(:submit_task).with({ url: 'http://Example.com', comment: 'Comment' }).and_return(usertasks) }
-
-        after { send_request }
-      end
-
-      describe 'assigns' do
-        before { send_request }
-        it { expect(assigns(:usertask)).to eq(usertask) }
-      end
-
-      describe 'response' do
-        before { send_request }
-        it { expect(response).to redirect_to action: :task_description, id: usertask }
-        it { expect(response).to have_http_status(302) }
-      end
-    end
-
-    context 'ExerciseTask with no url && comment' do
-      before do
-        allow(usertask).to receive(:task).and_return(task)
-        allow(task).to receive(:specific).and_return(exercise_task)
-        allow(usertask).to receive(:submit_task).with({ url: '', comment: 'Comment' }).and_return(usertasks)
-      end
-
-      def send_request
-        xhr :patch, :submit_task, { usertask: { url: '', comment: 'Comment' }, id: usertask }
-      end
-
-      describe 'expects to send' do
-        it { expect(usertask).to receive(:task).and_return(task) }
-        it { expect(task).to receive(:specific).and_return(exercise_task) }
-        it { expect(usertask).to receive(:submit_task).with({ url: '', comment: 'Comment' }).and_return(usertasks) }
-
-        after { send_request }
-      end
-
-      describe 'assigns' do
-        before { send_request }
-        it { expect(assigns(:usertask)).to eq(usertask) }
-      end
-
-      describe 'response' do
-        before { send_request }
-        it { expect(response).to redirect_to action: :task_description, id: usertask }
-        it { expect(response).to have_http_status(302) }
-      end
-    end
-
-
-    context 'ExerciseTask with url && no comment' do
-      before do
-        allow(usertask).to receive(:task).and_return(task)
-        allow(task).to receive(:specific).and_return(exercise_task)
-        allow(usertask).to receive(:submit_task).with({ url: 'http://Example.com', comment: '' }).and_return(usertasks)
-      end
-
-      def send_request
-        xhr :patch, :submit_task, { usertask: { url: 'http://Example.com', comment: '' }, id: usertask }
-      end
-
-      describe 'expects to send' do
-        it { expect(usertask).to receive(:task).and_return(task) }
-        it { expect(task).to receive(:specific).and_return(exercise_task) }
-        it { expect(usertask).to receive(:submit_task).with({ url: 'http://Example.com', comment: '' }).and_return(usertasks) }
-
-        after { send_request }
-      end
-
-      describe 'assigns' do
-        before { send_request }
-        it { expect(assigns(:usertask)).to eq(usertask) }
-      end
-
-      describe 'response' do
-        before { send_request }
-        it { expect(response).to redirect_to action: :task_description, id: usertask }
-        it { expect(response).to have_http_status(302) }
-      end
-    end
-
-    context 'normal task' do
-      before do
-        allow(usertask).to receive(:task).and_return(task)
-        allow(task).to receive(:specific).and_return(nil)
-        allow(usertask).to receive(:submit_task).and_return(usertasks)
-      end
-
-      def send_request
-        patch :submit_task, id: usertask
-      end
-
-      describe 'expects to send' do
-        it { expect(usertask).to receive(:task).and_return(task) }
-        it { expect(task).to receive(:specific).and_return(nil) }
-        it { expect(usertask).to receive(:submit_task).and_return(usertasks) }
-        after { send_request }
-      end
-
-      describe 'assigns' do
-        before { send_request }
-        it { expect(assigns(:usertask)).to eq(usertask) }
-      end
-
-      describe 'response' do
-        before { send_request }
-        it { expect(response).to redirect_to action: :task_description, id: usertask }
-        it { expect(response).to have_http_status(302) }
-      end
-    end
   end
 
-  describe '#task_description' do
+  describe '#submit' do
     before do
       allow(Usertask).to receive(:find).and_return(usertask)
     end
 
     def send_request
-      get :task_description, id: usertask
+      xhr :patch, :submit, { usertask: { url: 'http://Example.com', comment: 'Comment' }, id: usertask }
+    end
+
+    context 'task submitted' do
+      before do
+        allow(usertask).to receive(:submit_task).with({ url: 'http://Example.com', comment: 'Comment' }).and_return(true)
+        allow(usertask).to receive(:task).and_return(task)
+      end
+
+      describe 'expects to send' do
+        it { expect(usertask).to receive(:submit_task).with({ url: 'http://Example.com', comment: 'Comment' }).and_return(true) }
+        it { expect(usertask).to receive(:task).and_return(task) }
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:usertask)).to eq(usertask) }
+      end
+
+      describe 'response' do
+        before { send_request }
+        it { expect(response).to redirect_to action: :description, id: usertask }
+        it { expect(response).to have_http_status(302) }
+        it { expect(flash[:notice]).to eq("Task #{ usertask.task.title } is successfully submitted") }
+      end
+    end
+
+    context 'task not submitted' do
+      before do
+        allow(usertask).to receive(:submit_task).with({ url: 'http://Example.com', comment: 'Comment' }).and_return(false)
+      end
+
+      describe 'expects to send' do
+        it { expect(usertask).to receive(:submit_task).with({ url: 'http://Example.com', comment: 'Comment' }).and_return(false) }
+
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:usertask)).to eq(usertask) }
+      end
+
+      describe 'response' do
+        before { send_request }
+        it { expect(response).to render_template :description }
+        it { expect(response).to have_http_status(200) }
+      end
+    end
+  end
+
+  describe '#description' do
+    before do
+      allow(Usertask).to receive(:find).and_return(usertask)
+    end
+
+    def send_request
+      get :description, id: usertask
     end
 
     describe 'assigns' do
@@ -224,7 +156,7 @@ describe UsertasksController do
 
     describe 'response' do
       before { send_request }
-      it { expect(response).to render_template :task_description }
+      it { expect(response).to render_template :description }
       it { expect(response).to have_http_status(200) }
     end
   end
@@ -238,7 +170,7 @@ describe UsertasksController do
     end
 
     def send_request
-      patch :submit_task, { usertask: { url: 'http://Example.com', comment: 'Comment', name: 'Test' }, id: usertask }
+      patch :submit, { usertask: { url: 'http://Example.com', comment: 'Comment', name: 'Test' }, id: usertask }
     end
 
     describe 'expects to send' do

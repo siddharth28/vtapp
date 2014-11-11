@@ -41,7 +41,7 @@ module RenderTreeHelper
         title_field = node.send(options[:title])
         usertask = options[:user].usertasks.find_by(task_id: node.id)
         if options[:user].current_task_state?(node.id)
-          url = h.url_for(controller: :usertasks, action: :task_description, id: usertask)
+          url = h.url_for(controller: :usertasks, action: :description, id: usertask)
           title_field = h.link_to(title_field, url, method: :get)
         end
         "<div><h4> #{ title_field } </h4></div>"
@@ -52,7 +52,7 @@ module RenderTreeHelper
         if options[:user].current_task_state?(options[:node].id)
           link_text = Task::STATE[options[:user].current_task_state(options[:node])]
         else
-          url = h.url_for(controller: :usertasks, action: :start_task, usertask: { user_id: options[:user], task_id: options[:node] })
+          url = h.url_for(controller: :usertasks, action: :start, usertask: { user_id: options[:user], task_id: options[:node] })
           link_text = h.link_to(link_text, url, method: :get)
         end
         "

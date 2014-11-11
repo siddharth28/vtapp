@@ -90,7 +90,7 @@ class TasksController < ResourceController
     # FIXED
     # FIXME : Do not use find.
     def get_track
-      @track = @company.tracks.find_by(id: params[:track_id])
+      @track = current_company.tracks.find_by(id: params[:track_id])
     end
 
     def task_params

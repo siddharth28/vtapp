@@ -26,9 +26,9 @@ describe Ability do
     describe 'Normal user abilities' do
       it { expect(ability).to be_able_to(:read, user) }
       it { expect(ability).to be_able_to(:manage, Track) }
-      it { expect(ability).to be_able_to(:start_task, User) }
-      it { expect(ability).to be_able_to(:task_description, User) }
-      it { expect(ability).to be_able_to(:submit_task, User) }
+      it { expect(ability).to be_able_to(:start, User) }
+      it { expect(ability).to be_able_to(:description, User) }
+      it { expect(ability).to be_able_to(:submit, User) }
       it { expect(ability).not_to be_able_to(:manage, Company) }
       it { expect(ability).not_to be_able_to(:manage, User) }
     end
