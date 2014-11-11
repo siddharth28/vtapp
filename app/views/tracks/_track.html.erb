@@ -4,7 +4,7 @@
 
 <td>
   <%= link_to 'Show', track, class: 'm-right m-left' %>
-  <% if current_user.account_owner? || current_user.account_admin? || current_user == track.owner) %>
+  <% if current_user.account_owner? || current_user.account_admin? || current_user == track.owner %>
     <%= link_to 'Edit', edit_track_path(track), class: 'm-right m-left' %>
   <% end %>
 </td>
