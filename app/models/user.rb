@@ -63,8 +63,8 @@ class User < ActiveRecord::Base
     # NOT FIXED
     # FIXED
     # FIXME : This comparison is not correct, arrays should not compared like this
-    remove_track_object_ids = track_ids - track_list
-    add_track_object_ids = track_list - track_ids
+    remove_track_object_ids = tracks_with_role_runner_ids - track_list
+    add_track_object_ids = track_list - tracks_with_role_runner_ids
     # TIP : Can use unless here.
     remove_role_track_runner(remove_track_object_ids) if !remove_track_object_ids.blank?
     add_role_track_runner(add_track_object_ids) if !add_track_object_ids.blank?
