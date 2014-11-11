@@ -7,9 +7,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :async, :recoverable, :rememberable, :trackable, :validatable
 
   has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
-  has_many :tracks, through: :roles, source: :resource, source_type: 'Track'
+  has_many :tracks, -> { uniq }, through: :roles, source: :resource, source_type: 'Track'
   has_many :usertasks, dependent: :destroy
   has_many :tasks, through: :usertasks
+  has_many :tracks_with_role_runner, -> { where(roles: { name: Track::ROLES[:track_runner] }) }, through: :roles, source: :resource, source_type: 'Track'
 
   belongs_to :company
   belongs_to :mentor, class_name: User
@@ -45,7 +46,7 @@ class User < ActiveRecord::Base
   # Not Fixed
   #FIXED
   #FIXME : method name not correct
-  alias_method :is_admin, :account_admin?
+  alias_method :is_admin?, :account_admin?
 
   def active_for_authentication?
     if super_admin?
@@ -55,8 +56,9 @@ class User < ActiveRecord::Base
     end
   end
 
-  def track_ids=(track_list)
+  def tracks_with_role_runner_ids=(track_list)
     track_list.map!(&:to_i)
+    # comparison not required now.
     # FIXME : Where is comparison moved ?
     # FIXED
     # NOT FIXED
@@ -69,11 +71,7 @@ class User < ActiveRecord::Base
     add_role_track_runner(add_track_object_ids) if !add_track_object_ids.blank?
   end
 
-  def track_ids
-    # FIXME : use user scope here and change accordingly
-    self.persisted? ? Track.with_role(Track::ROLES[:track_runner], self).ids : []
-  end
-
+  # FIXME : use user scope here and change accordingly
   def mentor_name
     #CHANGED
     #TIP : we can use mentor.try(:name) and can eliminate if mentor
