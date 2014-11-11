@@ -8,7 +8,7 @@ module ApplicationHelper
   end
 
   # FIXME : Why returning string in this ?
-  def active?(path)
-    current_page?(path)
+  def state(path)
+    'active' if current_page?(path)
   end
 end
