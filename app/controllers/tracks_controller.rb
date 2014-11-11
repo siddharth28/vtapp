@@ -59,6 +59,6 @@ class TracksController < ResourceController
     end
 
     def get_autocomplete_items(parameters)
-      super(parameters).with_company(current_company.id)
+      super(parameters).with_company(current_company)
     end
 end

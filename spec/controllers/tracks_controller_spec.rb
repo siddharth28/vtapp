@@ -8,14 +8,115 @@ describe TracksController do
   let(:tracks) { double(ActiveRecord::Relation) }
   let(:user) { mock_model(User) }
   let(:role) { mock_model(Role) }
-
+  let(:users) { double(ActiveRecord::Relation) }
 
   before do
     allow(controller).to receive(:current_company).and_return(current_company)
+    allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:current_ability).and_return(ability)
     allow(ability).to receive(:authorize!).and_return(true)
     allow(ability).to receive(:attributes_for).and_return([])
     allow(ability).to receive(:has_block?).and_return(true)
+  end
+
+  describe '#index' do
+    before do
+      allow(tracks).to receive(:load_with_owners).and_return(tracks)
+      allow(tracks).to receive(:page).with(nil).and_return(tracks)
+      allow(tracks).to receive(:per).with(20).and_return(tracks)
+    end
+
+    def send_request
+      get :index, { page: nil }
+    end
+
+    context 'in case of account_owner' do
+      before do
+        allow(user).to receive(:account_owner?).and_return(true)
+        allow(current_company).to receive(:tracks).and_return(tracks)
+      end
+
+      describe 'expects to receive' do
+        it { expect(user).to receive(:account_owner?).and_return(true) }
+        it { expect(current_company).to receive(:tracks).and_return(tracks) }
+        it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
+        it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
+        it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
+
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:tracks)).to eq(tracks) }
+      end
+
+      describe 'response' do
+        before { send_request }
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+    end
+
+    context 'in case of account_admin' do
+      before do
+        allow(user).to receive(:account_admin?).and_return(true)
+        allow(user).to receive(:account_owner?).and_return(false)
+        allow(current_company).to receive(:tracks).and_return(tracks)
+      end
+
+      describe 'expects to receive' do
+        it { expect(user).to receive(:account_admin?).and_return(true) }
+        it { expect(user).to receive(:account_owner?).and_return(false) }
+        it { expect(current_company).to receive(:tracks).and_return(tracks) }
+        it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
+        it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
+        it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
+
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:tracks)).to eq(tracks) }
+      end
+
+      describe 'response' do
+        before { send_request }
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+    end
+
+    context 'neither account_admin nor account_owner' do
+      before do
+        allow(user).to receive(:account_owner?).and_return(false)
+        allow(user).to receive(:account_admin?).and_return(false)
+        allow(user).to receive(:tracks).and_return(tracks)
+      end
+
+      describe 'expects to receive' do
+        it { expect(user).to receive(:account_owner?).and_return(false) }
+        it { expect(user).to receive(:account_admin?).and_return(false) }
+        it { expect(user).to receive(:tracks).and_return(tracks) }
+        it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
+        it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
+        it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
+
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:tracks)).to eq(tracks) }
+      end
+
+      describe 'response' do
+        before { send_request }
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+    end
   end
 
   describe '#create' do
@@ -66,36 +167,53 @@ describe TracksController do
     end
   end
 
-  describe '#index' do
+  describe '#reviewers' do
     before do
-      allow(current_company).to receive(:tracks).and_return(tracks)
-      allow(tracks).to receive(:load_with_owners).and_return(tracks)
-      allow(tracks).to receive(:page).with(nil).and_return(tracks)
-      allow(tracks).to receive(:per).with(20).and_return(tracks)
+      allow(controller).to receive(:set_track).and_return(track)
+      allow(Track).to receive(:find).and_return(track)
     end
 
     def send_request
-      get :index, { page: nil }
-    end
-
-    describe 'expects to receive' do
-      it { expect(current_company).to receive(:tracks).and_return(tracks) }
-      it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
-      it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
-      it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
-
-      after { send_request }
+      get :reviewers, { id: track.id }
     end
 
     describe 'assigns' do
       before { send_request }
-      it { expect(assigns(:tracks)).to eq(tracks) }
+      it { expect(assigns(:track)).to eq(track) }
     end
 
     describe 'response' do
       before { send_request }
       it { expect(response).to have_http_status(200) }
-      it { expect(response.body).to be_blank }
+      it { expect(response).to render_template :reviewers }
+    end
+  end
+
+  describe '#assign_reviewer' do
+    before do
+      allow(controller).to receive(:set_track).and_return(track)
+      allow(Track).to receive(:find).and_return(track)
+      allow(track).to receive(:add_track_role).with(:track_reviewer, "123").and_return(user)
+    end
+
+    def send_request
+      xhr :patch, :assign_reviewer, track: { reviewer_name: 'abc', reviewer_id: "123" }, id: track.id, format: :js
+    end
+
+    describe 'expects to receive' do
+      it { expect(track).to receive(:add_track_role).with(:track_reviewer, "123").and_return(true) }
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:track)).to eq(track) }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template 'tracks/assign_reviewer' }
     end
   end
 
@@ -146,55 +264,6 @@ describe TracksController do
   end
 
 
-  describe '#reviewers' do
-    before do
-      allow(controller).to receive(:set_track).and_return(track)
-      allow(Track).to receive(:find).and_return(track)
-    end
-
-    def send_request
-      get :reviewers, { id: track.id }
-    end
-
-    describe 'assigns' do
-      before { send_request }
-      it { expect(assigns(:track)).to eq(track) }
-    end
-
-    describe 'response' do
-      before { send_request }
-      it { expect(response).to have_http_status(200) }
-      it { expect(response).to render_template :reviewers }
-    end
-  end
-
-  describe '#assign_reviewer' do
-    before do
-      allow(controller).to receive(:set_track).and_return(track)
-      allow(Track).to receive(:find).and_return(track)
-      allow(track).to receive(:add_track_role).with(:track_reviewer, "123").and_return(user)
-    end
-
-    def send_request
-      xhr :patch, :assign_reviewer, track: { reviewer_name: 'abc', reviewer_id: "123" }, id: track.id, format: :js
-    end
-
-    describe 'expects to receive' do
-      it { expect(track).to receive(:add_track_role).with(:track_reviewer, "123").and_return(true) }
-      after { send_request }
-    end
-
-    describe 'assigns' do
-      before { send_request }
-      it { expect(assigns(:track)).to eq(track) }
-    end
-
-    describe 'response' do
-      before { send_request }
-      it { expect(response).to have_http_status(200) }
-      it { expect(response).to render_template 'tracks/assign_reviewer' }
-    end
-  end
 
   describe '#remove_reviewer' do
     before do
@@ -292,7 +361,7 @@ describe TracksController do
     before do
       allow(current_company).to receive(:tracks).and_return(tracks)
       allow(tracks).to receive(:load_with_owners).and_return(tracks)
-      allow(tracks).to receive(:extract).with('Owner', nil).and_return(tracks)
+      allow(tracks).to receive(:extract).with('Owner', user).and_return(tracks)
       allow(tracks).to receive(:search).with('example').and_return(tracks)
       allow(tracks).to receive(:result).and_return(tracks)
       allow(tracks).to receive(:page).with(nil).and_return(tracks)
@@ -304,13 +373,13 @@ describe TracksController do
     end
 
     describe 'expects to receive' do
-      it{ expect(current_company).to receive(:tracks).and_return(tracks) }
-      it{ expect(tracks).to receive(:load_with_owners).and_return(tracks) }
-      it{ expect(tracks).to receive(:extract).with('Owner', nil).and_return(tracks) }
-      it{ expect(tracks).to receive(:search).with('example').and_return(tracks) }
-      it{ expect(tracks).to receive(:result).and_return(tracks) }
-      it{ expect(tracks).to receive(:page).with(nil).and_return(tracks) }
-      it{ expect(tracks).to receive(:per).with(20).and_return(tracks) }
+      it { expect(current_company).to receive(:tracks).and_return(tracks) }
+      it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
+      it { expect(tracks).to receive(:extract).with('Owner', user).and_return(tracks) }
+      it { expect(tracks).to receive(:search).with('example').and_return(tracks) }
+      it { expect(tracks).to receive(:result).and_return(tracks) }
+      it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
+      it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
       after { send_request }
     end

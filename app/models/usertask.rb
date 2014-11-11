@@ -32,30 +32,31 @@ class Usertask < ActiveRecord::Base
     end
   end
 
-  def submit_task(*args)
-    task.specific ? submit_data(args[0]) : submit!
+  def submit_task(args)
+    if task.specific
+      arguments_present?(args) ? submit_data(args) : add_error_message
+    else
+      submit!
+    end
   end
 
   private
     def submit_comment(comment)
-      comments.try(:create, { data: comment, commenter: user })
+      comments.create(data: comment, commenter: user)
     end
 
     def submit_url(solution)
-      urls.try(:find_or_create_by, {name: solution})
+      urls.find_or_create_by(name: solution)
       # FIXED
       # FIXME : I think this should be a callback in Url
     end
 
-    def submit_data(*args)
-      if args[0][:url].present? || args[0][:comment].present?
-        solution = submit_url(args[0][:url])
-        submit_comment(args[0][:comment])
-        submit! if (aasm_state != 'submitted' && solution.present?)
-        true
+    def submit_data(args)
+      if args[:url].present?
+        submit_url(args[:url])
+        submit! if (aasm_state != 'submitted')
       else
-        errors[:base] = 'Either url or comment needs to be present for submission'
-        false
+        submit_comment(args[:comment])
       end
     end
 
@@ -77,5 +78,14 @@ class Usertask < ActiveRecord::Base
 
     def task_completed
       submit_comment(STATE[:completed])
+    end
+
+    def add_error_message
+      errors[:base] = 'Either url or comment needs to be present for submission'
+      false
+    end
+
+    def arguments_present?(args)
+      args[:url].present? || args[:comment].present?
     end
 end

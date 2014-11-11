@@ -1,5 +1,5 @@
 <%= render partial: 'tracks/side_navigation' %>
-<div class="col-md-10">
+<div class="col-md-10 bg-fff h500">
   <ol class="sortable_tree">
     <%= just_tree(@tasks, namespace: @track, user: current_user) %>
   </ol>

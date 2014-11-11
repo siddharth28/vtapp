@@ -18,7 +18,8 @@
 //= require ckeditor/init
 //= require ckeditor/ckeditor
 //= require autoSuggestBlur
-//= require autocomplete_event
+//= require autoCompleteEvent
 //= require jquery.ui.nestedSortable
 //= require sortable_tree/initializer
-//= require track_navigation
+//= require trackNavigation
+//= require flashDisappear

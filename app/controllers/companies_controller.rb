@@ -30,5 +30,4 @@ class CompaniesController < ResourceController
     def build_user
       @company.users.build
     end
-
 end

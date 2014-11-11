@@ -28,34 +28,6 @@ describe UsersController do
     allow(ability).to receive(:has_block?).and_return(true)
   end
 
-  describe '#show' do
-    before do
-      allow(User).to receive(:find).and_return(user)
-      allow(user).to receive(:account_owner?).and_return(true)
-      allow(controller).to receive(:authenticate_user!)
-    end
-
-    def send_request
-      get :show, { user: { name: 'Test User' }, id: user.id }
-    end
-
-    describe 'expects to send' do
-      it { expect(User).to receive(:find).and_return(user) }
-      it { expect(controller).to receive(:authenticate_user!) }
-      after { send_request }
-    end
-
-    describe 'assigns' do
-      before { send_request }
-      it { expect(assigns(:user)).to eq(user) }
-    end
-
-    describe 'response' do
-      before { send_request }
-      it { expect(response).to render_template 'users/show' }
-    end
-  end
-
   describe '#index' do
     before do
       allow(user).to receive(:company).and_return(company)
@@ -150,6 +122,7 @@ describe UsersController do
     before do
       allow(controller).to receive(:remove_empty_element_multiple_select)
       allow(User).to receive(:find).and_return(user)
+      allow(user).to receive(:company).and_return(company)
       allow(user).to receive(:update).and_return(true)
       allow(user).to receive(:account_owner?).and_return(true)
     end

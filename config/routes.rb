@@ -56,10 +56,13 @@ Rails.application.routes.draw do
           patch :disable, to: :toggle_enabled
         end
       end
+
     end
 
     unauthenticated do
       root 'devise/sessions#new', as: :unauthenticated_root
     end
+
+    get '*unmatched_route', to: 'devise/sessions#destroy'
   end
 end

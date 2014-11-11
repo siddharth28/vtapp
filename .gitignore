@@ -20,3 +20,4 @@
 /coverage
 .ruby-version
 /public/system
+.rspec
