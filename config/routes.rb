@@ -19,9 +19,9 @@ Rails.application.routes.draw do
       end
 
       namespace :usertasks do
-        get :start_task
-        get :task_description
-        patch :submit_task
+        get :start
+        get :description
+        patch :submit
       end
 
       namespace :tracks do

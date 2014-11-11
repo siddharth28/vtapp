@@ -103,9 +103,7 @@ describe TracksController do
     before do
       allow(Track).to receive(:find).and_return(track)
       allow(track).to receive(:update).and_return(true)
-      allow(track).to receive(:owner).and_return(user)
-      allow(track).to receive(:remove_track_role).with(:track_owner, user).and_return(role)
-      allow(track).to receive(:add_track_role).with(:track_owner, '4').and_return(role)
+      allow(track).to receive(:replace_owner).with('4').and_return(role)
     end
 
     def send_request
@@ -115,9 +113,7 @@ describe TracksController do
     describe 'expects to receive' do
       it { expect(Track).to receive(:find).and_return(track) }
       it { expect(track).to receive(:update).and_return(true) }
-      it { expect(track).to receive(:owner).and_return(user) }
-      it { expect(track).to receive(:remove_track_role).with(:track_owner, user).and_return(role) }
-      it { expect(track).to receive(:add_track_role).with(:track_owner, '4').and_return(role) }
+      it { expect(track).to receive(:replace_owner).with('4').and_return(role) }
 
       after { send_request }
     end
@@ -194,19 +190,9 @@ describe TracksController do
     end
 
     describe 'response' do
-      context 'reviewer_id not blank' do
-        before { send_request }
-        it { expect(response).to have_http_status(200) }
-        it { expect(response).to render_template 'tracks/assign_reviewer' }
-      end
-
-      context 'reviewer_id blank' do
-        before do
-          xhr :patch, :assign_reviewer, track: { reviewer_name: 'abc', reviewer_id: "" }, id: track.id, format: :js
-        end
-
-        it { expect(track.errors[:reviewer_name]).to eq(["can't be blank"]) }
-      end
+      before { send_request }
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template 'tracks/assign_reviewer' }
     end
   end
 

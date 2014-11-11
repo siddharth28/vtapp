@@ -13,9 +13,10 @@ class Track < ActiveRecord::Base
 
   after_create :assign_track_owner_role
 
-  validates :company, :references, :description, :instructions, presence: true
+  validates :company, :owner, :references, :description, :instructions, presence: true
   validates :name, uniqueness: { scope: :company_id, case_sensitive: false }, presence: true, length: { maximum: 255 }
   validates :owner_id, presence: true, on: :update
+
 
   attr_accessor :owner_id, :owner_name, :reviewer_id, :reviewer_name
 
@@ -55,8 +56,7 @@ class Track < ActiveRecord::Base
   end
 
   def replace_owner(owner_id)
-    debugger
-    remove_track_role(:track_owner, self.owner)
+    remove_track_role(:track_owner, owner)
     add_track_role(:track_owner, owner_id)
   end
 

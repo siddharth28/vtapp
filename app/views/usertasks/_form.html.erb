@@ -1,4 +1,4 @@
-<%= form_for(@usertask, url: url_for(controller: :usertasks, action: 'submit_task', id: @usertask), remote: true) do |usertask| %>
+<%= form_for(@usertask, url: url_for(controller: :usertasks, action: 'submit', id: @usertask), remote: true) do |usertask| %>
 
   <% if @usertask.task.specific %>
     <div class="form-group">

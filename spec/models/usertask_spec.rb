@@ -87,7 +87,6 @@ describe Usertask do
       context 'exercise' do
         before do
           exercise_usertask.save
-          debugger
           exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' })
         end
         it { expect(user.usertasks.find(exercise_usertask.id).aasm_state).to eql("submitted") }
