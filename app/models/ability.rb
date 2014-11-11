@@ -5,6 +5,7 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
     can :read, user
+    # FIXED
     # FIXME : Extract ability for each role in separate method
     super_admin_abilities(user)
     account_owner_abilities(user)

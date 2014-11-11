@@ -24,7 +24,7 @@
   <div class="form-group">
     <label class='control-label col-md-3 m-top m-down-x'><strong>Company Status:</strong></label>
     <div class="col-md-8 readonly">
-      <p><%= @company.status %></p>
+      <p><%= @company.enabled ? 'Enabled' : 'Disabled' %></p>
     </div>
   </div>
 
