@@ -32,7 +32,7 @@ class UsersController < ResourceController
   private
     def user_params
       if current_user.account_owner?
-        params.require(:user).permit(:name, :email, :department, :mentor_id, :is_admin, :enabled, tracks_with_role_runner_ids: [])
+        params.require(:user).permit(:name, :email, :company_id, :department, :mentor_id, :account_admin, :enabled, tracks_with_role_runner_ids: []).merge!({ company_id: current_company.try(:id) })
       elsif current_user.account_admin?
         params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
       end
@@ -40,7 +40,7 @@ class UsersController < ResourceController
 
     def update_user_params
       if current_user.account_owner?
-        params.require(:user).permit(:name, :department, :mentor_id, :is_admin, :enabled, tracks_with_role_runner_ids: [])
+        params.require(:user).permit(:name, :department, :mentor_id, :account_admin, :enabled, tracks_with_role_runner_ids: [])
       elsif current_user.account_admin?
         params.require(:user).permit(:name, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
       end

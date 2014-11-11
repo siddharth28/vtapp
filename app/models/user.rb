@@ -46,7 +46,6 @@ class User < ActiveRecord::Base
   # Not Fixed
   #FIXED
   #FIXME : method name not correct
-  alias_method :is_admin?, :account_admin?
 
   def active_for_authentication?
     if super_admin?
@@ -79,7 +78,7 @@ class User < ActiveRecord::Base
   end
 
   #FIXME : create reader for this
-  def is_admin=(value)
+  def account_admin=(value)
     value == '1' ? add_role(ROLES[:account_admin], company) : remove_role(ROLES[:account_admin], company)
   end
 
