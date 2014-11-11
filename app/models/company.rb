@@ -19,9 +19,7 @@ class Company < ActiveRecord::Base
   scope :enabled, -> { where(enabled: true) }
 
   # FIXME : Is #status related to model or view ?
-  def status
-    enabled ? 'Enabled' : 'Disabled'
-  end
+  # FIXED was using it in the view
 
   private
     def build_owner
