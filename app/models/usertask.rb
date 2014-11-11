@@ -42,17 +42,16 @@ class Usertask < ActiveRecord::Base
     end
 
     def submit_url(solution)
-      # FIXME : I think this should be a callback in Url
-      urls.present? ? task_submitted(STATE[:resubmitted]) : task_submitted(STATE[:submitted])
       urls.find_or_create_by(name: solution)
+      # FIXED
+      # FIXME : I think this should be a callback in Url
     end
 
     def submit_data(*args)
-      if args[0][:url].present?
-        url = submit_url(args[0][:url])
-        submit! unless(aasm_state == 'submitted')
-      elsif args[0][:comment].present?
-        submit_comment(args[0][:comment])
+      if args[0][:url].present? || args[0][:comment].present?
+        url = try(:submit_url, args[0][:url])
+        try(:submit_comment, args[0][:comment])
+        submit! if (aasm_state != 'submitted' && url.present?)
       else
         errors[:base] = 'Either url or comment needs to be present for submission'
       end
@@ -72,10 +71,6 @@ class Usertask < ActiveRecord::Base
 
     def check_exercise?
       !!task.specific
-    end
-
-    def task_submitted(comment)
-      submit_comment(comment)
     end
 
     def task_completed
