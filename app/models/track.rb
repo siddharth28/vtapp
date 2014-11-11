@@ -13,7 +13,7 @@ class Track < ActiveRecord::Base
 
   after_create :assign_track_owner_role
 
-  validates :company, :owner, :references, :description, :instructions, presence: true
+  validates :company, :references, :description, :instructions, presence: true
   validates :name, uniqueness: { scope: :company_id, case_sensitive: false }, presence: true, length: { maximum: 255 }
   validates :owner_id, presence: true, on: :update
 

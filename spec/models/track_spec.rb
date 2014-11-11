@@ -4,7 +4,7 @@ describe Track do
   let(:company) { create(:company) }
   let(:track) { build(:track) }
   let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
-  let(:user) { build(:user, mentor_id: mentor.id, company: company) }
+  let(:user) { create(:user, mentor_id: mentor.id, company: company) }
 
   describe 'constants' do
     it { Track.should have_constant(:ROLES) }
@@ -18,7 +18,6 @@ describe Track do
 
 
     describe 'uniqueness' do
-      let(:company) { create(:company) }
       let(:track_owner_user) { create(:track_owner_user, company: company) }
 
       before do
@@ -37,8 +36,6 @@ describe Track do
   end
 
   describe 'attr_accessor' do
-    let(:company) { create(:company) }
-    let(:user) { create(:new_user, company: company)}
     let(:track) { build(:track) }
     describe '#owner_id' do
       it { expect(track.owner_id).to eql(11111) }
@@ -79,7 +76,6 @@ describe Track do
 
   describe '#class methods' do
     describe '#extract' do
-      let(:company) { create(:company) }
       let(:track2) { build(:track, name: 'Track', company: company) }
       let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
       let(:user) { build(:user, company: company) }
@@ -124,10 +120,8 @@ describe Track do
 
   describe '#instance methods' do
     describe '#assign_track_owner_role' do
-      let(:company) { create(:company) }
       let(:track_without_owner) { build(:track_without_owner) }
       let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
-      let(:user) { build(:user, company: company) }
 
       context 'track_owner_given' do
         before { track.company_id = company.id }
@@ -145,8 +139,6 @@ describe Track do
     end
 
     describe '#add_track_role' do
-      let(:company) { create(:company) }
-      let(:user) { create(:user, company: company)}
       let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
 
       context 'add reviewer' do
@@ -164,11 +156,16 @@ describe Track do
 
         it { expect(track.owner).to eql(user) }
       end
+
+      context 'user_id blank' do
+        before do
+          track.add_track_role(:track_reviewer)
+        end
+        it { expect(track.errors[:base]).to eql("can't be blank") }
+      end
     end
 
     describe '#remove_track_role' do
-      let(:company) { create(:company) }
-      let(:user) { create(:user, company: company)}
       let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
 
       context 'remove reviewer' do
@@ -194,10 +191,13 @@ describe Track do
       end
     end
 
+    describe '#replace_owner' do
+      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
+
+    end
+
 
     describe '#owner' do
-      let(:company) { create(:company) }
-      let(:user) { create(:user, company: company)}
       let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
       let(:user2) { create(:user, email: 'user2@gmail.com', company: company)}
 
@@ -206,8 +206,6 @@ describe Track do
     end
 
     describe '#reviewer' do
-      let(:company) { create(:company) }
-      let(:user) { create(:user, company: company)}
       let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
 
       before do
