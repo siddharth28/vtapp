@@ -49,14 +49,15 @@
       <%= user.check_box :enabled %>
     <% end %>
   </div>
-  <% if current_company.tracks %>
+
+  <% unless(current_company.tracks.blank?) %>
     <div class="form-group">
       <%= user.label :assign_tracks, class: 'col-sm-3 control-label h4 mbot20' %>
       <div class="col-sm-12">
         <%= user.collection_check_boxes :tracks_with_role_runner_ids, current_company.tracks, :id, :name do |track| %>
           <div class="track_check_box col-sm-4">
             <label>
-              <%= track.text %>
+              <%= truncate(track.text, length: 12) %>
             </label>
           </div>
           <div class="col-sm-1">
