@@ -15,6 +15,7 @@ class UsersController < ResourceController
   def create
     @user = current_company.users.build(user_params)
     if @user.save
+      add_or_remove_role_account_admin
       redirect_to @user, notice: "User #{ @user.name } is successfully created."
     else
       render action: :new
@@ -23,6 +24,7 @@ class UsersController < ResourceController
 
   def update
     if @user.update(update_user_params)
+      add_or_remove_role_account_admin
       redirect_to @user, notice: "User #{ @user.name } is successfully updated."
     else
       render action: :edit
@@ -31,23 +33,23 @@ class UsersController < ResourceController
 
   private
     def user_params
-      if current_user.account_owner?
-        params.require(:user).permit(:name, :email, :company_id, :department, :mentor_id, :account_admin, :enabled, tracks_with_role_runner_ids: []).merge!({ company_id: current_company.try(:id) })
-      elsif current_user.account_admin?
-        params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
-      end
+      params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
     end
 
     def update_user_params
-      if current_user.account_owner?
-        params.require(:user).permit(:name, :department, :mentor_id, :account_admin, :enabled, tracks_with_role_runner_ids: [])
-      elsif current_user.account_admin?
-        params.require(:user).permit(:name, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
-      end
+      params.require(:user).permit(:name, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
     end
 
     def remove_empty_element_multiple_select
       params[:user][:tracks_with_role_runner_ids].reject!(&:blank?)
+    end
+
+    def add_or_remove_role_account_admin
+      if current_user.account_owner? && params[:account_admin?]
+        @user.add_role_account_admin
+      else
+        @user.remove_role_account_admin
+      end
     end
 
     def get_autocomplete_items(parameters)

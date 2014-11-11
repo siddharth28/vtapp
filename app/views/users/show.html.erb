@@ -55,7 +55,7 @@
       <p><%= @user.enabled ? 'Enabled' : 'Disabled' %></p>
     </div>
   </div>
-  <% if (current_user.account_admin? && !@user.account_admin? && !@user.account_owner?) || (current_user.account_owner?) %>
+  <% if (current_user.account_owner?) || (current_user.account_admin? && ((!@user.account_admin? && !@user.account_owner?) || current_user == @user)) %>
     <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default m-left-5x m-top' %></p>
   <% end %>
 
