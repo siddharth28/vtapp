@@ -20,12 +20,9 @@ class TracksController < ResourceController
   end
 
   def assign_reviewer
+    # FIXED
     # FIXME : This validation should be in model
-    if params[:track][:reviewer_id].blank?
-       @track.errors[:reviewer_name] << "can't be blank"
-    else
-      @track.add_track_role(:track_reviewer, params[:track][:reviewer_id])
-    end
+    @track.add_track_role(:track_reviewer, params[:track][:reviewer_id])
   end
 
   def search
@@ -39,9 +36,9 @@ class TracksController < ResourceController
 
   def update
     if @track.update(track_params)
+      # FIXED
       # FIXME : Create a method for both by clubbing them
-      @track.remove_track_role(:track_owner, @track.owner)
-      @track.add_track_role(:track_owner, params[:track][:owner_id])
+      @track.replace_owner(params[:track][:owner_id])
       redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
     else
       render action: 'edit'

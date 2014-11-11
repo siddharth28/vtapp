@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, :skip => [:registrations]
+  devise_for :users, skip: [:registrations]
   mount Ckeditor::Engine => '/ckeditor'
   devise_scope :user do
     authenticated :user do

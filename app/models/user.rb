@@ -60,8 +60,8 @@ class User < ActiveRecord::Base
     # FIXME : Where is comparison moved ?
     # FIXED
     # NOT FIXED
-    #FIXED
-    #FIXME : This comparison is not correct, arrays should not compared like this
+    # FIXED
+    # FIXME : This comparison is not correct, arrays should not compared like this
     remove_track_object_ids = track_ids - track_list
     add_track_object_ids = track_list - track_ids
     # TIP : Can use unless here.

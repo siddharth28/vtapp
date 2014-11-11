@@ -13,7 +13,7 @@ class Track < ActiveRecord::Base
 
   after_create :assign_track_owner_role
 
-  validates :references, :description, :instructions, presence: true
+  validates :company, :references, :description, :instructions, presence: true
   validates :name, uniqueness: { scope: :company_id, case_sensitive: false }, presence: true, length: { maximum: 255 }
   validates :owner_id, presence: true, on: :update
 
@@ -29,8 +29,12 @@ class Track < ActiveRecord::Base
   end
 
   def add_track_role(role, user_id)
-    user = find_user(user_id)
-    user.add_role(ROLES[role], self)
+    if user_id.blank?
+      add_error(:base, "can't be blank")
+    else
+      user = find_user(user_id)
+      user.add_role(ROLES[role], self)
+    end
   end
 
   def remove_track_role(role, user_id)
@@ -38,18 +42,29 @@ class Track < ActiveRecord::Base
   end
 
   def assign_track_owner_role
+    # FIXED
     # Not Fixed
-    #FIXED
+    # FIXED
     # FIXME : This code can be simplified
-    if company_users.ids.include?(owner_id.to_i)
-      user = find_user(owner_id)
+    user = if find_user(owner_id.to_i)
+      find_user(owner_id)
     else
-      user = company.owner
+      company.owner
     end
     user.try(:add_role, ROLES[:track_owner], self)
   end
 
+  def replace_owner(owner_id)
+    debugger
+    remove_track_role(:track_owner, self.owner)
+    add_track_role(:track_owner, owner_id)
+  end
+
   private
+    def add_error(field, error)
+      errors[:base] = error
+    end
+
     def find_user(user_id)
       company_users.find_by(id: user_id)
     end

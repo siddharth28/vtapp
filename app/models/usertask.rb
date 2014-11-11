@@ -38,37 +38,41 @@ class Usertask < ActiveRecord::Base
 
   private
     def submit_comment(comment)
-      comments.create(data: comment)
+      comments.try(:create, { data: comment, commenter: user })
     end
 
     def submit_url(solution)
+      urls.try(:find_or_create_by, {name: solution})
+      # FIXED
       # FIXME : I think this should be a callback in Url
-      urls.present? ? task_submitted(STATE[:resubmitted]) : task_submitted(STATE[:submitted])
-      urls.find_or_create_by(name: solution)
     end
 
     def submit_data(*args)
-      url = submit_url(args[0][:url]) if args[0][:url].present?
-      submit_comment(args[0][:comment]) if args[0][:comment].present?
-      submit! if (aasm_state != 'submitted' && url.present?)
+      if args[0][:url].present? || args[0][:comment].present?
+        solution = submit_url(args[0][:url])
+        submit_comment(args[0][:comment])
+        submit! if (aasm_state != 'submitted' && solution.present?)
+        true
+      else
+        errors[:base] = 'Either url or comment needs to be present for submission'
+        false
+      end
     end
 
     def add_start_time
+      # FIXED
       # FIXME : Do not use Time.now, start using Time.current
-      self.start_time = Time.now
+      self.start_time = Time.current
     end
 
     def add_end_time
+      # FIXED
       # FIXME : Do not use Time.now, start using Time.current
       self.end_time = Time.now
     end
 
     def check_exercise?
       !!task.specific
-    end
-
-    def task_submitted(comment)
-      submit_comment(comment)
     end
 
     def task_completed

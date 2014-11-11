@@ -35,13 +35,13 @@ Rails.application.configure do
   config.serve_static_assets = false
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :user_name => '2606800570160af55',
-    :password => 'd2dd77e10adf4a',
-    :address => 'mailtrap.io',
-    :domain => 'mailtrap.io',
-    :port => '2525',
-    :authentication => :cram_md5,
-    :enable_starttls_auto => true
+    user_name: '2606800570160af55',
+    password: 'd2dd77e10adf4a',
+    address: 'mailtrap.io',
+    domain: 'mailtrap.io',
+    port: '2525',
+    authentication: :cram_md5,
+    enable_starttls_auto: true
   }
 
   # ActionMailer Config

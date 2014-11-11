@@ -9,9 +9,8 @@ class Task < ActiveRecord::Base
   has_many :usertasks, dependent: :destroy
   has_many :users, through: :usertasks
 
-  validates :title, :track, presence: true
-  validates :title, uniqueness: { scope: :track_id, case_sensitive: false }
-  validates :title, length: { maximum: 255 }
+  validates :track, presence: true
+  validates :title, presence: true, uniqueness: { scope: :track_id, case_sensitive: false }, length: { maximum: 255 }
   validate :cannot_be_own_parent, on: :update
 
   scope :with_no_parent, -> { where(parent_id: nil) }

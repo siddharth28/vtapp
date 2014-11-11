@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_company
 
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to '/', :alert => exception.message
+    redirect_to '/', alert: exception.message
   end
 
   def current_company
