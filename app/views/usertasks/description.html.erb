@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <% unless @usertask.description.blank? %>
+    <% unless @usertask.task.description.blank? %>
       <div class="form-group">
         <label class='col-sm-3'><strong>Task Description:</strong></label>
         <div class="col-sm-8 readonly">
@@ -35,7 +35,7 @@
     <%= render 'form' %>
 
     <% if @usertask.task.specific %>
-      <% unless @usertask.urls.blank? %>
+      <% unless @usertask.comments.blank? %>
         <div class="form-group m-top">
           <label class='col-sm-3'><strong>Comments:</strong></label>
           <div class="col-sm-8">
