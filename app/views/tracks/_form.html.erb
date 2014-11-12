@@ -28,7 +28,7 @@
     <div class="field m-top">
       <%= track.label :track_owner %>
       <%= track.autocomplete_field :owner, autocomplete_user_name_tracks_path, id_element: '#track_owner_id', value: "#{ @track.owner.try(:name) }" %>
-      <%= track.hidden_field :owner_id,  value: "#{ @track.owner.try(:id) }" %>
+      <%= track.hidden_field :owner_id %>
       <%= errors_for_field(@track, :owner_id) %>
 
     </div>
