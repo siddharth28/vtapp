@@ -1,21 +1,21 @@
-<div class=" form-well form-group col-md-10 m-top-x m-left-x">
-  <h2 class="m-left-3x">
+<div class='m-left-4x'>
+  <h2>
     Forgot your password?
   </h2>
 
-  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'form-horizontal' }) do |f| %>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'form-well form-horizontal col-sm-7' }) do |f| %>
     <%= devise_error_messages! %>
 
     <div class="form-group">
-      <%= f.label :email, class: 'col-sm-4 control-label'  %>
-      <div class="col-sm-4">
+      <%= f.label :email, class: 'col-sm-3 control-label'  %>
+      <div class="col-sm-8">
         <%= f.email_field :email, autofocus: true, class: 'form-control' %>
       </div>
     </div>
 
     <div class="form-group">
-      <%= f.submit "Send me reset password instructions", class: 'btn btn-default m-top m-left-35x' %>
+      <div class="col-sm-3"></div>
+      <%= f.submit "Send me reset password instructions", class: 'btn btn-default m-top' %>
     </div>
   <% end %>
-
 </div>

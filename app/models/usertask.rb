@@ -24,7 +24,7 @@ class Usertask < ActiveRecord::Base
     end
 
     event :accept do
-      transitions from: :submitted, to: :completed, after: :task_completed
+      transitions from: :submitted, to: :completed
     end
 
     event :reject do
@@ -75,10 +75,6 @@ class Usertask < ActiveRecord::Base
 
     def check_exercise?
       !!task.specific
-    end
-
-    def task_completed
-      submit_comment(STATE[:completed])
     end
 
     def add_error_message
