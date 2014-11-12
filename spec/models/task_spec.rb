@@ -37,17 +37,17 @@ describe Task do
       it { expect(child_task.parent_title).to eq(task.title) }
     end
 
-    describe '#need_review' do
+    describe '#need_review?' do
 
       context 'no exercise task' do
-        it { expect(task.need_review).to eq(0) }
+        it { expect(task.need_review?).to eq(false) }
       end
 
       context 'task with exercise task' do
         let(:exercise_task) { create(:exercise_task, track: track, reviewer: user) }
         let(:task) { exercise_task.task }
 
-        it { expect(task.need_review).to eq(1) }
+        it { expect(task.need_review?).to eq(true) }
       end
     end
 
@@ -69,16 +69,12 @@ describe Task do
       end
     end
 
-    describe '#reviewer_name' do
-      context 'no exercise task' do
-        it { expect(task.reviewer_name).to eq(nil) }
+    describe '#cannot_be_own_parent' do
+      before do
+        task.parent_id = task.id
+        task.valid?
       end
-      context 'task with exercise_task' do
-        let(:exercise_task) { create(:exercise_task, track: track, reviewer: user ) }
-        let(:task) { exercise_task.task }
-
-        it { expect(task.reviewer_name).to eq(task.specific.reviewer.name) }
-      end
+      it { expect(task.errors[:parent]).to eql(['cannot be its own parent']) }
     end
   end
 end

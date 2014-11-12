@@ -21,6 +21,7 @@ describe User do
     describe 'has_many association' do
       it { should have_many(:mentees).class_name(User).with_foreign_key(:mentor_id).dependent(:restrict_with_error) }
       it { should have_many(:tracks).through(:roles).source(:resource) }
+      it { should have_many(:tracks_with_role_runner).through(:roles).source(:resource) }
       it { should have_many(:tasks).through(:usertasks) }
       it { should have_many(:usertasks).dependent(:destroy) }
     end
@@ -195,7 +196,7 @@ describe User do
       end
     end
 
-    describe '#track_ids=' do
+    describe '#tracks_with_role_runner=' do
       let(:company) { create(:company) }
       let(:track) { create(:track, company: company) }
       let(:user) { create(:user, company: company) }
@@ -203,7 +204,7 @@ describe User do
       context 'assign tracks' do
         let(:track_list) { [track.id] }
 
-        before { user.track_ids = track_list }
+        before { user.tracks_with_role_runner_ids = track_list }
 
         it { expect(user.tracks.include?(track)).to eql(true) }
       end
@@ -212,23 +213,10 @@ describe User do
         let(:track_list) { [] }
         before do
           user.add_role(:track_runner, track)
-          user.track_ids = track_list
+          user.tracks_with_role_runner_ids = track_list
         end
         it { expect(user.tracks.include?(track)).to eql(false) }
       end
-    end
-
-    describe '#track_ids' do
-      it { expect(user.track_ids).to eql(user.tracks.ids) }
-    end
-
-    describe '#is_admin' do
-      it { expect(user.is_admin).to eql(user.account_admin?) }
-    end
-
-    describe '#is_admin=' do
-      before { user.is_admin = '1' }
-      it { expect(user.has_role?(:account_admin, user.company)).to eql(true) }
     end
 
     describe '#mentor_name' do
@@ -242,6 +230,20 @@ describe User do
       context 'mentor not present' do
         it { expect(mentor.mentor_name).to eql(nil) }
       end
+    end
+
+    describe '#add_role_account_admin' do
+      before { user.add_role_account_admin }
+
+      it { expect(user.has_role?(:account_admin, user.company)).to eql(true) }
+      it { expect(user.account_admin?).to eql(true) }
+    end
+
+    describe '#remove_role_account_admin' do
+      before { user.remove_role_account_admin }
+
+      it { expect(user.has_role?(:account_admin, user.company)).to eql(false) }
+      it { expect(user.account_admin?).to eql(false) }
     end
     #FIXED
     #FIXME Change as discussed.
