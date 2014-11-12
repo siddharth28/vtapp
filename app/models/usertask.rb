@@ -55,7 +55,8 @@ class Usertask < ActiveRecord::Base
       if args[:url].present?
         submit_url(args[:url])
         submit! if (aasm_state != 'submitted')
-      else
+      end
+      if args[:comment].present?
         submit_comment(args[:comment])
       end
     end
