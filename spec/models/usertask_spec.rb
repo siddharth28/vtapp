@@ -5,11 +5,16 @@ describe Usertask do
   let(:track) { build(:track, company: company) }
   let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
   let(:user) { create(:user, mentor_id: mentor.id, company: company) }
-  let(:task) { create(:task, track: track) }
-  let(:usertask) { build(:usertask, user: user, task: task) }
-  let(:exercise_task) { create(:exercise_task, reviewer: mentor, track: track) }
+  let(:task) { build(:task, track: track) }
+  let(:usertask) { create(:usertask, user: user, task: task) }
+  let(:exercise_task) { build(:exercise_task, reviewer: mentor, track: track) }
   let(:exercise_usertask) { build(:usertask, user: user, task: exercise_task) }
+  let(:new_user) { create(:user, mentor_id: mentor.id, company: company) }
 
+  before do
+    company.reload.owner
+    track.save
+  end
 
   describe 'associations' do
     describe 'belongs_to' do
@@ -34,6 +39,11 @@ describe Usertask do
           before { exercise_usertask.submit! }
 
           it { expect { exercise_usertask.accept! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("completed") }
+
+          describe '#task_completed' do
+            before { exercise_usertask.accept! }
+            it { expect(exercise_usertask.comments.pluck(:data).include?(Usertask::STATE[:completed])).to eql(true)}
+          end
         end
 
         context 'rejected event' do
@@ -81,7 +91,7 @@ describe Usertask do
     describe '#submit_task' do
       context 'normal theory task' do
         before { usertask.save }
-        it { expect{ usertask.submit_task }.to change{ user.usertasks.find(usertask.id).aasm_state }.from("in_progress").to("completed") }
+        it { expect{ usertask.submit_task({}) }.to change{ user.usertasks.find(usertask.id).aasm_state }.from("in_progress").to("completed") }
       end
 
       context 'exercise' do
@@ -96,12 +106,12 @@ describe Usertask do
 
         context 'resubmit' do
           before { exercise_usertask.submit_task({ url: 'http://resubmit.com', comment: 'Comment2' }) }
-          it { expect(exercise_usertask.comments.include?(Usertask::STATE[:resubmitted])).to eql(true) }
-          it { expect(exercise_usertask.urls.include?('http://resubmit.com')).to eql(true) }
-          it { expect(exercise_usertask.comments.include?('Comment2')).to eql(true) }
+          it { expect(exercise_usertask.comments.pluck(:data).include?(Usertask::STATE[:submitted])).to eql(true) }
+          it { expect(exercise_usertask.comments.pluck(:data).include?(Usertask::STATE[:resubmitted])).to eql(true) }
+          it { expect(exercise_usertask.urls.pluck(:name).include?('http://resubmit.com')).to eql(true) }
+          it { expect(exercise_usertask.comments.pluck(:data).include?('Comment2')).to eql(true) }
         end
       end
-
 
       context '#submit_data' do
         before { exercise_usertask.save }
@@ -109,6 +119,10 @@ describe Usertask do
         context 'blank' do
           it { expect{ exercise_usertask.submit_task({ url: '', comment: 'Comment' }) }.to change{ exercise_usertask.comments.count }.by(1) }
           it { expect{ exercise_usertask.submit_task({ url: 'http://abc.com', comment: '' }) }.to change{ exercise_usertask.urls.count }.by(1) }
+        end
+
+        context 'both present' do
+          it { expect{ exercise_usertask.submit_task({ url: 'http://abcd.com', comment: 'Comment2' }) }.to change{ exercise_usertask.comments.count }.by(2) }
         end
       end
     end
@@ -126,6 +140,8 @@ describe Usertask do
     end
 
     describe '#add_start_time' do
+      let(:usertask) { build(:usertask, user: user, task: task) }
+
       context 'normal theory task' do
         context 'before initialization task' do
           it { expect(usertask.start_time).to be_nil }

@@ -6,6 +6,8 @@ describe Track do
   let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
   let(:user) { create(:user, mentor_id: mentor.id, company: company) }
 
+  before { company.reload.owner }
+
   describe 'constants' do
     it { Track.should have_constant(:ROLES) }
   end
