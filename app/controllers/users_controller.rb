@@ -41,7 +41,7 @@ class UsersController < ResourceController
     end
 
     def remove_empty_element_multiple_select
-      params[:user][:tracks_with_role_runner_ids].reject!(&:blank?)
+      params[:user][:tracks_with_role_runner_ids].reject!(&:blank?) if params[:user][:tracks_with_role_runner_ids]
     end
 
     def add_or_remove_role_account_admin
