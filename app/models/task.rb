@@ -28,16 +28,16 @@ class Task < ActiveRecord::Base
     specific.present?
   end
 
-  def move_to(target, position)
-    if target.class == Task && (parent_id != target.parent_id || position == :child)
-      raise ActiveRecord::ActiveRecordError, "You cannot change the parent of a task"
-    else
-      super
-    end
-  end
-
   private
     def cannot_be_own_parent
       errors.add(:parent, 'cannot be its own parent') if id == parent_id
+    end
+    #callback awesome_nested_set
+    def move_to(target, position)
+      if target.class == Task && (parent_id != target.parent_id || position == :child)
+        raise ActiveRecord::ActiveRecordError, "You cannot change the parent of a task"
+      else
+        super
+      end
     end
 end

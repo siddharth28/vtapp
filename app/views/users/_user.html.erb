@@ -16,7 +16,7 @@
 
 <td>
   <%= link_to 'Show', user , class: 'p-right p-left' %>
-  <% if (current_user.account_owner?) || (current_user.account_admin? && ((!user.account_admin? && !user.account_owner?) || current_user == user)) %>
+  <% if can? :update, user %>
     <%= link_to 'Edit', edit_user_path(user), class: 'p-right p-left' %>
   <%end%>
   <%= link_to 'Progress', class: 'p-right p-left' %>

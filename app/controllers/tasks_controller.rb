@@ -13,7 +13,7 @@ class TasksController < ResourceController
   # FIXME : This should be above other methods. Do not repeat.
   rescue_from ActiveRecord::ActiveRecordError do |exception|
     if request.format == :js
-      flash.now[:error] = exception.message
+      flash[:error] = exception.message
       render :rebuild
     end
   end
