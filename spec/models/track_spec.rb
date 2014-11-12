@@ -15,6 +15,7 @@ describe Track do
     it { should validate_presence_of(:references) }
     it { should validate_presence_of(:description) }
     it { should validate_presence_of(:instructions) }
+    it { should validate_presence_of(:company) }
 
 
     describe 'uniqueness' do
@@ -36,7 +37,6 @@ describe Track do
   end
 
   describe 'attr_accessor' do
-    let(:track) { build(:track) }
     describe '#owner_id' do
       it { expect(track.owner_id).to eql(11111) }
     end
@@ -120,12 +120,11 @@ describe Track do
 
   describe '#instance methods' do
     describe '#assign_track_owner_role' do
+      let(:track) { create(:track, company: company, owner_id: mentor.id) }
       let(:track_without_owner) { build(:track_without_owner) }
-      let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
 
       context 'track_owner_given' do
-        before { track.company_id = company.id }
-        it { expect(track.owner_id).to eql(11111) }
+        it { expect(track.owner_id).to eql(mentor.id) }
       end
 
       context 'track_owner_not_given' do
@@ -138,9 +137,9 @@ describe Track do
       end
     end
 
-    describe '#add_track_role' do
-      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
+    let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
 
+    describe '#add_track_role' do
       context 'add reviewer' do
         before do
           track.add_track_role(:track_reviewer, user.id)
@@ -159,15 +158,15 @@ describe Track do
 
       context 'user_id blank' do
         before do
-          track.add_track_role(:track_reviewer)
+          track.add_track_role(:track_reviewer, '')
         end
-        it { expect(track.errors[:base]).to eql("can't be blank") }
+
+        #add_error rspec
+        it { expect(track.errors[:base]).to eql(["can't be blank"]) }
       end
     end
 
     describe '#remove_track_role' do
-      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
-
       context 'remove reviewer' do
         before do
           user.add_role(:track_reviewer, track)
@@ -192,28 +191,32 @@ describe Track do
     end
 
     describe '#replace_owner' do
-      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
-
-    end
-
-
-    describe '#owner' do
-      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
-      let(:user2) { create(:user, email: 'user2@gmail.com', company: company)}
-
-      it { expect(track.owner).to eql(user) }
-      it { expect(track.owner).not_to eql(user2) }
-    end
-
-    describe '#reviewer' do
-      let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
-
       before do
-        user.add_role(:track_reviewer, track)
+        track.add_track_role(:track_owner, mentor.id)
+      end
+      it { expect{ track.replace_owner(user.id) }.to change{ track.reload.owner }.to(user).from(mentor) }
+    end
+
+    describe '#replace_owner' do
+      before do
+        track.add_track_role(:track_owner, mentor.id)
+      end
+      it { expect{ track.replace_owner(user.id) }.to change{ track.reload.owner }.to(user).from(mentor) }
+    end
+
+    describe '#company_users' do
+      context 'user belongs to company' do
+        it { expect(track.send(:company_users).include?(user)).to eql(true) }
       end
 
-      it { expect(track.reviewers.ids.include?(user.id)).to eql(true) }
+      context 'user belongs different company' do
+        let(:company2) { create(:company, name: 'Company2', owner_name: 'Test Owner', owner_email: 'owner_email2@owner.com') }
+        let(:user2) { create(:user,  company: company2, email: 'User2@example.com') }
 
+        before { user.company = company2 }
+
+        it { expect(track.send(:company_users).include?(user2)).to eql(false) }
+      end
     end
   end
 end
