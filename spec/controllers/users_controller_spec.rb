@@ -32,7 +32,7 @@ describe UsersController do
     before do
       allow(user).to receive(:company).and_return(company)
       allow(company).to receive(:users).and_return(users)
-      allow(users).to receive(:includes).with(:roles).and_return(users)
+      allow(users).to receive(:includes).with(:roles, :company).and_return(users)
       allow(users).to receive(:search).with({ s: "name {name:'asc'}" }).and_return(users)
       allow(users).to receive(:result).and_return(users)
       allow(users).to receive(:page).with(nil).and_return(users)
@@ -46,7 +46,7 @@ describe UsersController do
     describe 'expects to receive' do
       it { expect(user).to receive(:company).and_return(company) }
       it { expect(company).to receive(:users).and_return(users) }
-      it { expect(users).to receive(:includes).with(:roles).and_return(users) }
+      it { expect(users).to receive(:includes).with(:roles, :company).and_return(users) }
       it { expect(users).to receive(:search).with({ s: "name {name:'asc'}" }).and_return(users) }
       it { expect(users).to receive(:result).and_return(users) }
       it { expect(users).to receive(:page).with(nil).and_return(users) }
@@ -70,49 +70,103 @@ describe UsersController do
   describe '#create' do
     before do
       allow(controller).to receive(:user_params)
-      allow(controller).to receive(:remove_empty_element_multiple_select)
       allow(user).to receive(:company).and_return(company)
       allow(user).to receive(:account_owner?).and_return(true)
       allow(company).to receive(:users).and_return(users)
       allow(users).to receive(:build).and_return(user)
       allow(user).to receive(:save).and_return(true)
+      allow(controller).to receive(:remove_empty_element_multiple_select)
+      allow(user).to receive(:add_role_account_admin)
+      allow(user).to receive(:remove_role_account_admin)
     end
 
-    def send_request
-      post :create, user: { name: 'Test User', email: 'test_email@email.com' }
-    end
+    context 'account_admin true' do
 
-    describe 'expects to send' do
-      it { expect(controller).to receive(:remove_empty_element_multiple_select) }
-      it { expect(controller).to receive(:user_params) }
-      it { expect(user).to receive(:company).and_return(company) }
-      it { expect(company).to receive(:users).and_return(users) }
-      it { expect(users).to receive(:build).and_return(user) }
-      after { send_request }
-    end
-
-    describe 'assigns' do
-      before { send_request }
-      it { expect(assigns(:user)).to eq(user) }
-    end
-
-    describe 'response' do
-      context "when response is successfully created" do
-        before { send_request }
-        it { expect(response).to redirect_to user_path(user) }
-        it { expect(response).to have_http_status(302) }
-        it { expect(flash[:notice]).to eq("User #{ user.name } is successfully created.") }
+      def send_request
+        post :create, user: { name: 'Test User', email: 'test_email@email.com' }, account_admin?: true
       end
 
-      context "when user cannot be created" do
-        before do
-          allow(user).to receive(:save).and_return(false)
-          send_request
+      describe 'expects to send' do
+        it { expect(controller).to receive(:remove_empty_element_multiple_select) }
+        it { expect(controller).to receive(:user_params) }
+        it { expect(user).to receive(:company).and_return(company) }
+        it { expect(company).to receive(:users).and_return(users) }
+        it { expect(users).to receive(:build).and_return(user) }
+        it { expect(user).to receive(:save).and_return(true) }
+        it { expect(controller).to receive(:add_or_remove_role_account_admin) }
+        it { expect(user).to receive(:add_role_account_admin) }
+
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:user)).to eq(user) }
+      end
+
+      describe 'response' do
+        context "when response is successfully created" do
+          before { send_request }
+          it { expect(response).to redirect_to user_path(user) }
+          it { expect(response).to have_http_status(302) }
+          it { expect(flash[:notice]).to eq("User #{ user.name } is successfully created.") }
         end
 
-        it { expect(response).to render_template :new }
-        it { expect(response).to have_http_status(200) }
-        it { expect(flash[:notice]).to be_nil }
+        context "when user cannot be created" do
+          before do
+            allow(user).to receive(:save).and_return(false)
+            send_request
+          end
+
+          it { expect(response).to render_template :new }
+          it { expect(response).to have_http_status(200) }
+          it { expect(flash[:notice]).to be_nil }
+        end
+      end
+    end
+
+    context 'account_admin false' do
+
+      def send_request
+        post :create, user: { name: 'Test User', email: 'test_email@email.com' }, account_admin?: false
+      end
+
+      describe 'expects to send' do
+        it { expect(controller).to receive(:remove_empty_element_multiple_select) }
+        it { expect(controller).to receive(:user_params) }
+        it { expect(user).to receive(:company).and_return(company) }
+        it { expect(company).to receive(:users).and_return(users) }
+        it { expect(users).to receive(:build).and_return(user) }
+        it { expect(user).to receive(:save).and_return(true) }
+        it { expect(controller).to receive(:add_or_remove_role_account_admin) }
+        it { expect(user).to receive(:remove_role_account_admin) }
+
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+        it { expect(assigns(:user)).to eq(user) }
+      end
+
+      describe 'response' do
+        context "when response is successfully created" do
+          before { send_request }
+          it { expect(response).to redirect_to user_path(user) }
+          it { expect(response).to have_http_status(302) }
+          it { expect(flash[:notice]).to eq("User #{ user.name } is successfully created.") }
+        end
+
+        context "when user cannot be created" do
+          before do
+            allow(user).to receive(:save).and_return(false)
+            send_request
+          end
+
+          it { expect(response).to render_template :new }
+          it { expect(response).to have_http_status(200) }
+          it { expect(flash[:notice]).to be_nil }
+        end
       end
     end
 
@@ -121,6 +175,7 @@ describe UsersController do
   describe '#update' do
     before do
       allow(controller).to receive(:remove_empty_element_multiple_select)
+      allow(controller).to receive(:add_or_remove_role_account_admin)
       allow(User).to receive(:find).and_return(user)
       allow(user).to receive(:company).and_return(company)
       allow(user).to receive(:update).and_return(true)
@@ -134,7 +189,6 @@ describe UsersController do
     describe 'expects to send' do
       it { expect(User).to receive(:find).and_return(user) }
       it { expect(user).to receive(:update).and_return(true) }
-      it { expect(user).to receive(:account_owner?).and_return(true) }
       after { send_request }
     end
 
@@ -163,4 +217,5 @@ describe UsersController do
       end
     end
   end
+
 end
