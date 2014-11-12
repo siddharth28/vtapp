@@ -47,17 +47,16 @@ class Track < ActiveRecord::Base
     # Not Fixed
     # FIXED
     # FIXME : This code can be simplified
-    user = if find_user(owner_id.to_i)
-      find_user(owner_id)
-    else
+    user = find_user(owner_id)
+    user = unless user
       company.owner
     end
     user.try(:add_role, ROLES[:track_owner], self)
   end
 
   def replace_owner(owner_id)
-    remove_track_role(:track_owner, owner)
-    add_track_role(:track_owner, owner_id)
+    remove_track_role(ROLES[:track_owner], owner)
+    add_track_role(ROLES[:track_owner], owner_id)
   end
 
   private
