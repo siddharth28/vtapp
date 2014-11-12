@@ -51,19 +51,6 @@ describe Company do
       end
     end
 
-    describe 'status' do
-      let(:company) { build(:company) }
-
-      context 'enabled' do
-        it { expect(company.status).to eql('Enabled') }
-      end
-
-      context 'disabled' do
-        before { company.enabled = false}
-        it { expect(company.status).to eql('Disabled') }
-      end
-    end
-
   end
 
   #FIXME -> Change rspecs of these scopes as discussed.
