@@ -4,9 +4,9 @@ class Ability
 
   def initialize(user)
     user ||= User.new # guest user (not logged in)
-    can :read, user
     # FIXED
     # FIXME : Extract ability for each role in separate method
+    normal_user_abilities(user)
     super_admin_abilities(user)
     account_owner_abilities(user)
     account_admin_abilities(user)
@@ -15,6 +15,10 @@ class Ability
   end
 
   private
+
+    def normal_user_abilities(user)
+      can :read, user
+    end
 
     def super_admin_abilities(user)
       if user.super_admin?
@@ -62,4 +66,5 @@ class Ability
       end
       can :index, Task if user.is_track_runner_of?(:any)
     end
+
 end
