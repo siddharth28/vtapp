@@ -64,7 +64,6 @@ class Ability
       can :manage, Usertask do |user_task|
         user_task.user_id == user.id
       end
-      can :index, Task if user.is_track_runner_of?(:any)
     end
 
 end

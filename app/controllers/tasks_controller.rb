@@ -5,6 +5,7 @@ class TasksController < ResourceController
   before_action :get_track
   skip_before_action :receive_resource
   skip_load_resource only: [:create, :index, :new]
+  skip_authorize_resource only: [:index]
 
   autocomplete :task, :title
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details

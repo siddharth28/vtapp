@@ -8,8 +8,8 @@ describe Ability do
   let(:user) { create(:user, company: company) }
   let(:user1) { create(:user, email: 'other_email@email.com', company: company) }
   let(:user2) { create(:user, email: 'newemail@email.com', company: company2) }
-  let(:track) { build(:track, company: company) }
-  let(:track2) { build(:track, company: company2) }
+  let(:track) { create(:track, company: company.reload) }
+  let(:track2) { create(:track, company: company2.reload) }
   let(:ability) { Ability.new(user) }
 
   describe 'User' do
@@ -90,12 +90,27 @@ describe Ability do
       it { expect(ability).to be_able_to(:manage, Task) }
     end
 
-    # describe 'track_owner abilities' do
-    #   let(:track) { create(:track, company: company) }
-    #   before { user.add_role(:track_owner, track) }
+    describe 'track_owner abilities' do
+      let(:track) { create(:track, company: company.reload, owner_id: user.id) }
+      let(:task) { create(:task, track: track) }
+      let(:task2) { create(:task, track: track2) }
 
-    #   it { expect(ability).to be_able_to(:manage, track) }
-    #   it { expect(ability).not_to be_able_to(:manage, track2) }
-    # end
+      it { expect(ability).to be_able_to(:manage, track) }
+      it { expect(ability).to be_able_to(:manage, task) }
+      it { expect(ability).not_to be_able_to(:manage, track2) }
+      it { expect(ability).not_to be_able_to(:manage, task2) }
+    end
+
+    describe 'track_runner_abilities' do
+      let(:usertask) { create(:usertask, user: user) }
+      let(:usertask2) { create(:usertask, user: user2) }
+      before { user.add_role(:track_runner, track) }
+
+      it { expect(ability).to be_able_to(:read, track) }
+      it { expect(ability).to be_able_to(:manage, usertask) }
+
+      it { expect(ability).not_to be_able_to(:read, track2) }
+      it { expect(ability).not_to be_able_to(:manage, usertask2) }
+    end
   end
 end
