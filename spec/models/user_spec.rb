@@ -198,7 +198,7 @@ describe User do
 
     describe '#tracks_with_role_runner=' do
       let(:company) { create(:company) }
-      let(:track) { create(:track, company: company) }
+      let(:track) { create(:track, company: company.reload) }
       let(:user) { create(:user, company: company) }
 
       context 'assign tracks' do
@@ -286,7 +286,8 @@ describe User do
     end
 
     describe 'usertask' do
-      let(:track) { create(:track, company: company) }
+      let(:company) { create(:company) }
+      let(:track) { create(:track, company: company.reload) }
       let(:user) { create(:user, company: company) }
       let(:task) { create(:task, track: track) }
       let(:usertask) { build(:usertask, user: user, task: task) }

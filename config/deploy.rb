@@ -68,7 +68,6 @@ namespace :deploy do
     invoke 'delayed_job:restart'
   end
 
-  desc "Run migrations"
   after :finishing, 'deploy:cleanup'
   after :publishing, 'deploy:restart'
 end
