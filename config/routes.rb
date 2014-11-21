@@ -18,10 +18,9 @@ Rails.application.routes.draw do
         get :autocomplete_user_department, on: :collection
       end
 
-      namespace :usertasks do
-        get :start
-        get :description
-        patch :submit
+      resources :usertasks, only: [:show] do
+        get :start, on: :member
+        patch :submit, on: :member
       end
 
       namespace :tracks do
@@ -42,11 +41,15 @@ Rails.application.routes.draw do
         resources :tasks do
           get :autocomplete_task_title, on: :collection
           get :autocomplete_user_name, on: :collection
+          get :autocomplete_user_email, on: :member
           get :manage, on: :collection
           get :sample_solution, on: :member
           get :remove_sample_solution, on: :member
           # required for Sortable GUI server side actions
           post :rebuild, on: :collection
+          get :reviewers, on: :member
+          patch :assign_runner, on: :member
+          get :remove_runner, on: :member
         end
       end
 

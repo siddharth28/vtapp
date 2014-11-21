@@ -1,22 +1,30 @@
 class Usertask < ActiveRecord::Base
   include AASM
 
-  STATE = { submitted: 'Task Submitted', resubmitted: 'Task Resubmitted', completed: 'Task completed' }
-
   belongs_to :user
   belongs_to :task
+  belongs_to :reviewer, class_name: 'User'
+
 
   has_many :urls, dependent: :destroy
   has_many :comments, dependent: :destroy
 
-  after_create :add_start_time
 
+  before_create :assign_reviewer, if: -> { task.need_review? }
   attr_accessor :url, :comment
 
   aasm do
-    state :in_progress, initial: true
+    state :not_started, initial: true
+    state :in_progress
     state :submitted
     state :completed
+
+    event :start do
+      transitions from: :not_started, to: :in_progress
+      after do
+        add_start_time
+      end
+    end
 
     event :submit, after: :add_end_time do
       transitions from: :in_progress, to: :submitted, guard: :check_exercise?
@@ -32,8 +40,12 @@ class Usertask < ActiveRecord::Base
     end
   end
 
+  def start_task
+    start!
+  end
+
   def submit_task(args)
-    if task.specific
+    if task.need_review?
       arguments_present?(args) ? submit_data(args) : add_error_message
     else
       submit!
@@ -64,17 +76,18 @@ class Usertask < ActiveRecord::Base
     def add_start_time
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
-      self.start_time = Time.current
+      # self.start_time = Time.current
+      update_attributes(start_time: Time.current)
     end
 
     def add_end_time
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
-      self.end_time = Time.now
+      update_attributes(end_time: Time.current)
     end
 
     def check_exercise?
-      !!task.specific
+      task.need_review?
     end
 
     def add_error_message
@@ -84,5 +97,9 @@ class Usertask < ActiveRecord::Base
 
     def arguments_present?(args)
       args[:url].present? || args[:comment].present?
+    end
+
+    def assign_reviewer
+      self.reviewer = task.reviewer
     end
 end

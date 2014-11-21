@@ -33,7 +33,7 @@ module RenderSortableTreeHelper
         url = h.url_for(controller: options[:klass].pluralize, action: :show, id: node)
         title_field = options[:title]
 
-        "<h4>#{ h.link_to(node.send(title_field), url) }</h4>"
+        "<h4>#{ h.link_to(node.send(title_field), url) } #{ 'hidden' if node.is_hidden }</h4>"
       end
 
       def controls

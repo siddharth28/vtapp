@@ -3,7 +3,7 @@ class ExerciseTask < ActiveRecord::Base
 
   has_attached_file :sample_solution
 
-  belongs_to :reviewer, class_name: User
+  belongs_to :reviewer, class_name: 'User'
 
   validates_attachment :sample_solution, content_type: { content_type: "application/zip" }
   validates :reviewer, presence: true
@@ -11,6 +11,6 @@ class ExerciseTask < ActiveRecord::Base
   strip_fields :instructions
 
   def reviewer_name
-    reviewer.try(:name)
+    reviewer.name
   end
 end

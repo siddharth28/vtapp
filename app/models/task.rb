@@ -3,7 +3,7 @@ class Task < ActiveRecord::Base
   acts_as_nested_set
   include TheSortableTree::Scopes
 
-  STATE = { in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
+  STATE = { not_started: 'Start', in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
 
   belongs_to :track
   has_many :usertasks, dependent: :destroy
@@ -15,6 +15,7 @@ class Task < ActiveRecord::Base
 
   scope :with_no_parent, -> { where(parent_id: nil) }
   scope :with_track, ->(track) { where(track: track) }
+  scope :visible_tasks, -> { joins("LEFT OUTER JOIN exercise_tasks ON exercise_tasks.id = tasks.actable_id").where("(tasks.actable_id IS NULL) OR (tasks.actable_id IS NOT NULL AND exercise_tasks.is_hidden = '0')") }
 
   strip_fields :title, :description
 
@@ -25,7 +26,7 @@ class Task < ActiveRecord::Base
   end
 
   def need_review?
-    specific.present?
+    actable_id?
   end
 
   private

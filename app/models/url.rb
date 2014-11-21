@@ -11,7 +11,7 @@ class Url < ActiveRecord::Base
   private
     def add_submission_comment
       comments = usertask.comments
-      comment = comments.blank? ? comments.create(data: Usertask::STATE[:submitted], commenter: usertask.user) : comments.create(data: Usertask::STATE[:resubmitted], commenter: usertask.user)
+      comment = comments.blank? ? comments.create(data: Task::STATE[:submitted], commenter: usertask.user) : comments.create(data: Task::STATE[:resubmitted], commenter: usertask.user)
     end
 
 end

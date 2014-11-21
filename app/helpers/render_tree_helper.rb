@@ -13,11 +13,11 @@ module RenderTreeHelper
         @h, @options = h, options
         node = options[:node]
         class_based_on_state = ''
-        if Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:completed]
+        if options[:node].usertasks.first.aasm_state == 'completed'
           class_based_on_state = "alert-success"
-        elsif Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:in_progress]
+        elsif options[:node].usertasks.first.aasm_state == 'in_progress'
           class_based_on_state = "alert-warning"
-        elsif Task::STATE[options[:user].current_task_state(options[:node].id)] == Task::STATE[:submitted]
+        elsif options[:node].usertasks.first.aasm_state == 'submitted'
           class_based_on_state = "alert-warning"
         else
           class_based_on_state = "alert-start"
@@ -39,20 +39,21 @@ module RenderTreeHelper
         node = options[:node]
         ns = options[:namespace]
         title_field = node.send(options[:title])
-        usertask = options[:user].usertasks.find_by(task_id: node.id)
-        if options[:user].current_task_state?(node.id)
-          url = h.url_for(controller: :usertasks, action: :description, id: usertask)
+        usertask = options[:node].usertasks.first
+        if options[:node].usertasks.first.aasm_state != 'not_started'
+          url = h.url_for(usertask)
           title_field = h.link_to(title_field, url, method: :get)
         end
         "<div><h4> #{ title_field } </h4></div>"
       end
 
       def controls
-        link_text = "Start #{ options[:node].specific ? 'Exercise' : 'Task' } "
-        if options[:user].current_task_state?(options[:node].id)
-          link_text = Task::STATE[options[:user].current_task_state(options[:node])]
+        link_text = "Start #{ options[:node].need_review? ? 'Exercise' : 'Task' } "
+        if options[:node].usertasks.first.aasm_state != 'not_started'
+          link_text = Task::STATE[options[:node].usertasks.first.aasm_state.to_sym]
         else
-          url = h.url_for(controller: :usertasks, action: :start, usertask: { user_id: options[:user], task_id: options[:node] })
+          usertask = options[:node].usertasks.first
+          url = h.url_for(controller: :usertasks, action: :start, id: usertask)
           link_text = h.link_to(link_text, url, method: :get)
         end
         "

@@ -96,6 +96,5 @@ Rails.application.configure do
   # ActionMailer Config
   config.action_mailer.default_url_options = { host: 'vtapp.domain4now.com' }
   config.action_mailer.raise_delivery_errors = true
-  # Send email in development mode?
   config.action_mailer.perform_deliveries = true
 end

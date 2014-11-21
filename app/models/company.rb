@@ -5,7 +5,6 @@ class Company < ActiveRecord::Base
   has_many :tracks, dependent: :restrict_with_exception
   has_one :owner, through: :owner_role, source: :users
   has_one :owner_role, -> { where(roles: { name: User::ROLES[:account_owner], resource_type: 'Company' }) }, class_name: 'Role', foreign_key: :resource_id
-
   attr_accessor :owner_email, :owner_name
 
   before_validation :build_owner, on: :create

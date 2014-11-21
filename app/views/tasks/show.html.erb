@@ -1,46 +1,97 @@
-<div class="form-well col-md-10 m-top m-left-x">
-  <div class="form-group">
-    <label class='col-md-3'><strong>Task Title:</strong></label>
-    <div class="col-md-9 readonly">
-      <p><%= @task.title %></p>
+<div class="task-show">
+  <div class="form-well col-md-10 m-top m-left-x">
+    <div class="form-group">
+      <label class='col-md-3'><strong>Task Title:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= @task.title %></p>
+      </div>
     </div>
+    <% if !@task.description.blank? %>
+      <div class="form-group">
+        <label class='control-label col-md-3 m-top m-down-x'><strong>Task Description:</strong></label>
+        <div class="col-md-9 readonly">
+          <p><%= @task.description %></p>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @task.need_review? %>
+      <% if !@task.instructions.blank? %>
+        <div class="form-group">
+          <label class='control-label col-md-3 m-top m-down-x'><strong>Task Instructions:</strong></label>
+          <div class="col-md-9 readonly">
+            <p><%= @task.instructions %></p>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @task.sample_solution.path %>
+        <div class="form-group">
+          <label class='control-label col-md-3 m-top m-down-x'><strong>Task sample solution:</strong></label>
+          <div class="col-md-9 readonly">
+            <p><%= link_to 'Download',[:sample_solution, @track, @task] %></p>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <label class='control-label col-md-3 m-top m-down-x'><strong>Task Reviewer:</strong></label>
+        <div class="col-md-9 readonly">
+          <p><%= @task.reviewer_name %></p>
+        </div>
+      </div>
+    <% end %>
+    <div class='col-md-3 m-top'></div>
+    <%= link_to 'Edit', edit_track_task_path(@track, @task), class: 'btn btn-default m-top' %>
+    <%= link_to 'Cancel', manage_track_tasks_path, class: 'btn btn-default m-top' %>
+    <br><br><br>
+    <hr>
+    <br><br><br>
+    <% if @task.is_hidden %>
+      <%= form_for(@task, url: assign_runner_track_task_path, remote: true, class: 'form-horizontal') do |task| %>
+        <div class="field">
+          <div class="col-md-2"></div>
+          <div class="col-md-2">
+            <%= task.label :assign_hidden_task %>
+          </div>
+          <div class="col-md-6">
+            <%= task.autocomplete_field :user_email, autocomplete_user_email_track_task_path, id_element: '#runner_id', value: '', class: 'form-control' %>
+          </div>
+          <%= hidden_field_tag :runner_id %>
+          <div class="col-md-4"></div>
+          <div class="col-md-6">
+            <%= errors_for_field(@track, :base) %>
+          </div>
+          <div class="col-md-4"></div>
+          <div class="col-md-6">
+            <%= task.submit "Add", class: "btn btn-primary m-top m-down-2x" %>
+          </div>
+        </div>
+        <br>
+      <% end %>
+
+      <div class="row">
+        <div class="column">
+          <table class="sortable_table table table-bordered table-striped m-left-x">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>User Email</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @task.users.each do |user| %>
+                <tr>
+                  <td><%= link_to user.name, user %></td>
+                  <td><%= link_to user.email, user %></td>
+                  <td><%= link_to 'Remove', remove_runner_track_task_path(@track, @task, runner_id: user), remote: true, data: { confirm: "Are you sure?" } %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
   </div>
-  <% if !@task.description.blank? %>
-    <div class="form-group">
-      <label class='control-label col-md-3 m-top m-down-x'><strong>Task Description:</strong></label>
-      <div class="col-md-9 readonly">
-        <p><%= @task.description %></p>
-      </div>
-    </div>
-  <% end %>
-
-  <% if @task.specific %>
-    <% if !@task.instructions.blank? %>
-      <div class="form-group">
-        <label class='control-label col-md-3 m-top m-down-x'><strong>Task Instructions:</strong></label>
-        <div class="col-md-9 readonly">
-          <p><%= @task.instructions %></p>
-        </div>
-      </div>
-    <% end %>
-
-    <% if @task.sample_solution.path %>
-      <div class="form-group">
-        <label class='control-label col-md-3 m-top m-down-x'><strong>Task sample solution:</strong></label>
-        <div class="col-md-9 readonly">
-          <p><%= link_to 'Download',[:sample_solution, @track, @task] %></p>
-        </div>
-      </div>
-    <% end %>
-
-    <div class="form-group">
-      <label class='control-label col-md-3 m-top m-down-x'><strong>Task Reviewer:</strong></label>
-      <div class="col-md-9 readonly">
-        <p><%= @task.reviewer_name %></p>
-      </div>
-    </div>
-  <% end %>
-  <div class='col-md-3 m-top'></div>
-  <%= link_to 'Edit', edit_track_task_path(@track, @task), class: 'btn btn-default m-top' %>
-  <%= link_to 'Cancel', manage_track_tasks_path, class: 'btn btn-default m-top' %>
 </div>
