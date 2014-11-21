@@ -11,6 +11,7 @@ class Ability
     account_owner_abilities(user)
     account_admin_abilities(user)
     track_owner_abilities(user)
+    track_reviewer_abilities(user)
     track_runner_abilities(user)
   end
 
@@ -54,6 +55,12 @@ class Ability
       end
       can :manage, Task do |task|
         user.is_track_owner_of?(task.track)
+      end
+    end
+
+    def track_reviewer_abilities(user)
+      can :read, Track do |track|
+        user.is_track_reviewer_of?(track)
       end
     end
 
