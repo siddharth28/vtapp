@@ -6,7 +6,7 @@
   <% end %>
 
   <% if current_user.is_track_reviewer_of?(:any) %>
-    <li><%= link_to 'Track Reviewer', tracks_search_path(type: 'reviewer') %></li>
+    <li><%= link_to 'Track to review', tracks_search_path(type: 'reviewer') %></li>
   <% end %>
 
   <% if current_user.is_track_runner_of?(:any) %>
