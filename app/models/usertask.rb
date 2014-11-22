@@ -19,11 +19,8 @@ class Usertask < ActiveRecord::Base
     state :submitted
     state :completed
 
-    event :start do
+    event :start, after: :add_start_time do
       transitions from: :not_started, to: :in_progress
-      after do
-        add_start_time
-      end
     end
 
     event :submit, after: :add_end_time do
@@ -38,10 +35,6 @@ class Usertask < ActiveRecord::Base
     event :reject do
       transitions from: :submitted, to: :in_progress
     end
-  end
-
-  def start_task
-    start!
   end
 
   def submit_task(args)

@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :exercise_task do
-    title 'Test Task'
+    title 'Test Exercise Task'
     description 'Test Description'
     instructions 'Test instructions'
   end

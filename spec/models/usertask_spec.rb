@@ -2,13 +2,13 @@ require 'rails_helper'
 
 describe Usertask do
   let(:company) { create(:company) }
-  let(:track) { build(:track, company: company) }
+  let(:track) { create(:track, company: company) }
   let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
   let(:user) { create(:user, mentor_id: mentor.id, company: company) }
-  let(:task) { build(:task, track: track) }
+  let(:task) { create(:task, track: track) }
   let(:usertask) { create(:usertask, user: user, task: task) }
-  let(:exercise_task) { build(:exercise_task, reviewer: mentor, track: track) }
-  let(:exercise_usertask) { build(:usertask, user: user, task: exercise_task) }
+  let(:exercise_task) { create(:exercise_task, reviewer: mentor, track: track) }
+  let(:exercise_usertask) { create(:usertask, user: user, task: exercise_task.task) }
   let(:new_user) { create(:user, mentor_id: mentor.id, company: company) }
 
   before do
@@ -20,101 +20,91 @@ describe Usertask do
     describe 'belongs_to' do
       it { should belong_to(:user) }
       it { should belong_to(:task) }
+      it { should belong_to(:reviewer) }
     end
   end
 
   describe 'state_machine' do
     context 'exercise task' do
-      before { exercise_usertask.save }
       context 'Initial state' do
-        it { expect(exercise_usertask.aasm_state).to eql("in_progress") }
+        it { expect(exercise_usertask.aasm_state).to eql("not_started") }
         it { expect(exercise_usertask.aasm_state).not_to eql("submitted") }
         it { expect(exercise_usertask.aasm_state).not_to eql("completed") }
       end
 
+      context 'start event' do
+        it { expect { exercise_usertask.start! }.to change{ exercise_usertask.aasm_state }.from("not_started").to("in_progress") }
+      end
+
       context 'submit event' do
+        before { exercise_usertask.start! }
         it { expect { exercise_usertask.submit! }.to change{ exercise_usertask.aasm_state }.from("in_progress").to("submitted") }
+      end
 
-        context 'accepted event' do
-          before { exercise_usertask.submit! }
-
-          it { expect { exercise_usertask.accept! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("completed") }
-
-          describe '#task_completed' do
-            before { exercise_usertask.accept! }
-            it { expect(exercise_usertask.comments.pluck(:data).include?(Usertask::STATE[:completed])).to eql(true)}
-          end
+      context 'accepted event' do
+        before do
+          exercise_usertask.start!
+          exercise_usertask.submit!
         end
 
-        context 'rejected event' do
-          before { exercise_usertask.submit! }
-          it { expect { exercise_usertask.reject! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("in_progress") }
+        it { expect { exercise_usertask.accept! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("completed") }
+      end
+
+      context 'rejected event' do
+        before do
+          exercise_usertask.start!
+          exercise_usertask.submit!
         end
+        it { expect { exercise_usertask.reject! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("in_progress") }
       end
     end
 
     context 'normal theory task' do
       before { usertask.save }
       context 'Initial state' do
-        it { expect(usertask.aasm_state).to eql("in_progress") }
+        it { expect(usertask.aasm_state).to eql("not_started") }
         it { expect(usertask.aasm_state).not_to eql("completed") }
       end
 
+      context 'start event' do
+        it { expect { usertask.start! }.to change{ usertask.aasm_state }.from("not_started").to("in_progress") }
+      end
+
       context 'submit event' do
+        before { usertask.start! }
         it { expect { usertask.submit! }.to change{ usertask.aasm_state }.from("in_progress").to("completed") }
       end
     end
   end
 
   describe '#instance_methods' do
-    describe 'attr_accessor' do
-      let(:usertask) { build(:usertask, user: user, task: task, url: 'http', comment: 'Comment') }
-      describe '#url' do
-        it { expect(usertask.url).to eql('http') }
-      end
-
-      describe '#url=' do
-        before { usertask.url = 'fttp' }
-        it { expect(usertask.url).to eql('fttp') }
-      end
-
-      describe '#comment' do
-        it { expect(usertask.comment).to eql('Comment') }
-      end
-
-      describe '#comment=' do
-        before { usertask.comment = 'Comment1' }
-        it { expect(usertask.comment).to eql('Comment1') }
-      end
-    end
 
     describe '#submit_task' do
       context 'normal theory task' do
-        before { usertask.save }
+        before { usertask.start! }
         it { expect{ usertask.submit_task({}) }.to change{ user.usertasks.find(usertask.id).aasm_state }.from("in_progress").to("completed") }
       end
 
       context 'exercise' do
         before do
-          exercise_usertask.save
+          exercise_usertask.start!
           exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' })
         end
         it { expect(user.usertasks.find(exercise_usertask.id).aasm_state).to eql("submitted") }
-        it { expect(exercise_usertask.comments.pluck(:data).include?(Usertask::STATE[:submitted])).to eql(true) }
+        it { expect(exercise_usertask.comments.pluck(:data).include?(Task::STATE[:submitted])).to eql(true) }
         it { expect(exercise_usertask.comments.pluck(:data).include?('Comment')).to eql(true)}
         it { expect(exercise_usertask.urls.pluck(:name).include?('http://abc.com')).to eql(true) }
 
         context 'resubmit' do
           before { exercise_usertask.submit_task({ url: 'http://resubmit.com', comment: 'Comment2' }) }
-          it { expect(exercise_usertask.comments.pluck(:data).include?(Usertask::STATE[:submitted])).to eql(true) }
-          it { expect(exercise_usertask.comments.pluck(:data).include?(Usertask::STATE[:resubmitted])).to eql(true) }
+          it { expect(exercise_usertask.comments.pluck(:data).include?(Task::STATE[:submitted])).to eql(true) }
           it { expect(exercise_usertask.urls.pluck(:name).include?('http://resubmit.com')).to eql(true) }
           it { expect(exercise_usertask.comments.pluck(:data).include?('Comment2')).to eql(true) }
         end
       end
 
       context '#submit_data' do
-        before { exercise_usertask.save }
+        before { exercise_usertask.start! }
 
         context 'blank' do
           it { expect{ exercise_usertask.submit_task({ url: '', comment: 'Comment' }) }.to change{ exercise_usertask.comments.count }.by(1) }
@@ -129,12 +119,10 @@ describe Usertask do
 
     describe '#check_exercise?' do
       context 'normal theory exercise' do
-        before { usertask.save }
         it { expect(usertask.send(:check_exercise?)).to eql(false) }
       end
 
       context 'exercise' do
-        before { exercise_usertask.save }
         it { expect(exercise_usertask.send(:check_exercise?)).to eql(true) }
       end
     end
@@ -149,13 +137,16 @@ describe Usertask do
         end
 
         context 'After task started' do
-          before { usertask.save }
+          before { usertask.start! }
           it { expect(usertask.start_time).not_to be_nil }
           it { expect(usertask.end_time).to be_nil }
         end
 
         context 'After task submitted' do
-          before { usertask.submit! }
+          before do
+            usertask.start!
+            usertask.submit!
+          end
           it { expect(usertask.start_time).not_to be_nil }
           it { expect(usertask.end_time).not_to be_nil }
         end
@@ -168,13 +159,16 @@ describe Usertask do
       end
 
       context 'After task started' do
-        before { exercise_usertask.save }
+        before { exercise_usertask.start! }
         it { expect(exercise_usertask.start_time).not_to be_nil }
         it { expect(exercise_usertask.end_time).to be_nil }
       end
 
       context 'After task submitted' do
-        before { exercise_usertask.submit! }
+        before do
+          exercise_usertask.start!
+          exercise_usertask.submit!
+        end
         it { expect(exercise_usertask.start_time).not_to be_nil }
         it { expect(exercise_usertask.end_time).not_to be_nil }
       end
