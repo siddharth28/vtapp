@@ -70,7 +70,7 @@ class TasksController < ResourceController
     if @tasks.blank?
       flash.now[:alert] = "Track: #{ @track.name } has no tasks at this moment"
     else
-      @tasks = @tasks.nested_set.all
+      @tasks = @tasks.includes(:actable).nested_set.all
     end
     # FIXED
     # FIXME : If task is blank, unnecessary queries will be fired.
