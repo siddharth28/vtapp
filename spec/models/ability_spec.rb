@@ -102,8 +102,10 @@ describe Ability do
     end
 
     describe 'track_runner_abilities' do
-      let(:usertask) { create(:usertask, user: user) }
-      let(:usertask2) { create(:usertask, user: user2) }
+      let(:track) { create(:track, company: company.reload, owner_id: user.id) }
+      let(:task) { create(:task, track: track) }
+      let(:usertask) { create(:usertask, user: user, task: task) }
+      let(:usertask2) { create(:usertask, user: user2, task: task) }
       before { user.add_role(:track_runner, track) }
 
       it { expect(ability).to be_able_to(:read, track) }

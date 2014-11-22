@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Track do
   let(:company) { create(:company) }
-  let(:track) { build(:track) }
+  let(:track) { create(:track, company: company.reload) }
   let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
   let(:user) { create(:user, mentor_id: mentor.id, company: company) }
 
@@ -18,18 +18,6 @@ describe Track do
     it { should validate_presence_of(:description) }
     it { should validate_presence_of(:instructions) }
     it { should validate_presence_of(:company) }
-
-
-    describe 'uniqueness' do
-      let(:track_owner_user) { create(:track_owner_user, company: company) }
-
-      before do
-        track_owner_user
-        track.company_id = company.id
-        track.save
-      end
-      it { should validate_uniqueness_of(:name).scoped_to(:company_id).case_insensitive }
-    end
   end
 
   describe 'associations' do
@@ -78,16 +66,16 @@ describe Track do
 
   describe '#class methods' do
     describe '#extract' do
-      let(:track2) { build(:track, name: 'Track', company: company) }
+      let(:track2) { build(:track, name: 'Track', company: company.reload) }
       let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
       let(:user) { build(:user, company: company) }
 
       context 'track_runner_given' do
         before do
-          track.company_id = company.id
-          user.add_role(:track_runner, track)
           track.save
           user.save
+          track.company_id = company.id
+          user.add_role(:track_runner, track)
         end
 
         it { expect(Track.extract('runner', user).include?(track)).to eql(true) }
@@ -194,14 +182,14 @@ describe Track do
 
     describe '#replace_owner' do
       before do
-        track.add_track_role(:track_owner, mentor.id)
+        mentor.add_role(:track_owner, track)
       end
       it { expect{ track.replace_owner(user.id) }.to change{ track.reload.owner }.to(user).from(mentor) }
     end
 
     describe '#replace_owner' do
       before do
-        track.add_track_role(:track_owner, mentor.id)
+        mentor.add_role(:track_owner, track)
       end
       it { expect{ track.replace_owner(user.id) }.to change{ track.reload.owner }.to(user).from(mentor) }
     end

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ExerciseTask do
   let(:company) { create(:company) }
   let(:user) { create(:user, company: company) }
-  let(:track) { create(:track, company: company) }
+  let(:track) { create(:track, company: company.reload) }
   let(:exercise_task) { build(:exercise_task, track: track, reviewer: user) }
 
   describe 'association' do

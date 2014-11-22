@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Task do
   let(:company) { create(:company) }
   let(:user) { create(:user, company: company) }
-  let(:track) { create(:track, company: company) }
+  let(:track) { create(:track, company: company.reload) }
   let(:task) { create(:task, track: track) }
 
   describe 'task states' do

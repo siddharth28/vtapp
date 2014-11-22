@@ -17,68 +17,32 @@ describe UsertasksController do
     allow(ability).to receive(:authorize!).and_return(true)
     allow(ability).to receive(:attributes_for).and_return([])
     allow(ability).to receive(:has_block?).and_return(true)
+    allow(Usertask).to receive(:find).and_return(usertask)
   end
 
   describe '#start' do
     before do
-      allow(user).to receive(:usertasks).and_return(usertasks)
-      allow(usertasks).to receive(:build).and_return(usertask)
-      allow(usertask).to receive(:task).and_return(task)
-      allow(usertasks).to receive(:find_by).with(task_id: "1").and_return(usertask)
+      allow(usertask).to receive(:start!)
     end
 
     def send_request
-      get :start, usertask: { task_id: 1, user_id: 1 }
+      get :start, id: usertask.id
     end
 
-    context 'save successful' do
-      before do
-        allow(usertask).to receive(:save).and_return(true)
-      end
-
-      describe 'expects to send' do
-        it { expect(user).to receive(:usertasks).and_return(usertasks) }
-        it { expect(usertasks).to receive(:build).and_return(usertask) }
-        it { expect(usertask).to receive(:save).and_return(true) }
-        it { expect(usertask).to receive(:task).and_return(task) }
-        after { send_request }
-      end
-
-      describe 'assigns' do
-        before { send_request }
-        it { expect(assigns(:usertask)).to eq(usertask) }
-      end
-
-      describe 'response' do
-        before { send_request }
-        it { expect(response).to redirect_to action: :description, id: usertask }
-        it { expect(response).to have_http_status(302) }
-        it { expect(flash[:notice]).to eq("Task #{ usertask.task.title } is successfully started") }
-      end
+    describe 'expects to send' do
+      it { expect(usertask).to receive(:start!) }
+      after { send_request }
     end
 
-    context 'save unsuccessful' do
-      before do
-        allow(usertask).to receive(:save).and_return(false)
-      end
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:usertask)).to eq(usertask) }
+    end
 
-      describe 'expects to send' do
-        it { expect(user).to receive(:usertasks).and_return(usertasks) }
-        it { expect(usertasks).to receive(:build).and_return(usertask) }
-        it { expect(usertask).to receive(:save).and_return(false) }
-        after { send_request }
-      end
-
-      describe 'assigns' do
-        before { send_request }
-        it { expect(assigns(:usertask)).to eq(usertask) }
-      end
-
-      describe 'response' do
-        before { send_request }
-        it { expect(response).to render_template :description }
-        it { expect(response).to have_http_status(200) }
-      end
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to render_template(:show), id: usertask }
+      it { expect(response).to have_http_status(200) }
     end
   end
 
@@ -110,7 +74,6 @@ describe UsertasksController do
 
       describe 'response' do
         before { send_request }
-        it { expect(response).to redirect_to action: :description, id: usertask }
         it { expect(response).to have_http_status(302) }
         it { expect(flash[:notice]).to eq("Task #{ usertask.task.title } is successfully submitted") }
       end
@@ -134,30 +97,9 @@ describe UsertasksController do
 
       describe 'response' do
         before { send_request }
-        it { expect(response).to render_template :description }
+        it { expect(response).to render_template :show }
         it { expect(response).to have_http_status(200) }
       end
-    end
-  end
-
-  describe '#description' do
-    before do
-      allow(Usertask).to receive(:find).and_return(usertask)
-    end
-
-    def send_request
-      get :description, id: usertask
-    end
-
-    describe 'assigns' do
-      before { send_request }
-      it { expect(assigns(:usertask)).to eq(usertask) }
-    end
-
-    describe 'response' do
-      before { send_request }
-      it { expect(response).to render_template :description }
-      it { expect(response).to have_http_status(200) }
     end
   end
 

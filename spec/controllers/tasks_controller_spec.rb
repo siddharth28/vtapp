@@ -13,6 +13,7 @@ describe TasksController do
 
   before do
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
+    allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:current_ability).and_return(ability)
     allow(ability).to receive(:authorize!).and_return(true)
     allow(ability).to receive(:attributes_for).and_return([])
@@ -62,17 +63,17 @@ describe TasksController do
     context 'tasks present' do
       before do
         allow(tasks).to receive(:blank?).and_return(false)
-        allow(tasks).to receive(:includes).with(:actable).and_return(tasks)
+        allow(tasks).to receive(:includes).with(:usertasks).and_return(tasks)
+        allow(tasks).to receive(:where).with(usertasks: { user: user }).and_return(tasks)
         allow(tasks).to receive(:nested_set).and_return(tasks)
-        allow(tasks).to receive(:all).and_return(tasks)
       end
 
       describe 'expects to receive' do
         it { expect(track).to receive(:tasks).and_return(tasks) }
         it { expect(tasks).to receive(:blank?).and_return(false) }
-        it { expect(tasks).to receive(:includes).with(:actable).and_return(tasks) }
+        it { expect(tasks).to receive(:includes).with(:usertasks).and_return(tasks) }
+        it { expect(tasks).to receive(:where).with(usertasks: { user: user }).and_return(tasks) }
         it { expect(tasks).to receive(:nested_set).and_return(tasks) }
-        it { expect(tasks).to receive(:all).and_return(tasks) }
 
         after { send_request }
       end

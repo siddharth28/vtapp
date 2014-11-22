@@ -1,6 +1,6 @@
 class Track < ActiveRecord::Base
 
-  ROLES = { track_owner: 'track_owner', track_reviewer: 'track_reviewer', track_runner: 'track_runner' }
+  ROLES = { track_owner: 'track_owner', track_reviewer: 'track_reviewer', track_runner: 'track_runner' }.with_indifferent_access
 
   resourcify
 
@@ -51,7 +51,7 @@ class Track < ActiveRecord::Base
   end
 
   def replace_owner(owner_id)
-    remove_track_role(ROLES[:track_owner], owner)
+    remove_track_role(ROLES[:track_owner], owner.id)
     add_track_role(ROLES[:track_owner], owner_id)
   end
 

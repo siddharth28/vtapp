@@ -1,6 +1,8 @@
 class Usertask < ActiveRecord::Base
   include AASM
 
+  validates :user, :task, presence: true
+
   belongs_to :user
   belongs_to :task
   belongs_to :reviewer, class_name: 'User'
