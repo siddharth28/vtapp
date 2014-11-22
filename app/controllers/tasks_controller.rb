@@ -91,7 +91,7 @@ class TasksController < ResourceController
   end
 
   def remove_runner
-    @task.usertasks.find_by(user: params[:runner_id]).first.destroy
+    @task.usertasks.find_by(user: params[:runner_id]).destroy
   end
 
 
