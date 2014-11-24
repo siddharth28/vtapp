@@ -13,6 +13,7 @@ describe TasksController do
 
   before do
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
+    allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:current_ability).and_return(ability)
     allow(ability).to receive(:authorize!).and_return(true)
     allow(ability).to receive(:attributes_for).and_return([])
@@ -62,17 +63,17 @@ describe TasksController do
     context 'tasks present' do
       before do
         allow(tasks).to receive(:blank?).and_return(false)
-        allow(tasks).to receive(:includes).with(:actable).and_return(tasks)
+        allow(tasks).to receive(:includes).with(:usertasks).and_return(tasks)
+        allow(tasks).to receive(:where).with(usertasks: { user: user }).and_return(tasks)
         allow(tasks).to receive(:nested_set).and_return(tasks)
-        allow(tasks).to receive(:all).and_return(tasks)
       end
 
       describe 'expects to receive' do
         it { expect(track).to receive(:tasks).and_return(tasks) }
         it { expect(tasks).to receive(:blank?).and_return(false) }
-        it { expect(tasks).to receive(:includes).with(:actable).and_return(tasks) }
+        it { expect(tasks).to receive(:includes).with(:usertasks).and_return(tasks) }
+        it { expect(tasks).to receive(:where).with(usertasks: { user: user }).and_return(tasks) }
         it { expect(tasks).to receive(:nested_set).and_return(tasks) }
-        it { expect(tasks).to receive(:all).and_return(tasks) }
 
         after { send_request }
       end
@@ -362,6 +363,7 @@ describe TasksController do
     context 'tasks present' do
       before do
         allow(tasks).to receive(:blank?).and_return(false)
+        allow(tasks).to receive(:includes).with(:actable).and_return(tasks)
         allow(tasks).to receive(:nested_set).and_return(tasks)
         allow(tasks).to receive(:all).and_return(tasks)
       end
@@ -369,6 +371,7 @@ describe TasksController do
       describe 'expects to receive' do
         it { expect(track).to receive(:tasks).and_return(tasks) }
         it { expect(tasks).to receive(:blank?).and_return(false) }
+        it { expect(tasks).to receive(:includes).with(:actable).and_return(tasks) }
         it { expect(tasks).to receive(:nested_set).and_return(tasks) }
         it { expect(tasks).to receive(:all).and_return(tasks) }
 
@@ -450,6 +453,90 @@ describe TasksController do
       before { send_request }
       it { expect(response).to redirect_to edit_track_task_path }
       it { expect(response).to have_http_status(302) }
+    end
+  end
+
+
+  describe '#assign_runner' do
+    let(:usertask) { mock_model(Usertask) }
+    let(:usertasks) { double(ActiveRecord::Relation) }
+
+    def send_request
+      xhr :patch, :assign_runner, track_id: track.id, id: task.id, runner_id: user.id
+    end
+
+    before do
+      allow(Task).to receive(:find).and_return(task)
+      allow(task).to receive(:usertasks).and_return(usertasks)
+      allow(usertasks).to receive(:create).and_return(usertask)
+      allow(usertasks).to receive(:exists?).and_return(true)
+    end
+
+    describe 'expects to receive' do
+      context 'usertask does not exist' do
+        before { allow(usertasks).to receive(:exists?).and_return(false) }
+
+        it { expect(task).to receive(:usertasks).and_return(usertasks) }
+        it { expect(usertasks).to receive(:create).and_return(usertask) }
+
+        after { send_request }
+      end
+
+      context 'usertask exists' do
+
+        it { expect(task).to receive(:usertasks).and_return(usertasks) }
+        it { expect(usertasks).not_to receive(:create) }
+
+        after { send_request }
+      end
+    end
+
+    describe 'assigns' do
+      before { send_request }
+
+      it { expect(assigns(:task)).to eq(task) }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template 'tasks/assign_runner' }
+    end
+  end
+
+
+  describe '#remove_runner' do
+    let(:usertask) { mock_model(Usertask) }
+    let(:usertasks) { double(ActiveRecord::Relation) }
+
+    def send_request
+      xhr :patch, :remove_runner, track_id: track.id, id: task.id, runner_id: user.id
+    end
+
+    before do
+      allow(Task).to receive(:find).and_return(task)
+      allow(task).to receive(:usertasks).and_return(usertasks)
+      allow(usertasks).to receive(:find_by).and_return(usertask)
+      allow(usertask).to receive(:destroy)
+    end
+
+    describe 'expects to receive' do
+      it { expect(task).to receive(:usertasks).and_return(usertasks) }
+      it { expect(usertasks).to receive(:find_by).and_return(usertask) }
+      it { expect(usertask).to receive(:destroy) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+      it { expect(assigns(:task)).to eq(task) }
+    end
+
+    describe 'response' do
+      before { send_request }
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template 'tasks/remove_runner' }
     end
   end
 

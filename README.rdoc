@@ -5,6 +5,12 @@ Ruby version: ruby 2.1.2p95 (2014-05-08 revision 45877) [x86_64-linux]
 
 Configuration: run 'bundle install'
 
+
+Kindly comment line number 7 in config/initializers/rolify.rb
+and uncomment it after running the migrations to setup the application.
+it is a method to create dynamic methods for role queries and its requirment is that roles table must exist when this line is present in the code.
+
+
 Database Creation: run 'rake db:setup'
 
 Database initialization: run 'rake db:seed'

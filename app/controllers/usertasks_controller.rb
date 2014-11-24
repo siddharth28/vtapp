@@ -1,23 +1,23 @@
 class UsertasksController < ResourceController
 
   def start
-    @usertask = current_user.usertasks.build(usertask_params)
-    if @usertask.save
-      redirect_to usertasks_description_path(id: @usertask), notice: "Task #{ @usertask.task.title } is successfully started"
-    else
-      render :description
-    end
+    # FIXED
+    # FIXME : Use build instead of create
+    @usertask.start!
+    render :show
   end
 
   def submit
     if @usertask.submit_task(params[:usertask])
-      redirect_to usertasks_description_path(id: @usertask), notice: "Task #{ @usertask.task.title } is successfully submitted"
+      redirect_to @usertask, notice: "Task #{ @usertask.task.title } is successfully submitted"
     else
-      render :description
+      render :show
     end
   end
 
-  def description
+  def assign_to_me
+    @usertask.update_attributes(reviewer: current_user)
+    redirect_to assigned_to_others_for_review_track_tasks_path(@usertask.task.track)
   end
 
   private

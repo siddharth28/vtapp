@@ -9,6 +9,7 @@ class Ability
     account_owner_abilities(user)
     account_admin_abilities(user)
     track_owner_abilities(user)
+    track_reviewer_abilities(user)
     track_runner_abilities(user)
   end
 
@@ -55,12 +56,24 @@ class Ability
       end
     end
 
+    def track_reviewer_abilities(user)
+      can :read, Track do |track|
+        user.is_track_reviewer_of?(track)
+      end
+      can :manage, Usertask do
+        user_task.reviewer_id == user.id
+      end
+    end
+
     def track_runner_abilities(user)
       can :read, Track do |track|
         user.is_track_runner_of?(track)
       end
-      can :manage, Usertask do |user_task|
+      can :start, Usertask do |user_task|
         user_task.user_id == user.id
+      end
+      can [:read, :submit], Usertask do |user_task|
+        user_task.user_id == user.id && user_task.aasm_state != 'not_started'
       end
     end
 

@@ -11,6 +11,10 @@
             <li><%= link_to 'Manage Task List', manage_track_tasks_path(@track) %></li><br>
             <li><%= link_to 'Track Reviewer', reviewers_track_path(@track) %></li><br>
           <% end %>
+          <% if current_user.is_track_reviewer_of?(@track) %>
+            <li><%= link_to 'Tasks to review', to_review_track_tasks_path(@track) %></li>
+            <li><%= link_to 'Assigned to others for review tasks', assigned_to_others_for_review_track_tasks_path(@track) %></li>
+          <% end %>
         </ul>
       </div>
     </nav>

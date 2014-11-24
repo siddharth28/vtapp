@@ -294,62 +294,38 @@ describe User do
       let(:exercise_task) { create(:exercise_task, reviewer: mentor, track: track) }
       let(:exercise_usertask) { build(:usertask, user: user, task: exercise_task) }
 
+      describe '#assign_user_tasks' do
+        context 'track_runner role added' do
+          before do
+            task
+            user.add_role(:track_runner, track)
+            user.save
+          end
 
-      describe '#current_task_state?' do
-        context 'task not started' do
-          it { expect(user.current_task_state?(task.id)).to eql(false) }
+          it { expect(user.usertasks.exists?(task: track.tasks.sample)).to eql(true) }
         end
 
-        context 'task started' do
-          before { usertask.save }
-          it { expect(user.current_task_state?(task.id)).to eql(true) }
+        context 'other role added' do
+          before { user.add_role(:track_owner, track) }
+
+          it { expect(user.usertasks.exists?(task: track.tasks.sample)).to eql(false) }
         end
       end
 
-      describe '#current_task_state' do
-        context 'task not started' do
-          it { expect(Task::STATE[user.current_task_state(task.id)]).to eql(nil) }
+      describe '#usertask_exists?' do
+
+        describe 'usertask does not exists' do
+          it { expect(user.send(:usertasks_exists?, task.id)).to eql(false) }
         end
 
-        context 'task started' do
-          context 'theory task' do
-            before { usertask.save }
-            it { expect(Task::STATE[user.current_task_state(task.id)]).to eql('Started') }
-
-            context 'task submitted' do
-              it { expect{ usertask.submit! }.to change{ Task::STATE[user.current_task_state(task.id)] }.from('Started').to('Completed') }
-            end
+        describe 'usertask exists' do
+          before do
+            task
+            user.add_role(:track_runner, track)
+            user.save
           end
 
-          context 'exercise task' do
-            before { exercise_usertask.save }
-            it { expect(Task::STATE[user.current_task_state(exercise_task.id)]).to eql('Started') }
-
-            context 'task submitted' do
-              it { expect{ exercise_usertask.submit! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Started').to('Pending for review') }
-
-              context 'task accepted' do
-                before { exercise_usertask.submit! }
-                it { expect{ exercise_usertask.accept! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Pending for review').to('Completed') }
-              end
-
-              context 'task accepted' do
-                before { exercise_usertask.submit! }
-                it { expect{ exercise_usertask.reject! }.to change{ Task::STATE[user.current_task_state(exercise_task.id)] }.from('Pending for review').to('Started') }
-              end
-            end
-          end
-        end
-      end
-
-      describe '#find_users_task' do
-        context 'user has task' do
-          before { usertask.save }
-          it { expect(user.send(:find_users_task, task.id)).to eql(usertask) }
-        end
-
-        context 'user does not have task' do
-          it { expect(mentor.send(:find_users_task, task.id)).to eql(nil) }
+          it { expect(user.send(:usertasks_exists?, task.id)).to eql(true) }
         end
       end
     end

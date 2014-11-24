@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row">
+    <div class="column">
+      <%= render partial: 'tracks/side_navigation' %>
+      <table class="sortable_table table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="disabled">
+              Task title
+            </th>
+            <th class="disabled">
+              Submitted by
+            </th>
+            <th class="disabled">
+              Current Reviewer
+            </th>
+            <th class="disabled">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @tasks.each do |task| %>
+            <% task.usertasks.each do |usertask| %>
+            <tr>
+              <td><%= task.title %></td>
+              <td><%= "#{ usertask.user.name }: #{ usertask.user.email }" %></td>
+              <td><%= "#{ usertask.reviewer.name }: #{ usertask.reviewer.email }" %></td>
+              <td>
+                <%= link_to 'Show', usertask %>
+                <%= link_to 'Assign to me', assign_to_me_usertask_path(usertask), method: :put %>
+              </td>
+            </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

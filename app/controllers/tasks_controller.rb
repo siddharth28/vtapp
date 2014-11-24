@@ -3,10 +3,11 @@ class TasksController < ResourceController
   before_action :get_track
   skip_before_action :receive_resource
   skip_load_resource only: [:create, :index, :new]
-  skip_authorize_resource only: [:index]
+  skip_authorize_resource only: [:index, :new, :manage]
 
   autocomplete :task, :title
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
+  autocomplete :user, :email, full: true, extra_data: [:name], display_value: :display_user_details
 
   rescue_from ActiveRecord::ActiveRecordError do |exception|
     if request.format == :js
@@ -16,18 +17,20 @@ class TasksController < ResourceController
   end
 
   def index
+    authorize! :read, @track
     @tasks = @track.tasks
     if @tasks.blank?
       flash.now[:alert] = "Track: #{ @track.name } has no tasks at this moment"
     else
-      @tasks = @tasks.includes(:actable).nested_set.all
+      @tasks = @tasks.includes(:usertasks).where(usertasks: { user: current_user }).nested_set
     end
-    authorize! :read, @track
+    # FIXED
+    # FIXME : If task is blank, unnecessary queries will be fired.
   end
 
   def new
-    @task = @track.tasks.build
     authorize! :manage, @track
+    @task = @track.tasks.build
   end
 
   def create
@@ -59,13 +62,15 @@ class TasksController < ResourceController
 
   # FIXME : Index and manage actions are almost same, follow DRY
   def manage
+    authorize! :manage, @track
     @tasks = @track.tasks
     if @tasks.blank?
       flash.now[:alert] = "Track: #{ @track.name } has no tasks at this moment"
     else
-      @tasks = @tasks.nested_set.all
+      @tasks = @tasks.includes(:actable).nested_set.all
     end
-    authorize! :manage, @track
+    # FIXED
+    # FIXME : If task is blank, unnecessary queries will be fired.
   end
 
   def sample_solution
@@ -76,6 +81,22 @@ class TasksController < ResourceController
     @task.specific.sample_solution = nil
     @task.save
     redirect_to edit_track_task_path
+  end
+
+  def assign_runner
+    Usertask.find_or_create_by(user_id: params[:runner_id], task: @task)
+  end
+
+  def remove_runner
+    @task.usertasks.find_by(user: params[:runner_id]).destroy
+  end
+
+  def to_review
+    @tasks = @track.tasks.includes(usertasks: :user, usertasks: :reviewer).where(usertasks: { reviewer_id: current_user.id, aasm_state: 'submitted' })
+  end
+
+  def assigned_to_others_for_review
+    @tasks = @track.tasks.includes(usertasks: :user).where.not(usertasks: { reviewer_id: current_user.id }).where(usertasks: { aasm_state: 'submitted'})
   end
 
 
@@ -110,9 +131,11 @@ class TasksController < ResourceController
 
     def get_autocomplete_items(parameters)
       if parameters[:method] == :name
-        super(parameters).with_company(current_company).with_role(:track_reviewer, @track)
+        super(parameters).with_company(current_company).with_role(Track::ROLES[:track_reviewer], @track)
       elsif parameters[:method] == :title
         super(parameters).with_track(@track).with_no_parent
+      elsif parameters[:method] == :email
+        super(parameters).with_company(current_company).with_role(Track::ROLES[:track_runner], @track)
       end
     end
 end

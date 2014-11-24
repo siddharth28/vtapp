@@ -2,18 +2,18 @@ class User < ActiveRecord::Base
 
   ROLES = { super_admin: 'super_admin', account_owner: 'account_owner', account_admin: 'account_admin' }
 
-  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role if ActiveRecord::Base.connection.table_exists?(:roles)
+  rolify before_add: :ensure_only_one_account_owner, before_remove: :ensure_cannot_remove_account_owner_role, after_add: :assign_usertasks
 
   devise :database_authenticatable, :registerable, :async, :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
+  has_many :mentees, class_name: 'User', foreign_key: :mentor_id, dependent: :restrict_with_error
   has_many :tracks, -> { uniq }, through: :roles, source: :resource, source_type: 'Track'
   has_many :usertasks, dependent: :destroy
   has_many :tasks, through: :usertasks
   has_many :tracks_with_role_runner, -> { where(roles: { name: Track::ROLES[:track_runner] }) }, through: :roles, source: :resource, source_type: 'Track'
 
   belongs_to :company
-  belongs_to :mentor, class_name: User
+  belongs_to :mentor, class_name: 'User'
 
   attr_readonly :email, :company_id
 
@@ -31,7 +31,6 @@ class User < ActiveRecord::Base
 
   scope :with_company, ->(company) { where(company: company) }
   scope :group_by_department, -> { group(:department) }
-  scope :with_company, ->(company_id) { where(company_id: company_id) }
 
   ROLES.each do |key, method|
     define_method "#{ method }?" do
@@ -56,21 +55,15 @@ class User < ActiveRecord::Base
     remove_track_object_ids = tracks_with_role_runner_ids - track_list
     add_track_object_ids = track_list - tracks_with_role_runner_ids
     # TIP : Can use unless here.
-    remove_role_track_runner(remove_track_object_ids) if !remove_track_object_ids.blank?
-    add_role_track_runner(add_track_object_ids) if !add_track_object_ids.blank?
+    remove_role_track_runner(remove_track_object_ids) unless remove_track_object_ids.blank?
+    add_role_track_runner(add_track_object_ids) unless add_track_object_ids.blank?
   end
 
   def mentor_name
     mentor.try(:name)
   end
 
-  def current_task_state?(task_id)
-    !!current_task_state(task_id)
-  end
-
-  def current_task_state(task_id)
-    find_users_task(task_id).try(:aasm_state).try(:to_sym)
-  end
+  #FIXME : create reader for this
 
   def add_role_account_admin
     add_role(ROLES[:account_admin], company)
@@ -124,14 +117,19 @@ class User < ActiveRecord::Base
 
 
     def add_role_track_runner(add_track_object_ids)
-      add_track_object_ids.each { |track_id| add_role Track::ROLES[:track_runner], Track.find_by(id: track_id) }
+      Track.where(id: add_track_object_ids).each { |track| add_role(Track::ROLES[:track_runner], track) }
     end
 
     def remove_role_track_runner(remove_track_object_ids)
-      remove_track_object_ids.each { |track_id| remove_role Track::ROLES[:track_runner], Track.find_by(id: track_id) }
+      Track.where(id: remove_track_object_ids).each { |track| remove_role(Track::ROLES[:track_runner], track) }
     end
 
-    def find_users_task(task_id)
-      usertasks.find_by(task_id: task_id)
+    def assign_usertasks(role)
+      if role.name == Track::ROLES[:track_runner]
+        already_assigned_tasks = usertasks.pluck(:task_id)
+        tasks = role.resource.tasks.visible_tasks.where.not(id: already_assigned_tasks).includes(:actable)
+        tasks.each { |task| usertasks.build(task: task) }
+      end 
     end
+
 end
