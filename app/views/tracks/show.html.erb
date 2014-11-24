@@ -42,8 +42,6 @@
 
     <div class='pull-right'>
       <% if can? :manage, @track %>
-      <!-- FIXED -->
-      <!-- FIXME : Indentation not correct -->
         <%= link_to 'Edit', edit_track_path(@track), class: 'btn btn-default m-top' %>
         <%= link_to 'New Task', new_track_task_path(@track), class: 'btn btn-default m-top' %>
       <% end %>

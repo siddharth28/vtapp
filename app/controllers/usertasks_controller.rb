@@ -1,8 +1,6 @@
 class UsertasksController < ResourceController
 
   def start
-    # FIXED
-    # FIXME : Use build instead of create
     @usertask = current_user.usertasks.build(usertask_params)
     if @usertask.save
       redirect_to usertasks_description_path(id: @usertask), notice: "Task #{ @usertask.task.title } is successfully started"
@@ -12,8 +10,6 @@ class UsertasksController < ResourceController
   end
 
   def submit
-    # FIXED
-    # FIXME : Never add validations in controller.
     if @usertask.submit_task(params[:usertask])
       redirect_to usertasks_description_path(id: @usertask), notice: "Task #{ @usertask.task.title } is successfully submitted"
     else

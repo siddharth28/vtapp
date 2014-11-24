@@ -47,8 +47,6 @@ class Usertask < ActiveRecord::Base
 
     def submit_url(solution)
       urls.find_or_create_by(name: solution)
-      # FIXED
-      # FIXME : I think this should be a callback in Url
     end
 
     def submit_data(args)
@@ -62,12 +60,11 @@ class Usertask < ActiveRecord::Base
     end
 
     def add_start_time
-      # FIXED
-      # FIXME : Do not use Time.now, start using Time.current
       self.start_time = Time.current
     end
 
     def add_end_time
+      # Not fixed
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
       self.end_time = Time.now
@@ -78,6 +75,7 @@ class Usertask < ActiveRecord::Base
     end
 
     def add_error_message
+      # FIXME : Not a right way to add errors
       errors[:base] = 'Either url or comment needs to be present for submission'
       false
     end
