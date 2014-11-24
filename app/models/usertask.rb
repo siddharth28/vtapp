@@ -86,7 +86,7 @@ class Usertask < ActiveRecord::Base
 
     def add_error_message
       # FIXME : Not a right way to add errors
-      errors[:base] = 'Either url or comment needs to be present for submission'
+      errors[:base] << 'Either url or comment needs to be present for submission'
       false
     end
 
