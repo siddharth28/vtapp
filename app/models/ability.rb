@@ -60,7 +60,7 @@ class Ability
       can :read, Track do |track|
         user.is_track_reviewer_of?(track)
       end
-      can :manage, Usertask do
+      can :manage, Usertask do |user_task|
         user_task.reviewer_id == user.id
       end
     end
