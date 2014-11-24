@@ -42,10 +42,6 @@ class Track < ActiveRecord::Base
   end
 
   def assign_track_owner_role
-    # FIXED
-    # Not Fixed
-    # FIXED
-    # FIXME : This code can be simplified
     user = find_user(owner_id) || company.owner
     user.add_role(ROLES[:track_owner], self)
   end

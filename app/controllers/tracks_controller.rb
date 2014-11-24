@@ -24,8 +24,6 @@ class TracksController < ResourceController
   end
 
   def assign_reviewer
-    # FIXED
-    # FIXME : This validation should be in model
     @track.add_track_role(:track_reviewer, params[:track][:reviewer_id])
   end
 
@@ -40,8 +38,6 @@ class TracksController < ResourceController
 
   def update
     if @track.update(track_params)
-      # FIXED
-      # FIXME : Create a method for both by clubbing them
       @track.replace_owner(params[:track][:owner_id])
       redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
     else

@@ -3,8 +3,6 @@ class Url < ActiveRecord::Base
 
   after_create :add_submission_comment
 
-  # FIXED
-  # FIXME : Should also validate presence of usertask
   validates :usertask, presence: true
   validates :name, uniqueness: { scope: [:usertask_id], case_sensitive: false }, presence: true
 

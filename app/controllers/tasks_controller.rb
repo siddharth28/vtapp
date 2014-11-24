@@ -1,7 +1,5 @@
 class TasksController < ResourceController
   include TheSortableTreeController::Rebuild
-  # FIXED
-  # FIXME : use before_action instead of before_filter everywhere. Do not repeat.
   before_action :get_track
   skip_before_action :receive_resource
   skip_load_resource only: [:create, :index, :new]
@@ -11,8 +9,6 @@ class TasksController < ResourceController
   autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
   autocomplete :user, :email, full: true, extra_data: [:name], display_value: :display_user_details
 
-  # FIXED
-  # FIXME : This should be above other methods. Do not repeat.
   rescue_from ActiveRecord::ActiveRecordError do |exception|
     if request.format == :js
       flash[:error] = exception.message
@@ -64,6 +60,7 @@ class TasksController < ResourceController
     redirect_to manage_track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
   end
 
+  # FIXME : Index and manage actions are almost same, follow DRY
   def manage
     authorize! :manage, @track
     @tasks = @track.tasks
@@ -104,10 +101,6 @@ class TasksController < ResourceController
 
 
   private
-    # FIXED
-    # FIXME : use company scope to find track.
-    # FIXED
-    # FIXME : Do not use find.
     def get_track
       @track = current_company.tracks.find_by(id: params[:track_id])
     end

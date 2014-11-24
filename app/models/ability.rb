@@ -4,8 +4,6 @@ class Ability
 
   def initialize(user)
     user ||= User.new # guest user (not logged in)
-    # FIXED
-    # FIXME : Extract ability for each role in separate method
     normal_user_abilities(user)
     super_admin_abilities(user)
     account_owner_abilities(user)

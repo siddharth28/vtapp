@@ -15,13 +15,9 @@ class User < ActiveRecord::Base
   belongs_to :company
   belongs_to :mentor, class_name: 'User'
 
-  #FIXED
-  #FIXME -> Write rspec of this line.
   attr_readonly :email, :company_id
 
   validates :mentor, presence: true, if: :mentor_id?
-  #FIXED
-  #FIXME -> Write rspec of this validation.
   validates :company, presence: true, unless: :super_admin?
   validates :name, presence: true
   validates :password, presence: true, on: :create
@@ -56,12 +52,6 @@ class User < ActiveRecord::Base
 
   def tracks_with_role_runner_ids=(track_list)
     track_list.map!(&:to_i)
-    # comparison not required now.
-    # FIXME : Where is comparison moved ?
-    # FIXED
-    # NOT FIXED
-    # FIXED
-    # FIXME : This comparison is not correct, arrays should not compared like this
     remove_track_object_ids = tracks_with_role_runner_ids - track_list
     add_track_object_ids = track_list - tracks_with_role_runner_ids
     # TIP : Can use unless here.
@@ -69,10 +59,7 @@ class User < ActiveRecord::Base
     add_role_track_runner(add_track_object_ids) unless add_track_object_ids.blank?
   end
 
-  # FIXME : use user scope here and change accordingly
   def mentor_name
-    #CHANGED
-    #TIP : we can use mentor.try(:name) and can eliminate if mentor
     mentor.try(:name)
   end
 
