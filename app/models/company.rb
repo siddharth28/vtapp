@@ -18,9 +18,6 @@ class Company < ActiveRecord::Base
   scope :load_with_owners, -> { includes(:owner) }
   scope :enabled, -> { where(enabled: true) }
 
-  # FIXME : Is #status related to model or view ?
-  # FIXED was using it in the view
-
   private
     def build_owner
       @owner = users.build(name: owner_name, email: owner_email)
