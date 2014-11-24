@@ -6,14 +6,14 @@ class User < ActiveRecord::Base
 
   devise :database_authenticatable, :registerable, :async, :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :mentees, class_name: User, foreign_key: :mentor_id, dependent: :restrict_with_error
+  has_many :mentees, class_name: 'User', foreign_key: :mentor_id, dependent: :restrict_with_error
   has_many :tracks, -> { uniq }, through: :roles, source: :resource, source_type: 'Track'
   has_many :usertasks, dependent: :destroy
   has_many :tasks, through: :usertasks
   has_many :tracks_with_role_runner, -> { where(roles: { name: Track::ROLES[:track_runner] }) }, through: :roles, source: :resource, source_type: 'Track'
 
   belongs_to :company
-  belongs_to :mentor, class_name: User
+  belongs_to :mentor, class_name: 'User'
 
   #FIXED
   #FIXME -> Write rspec of this line.
@@ -139,12 +139,10 @@ class User < ActiveRecord::Base
 
     def assign_usertasks(role)
       if role.name == Track::ROLES[:track_runner]
-        tasks = role.resource.tasks.visible_tasks.includes(:actable)
-        tasks.each { |task| usertasks.build(task: task) unless usertasks_exists?(task.id) }
+        already_assigned_tasks = usertasks.pluck(:task_id)
+        tasks = role.resource.tasks.visible_tasks.where.not(id: already_assigned_tasks).includes(:actable)
+        tasks.each { |task| usertasks.build(task: task) }
       end 
     end
 
-    def usertasks_exists?(task_id)
-      usertasks.any? { |usertask| usertask.task_id.eql?(task_id) }
-    end
 end

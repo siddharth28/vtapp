@@ -17,6 +17,11 @@ class UsertasksController < ResourceController
     end
   end
 
+  def assign_to_me
+    @usertask.update_attributes(reviewer: current_user)
+    redirect_to assigned_to_others_for_review_track_tasks_path(@usertask.task.track)
+  end
+
   private
     def usertask_params
       params.require(:usertask).permit(:user_id, :task_id, :url, :comment)

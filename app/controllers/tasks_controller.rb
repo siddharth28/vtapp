@@ -87,11 +87,19 @@ class TasksController < ResourceController
   end
 
   def assign_runner
-    @task.usertasks.create(user_id: params[:runner_id]) unless @task.usertasks.exists?(user_id: params[:runner_id])
+    Usertask.find_or_create_by(user_id: params[:runner_id], task: @task)
   end
 
   def remove_runner
     @task.usertasks.find_by(user: params[:runner_id]).destroy
+  end
+
+  def to_review
+    @tasks = @track.tasks.includes(usertasks: :user, usertasks: :reviewer).where(usertasks: { reviewer_id: current_user.id, aasm_state: 'submitted' })
+  end
+
+  def assigned_to_others_for_review
+    @tasks = @track.tasks.includes(usertasks: :user).where.not(usertasks: { reviewer_id: current_user.id }).where(usertasks: { aasm_state: 'submitted'})
   end
 
 
