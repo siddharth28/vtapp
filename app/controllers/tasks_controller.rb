@@ -84,7 +84,7 @@ class TasksController < ResourceController
   end
 
   def assign_runner
-    Usertask.find_or_create_by(user_id: params[:runner_id], task: @task)
+    @task.usertasks.find_or_create_by(user_id: params[:runner_id])
   end
 
   def remove_runner

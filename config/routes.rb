@@ -23,8 +23,13 @@ Rails.application.routes.draw do
       resources :usertasks, only: [:show] do
         member do
           get :start
-          patch :submit
+          get :restart
+          post :submit_comment
+          post :submit_url
+          post :resubmit
           put :assign_to_me
+          get :review
+          patch :review_task
         end
       end
 

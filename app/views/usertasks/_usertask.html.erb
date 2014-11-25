@@ -1,0 +1,21 @@
+<div class="form-group">
+  <label class='col-sm-3'><strong>Task Title:</strong></label>
+  <div class="col-sm-8 readonly">
+    <%= @usertask.task.title %>
+  </div>
+</div>
+
+<% unless current_task.description.blank? %>
+  <div class="form-group">
+    <label class='col-sm-3'><strong>Task Description:</strong></label>
+    <div class="col-sm-8 readonly">
+      <%= @usertask.task.description %>
+    </div>
+  </div>
+<% end %>
+<div class="form-group">
+  <label class='col-sm-3'><strong>Task Status:</strong></label>
+  <div class="col-sm-8 readonly">
+    <%= Task::STATE[@usertask.aasm_state.to_sym] %>
+  </div>
+</div>

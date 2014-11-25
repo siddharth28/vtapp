@@ -41,7 +41,7 @@ describe UsertasksController do
 
     describe 'response' do
       before { send_request }
-      it { expect(response).to render_template(:show), id: usertask }
+      it { expect(response).to render_template(:show) }
       it { expect(response).to have_http_status(200) }
     end
   end

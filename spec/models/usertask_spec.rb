@@ -55,7 +55,7 @@ describe Usertask do
           exercise_usertask.start!
           exercise_usertask.submit!
         end
-        it { expect { exercise_usertask.reject! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("in_progress") }
+        it { expect { exercise_usertask.reject! }.to change{ exercise_usertask.aasm_state }.from("submitted").to("restart") }
       end
     end
 

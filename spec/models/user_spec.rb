@@ -311,23 +311,6 @@ describe User do
           it { expect(user.usertasks.exists?(task: track.tasks.sample)).to eql(false) }
         end
       end
-
-      describe '#usertask_exists?' do
-
-        describe 'usertask does not exists' do
-          it { expect(user.send(:usertasks_exists?, task.id)).to eql(false) }
-        end
-
-        describe 'usertask exists' do
-          before do
-            task
-            user.add_role(:track_runner, track)
-            user.save
-          end
-
-          it { expect(user.send(:usertasks_exists?, task.id)).to eql(true) }
-        end
-      end
     end
   end
 end

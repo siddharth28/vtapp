@@ -3,7 +3,7 @@ class Task < ActiveRecord::Base
   acts_as_nested_set
   include TheSortableTree::Scopes
 
-  STATE = { not_started: 'Start', in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed'}
+  STATE = { not_started: 'Start', in_progress: 'Started', submitted: 'Pending for review', completed: 'Completed', restart: 'rejected kindly restart', resubmitted: 'Resubmitted for review'}
 
   belongs_to :track
   has_many :usertasks, dependent: :destroy

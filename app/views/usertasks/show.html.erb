@@ -1,50 +1,26 @@
 <div class='task_description'>
-  <%= link_to 'Back', track_tasks_path(@usertask.task.track), class: 'btn btn-default pull-right m-right-2x' %>
+  <%= link_to 'Back', :back, class: 'btn btn-default pull-right m-right-2x' %>
   <h1 class='m-left-375x'>Task</h1>
   <div class='m-left-375x form-horizontal form-well col-sm-6' >
-    <div class="form-group">
-      <label class='col-sm-3'><strong>Task Title:</strong></label>
-      <div class="col-sm-8 readonly">
-        <%= @usertask.task.title %>
-      </div>
-    </div>
+    <%= render 'usertask' %>
 
-    <% unless @usertask.task.description.blank? %>
-      <div class="form-group">
-        <label class='col-sm-3'><strong>Task Description:</strong></label>
-        <div class="col-sm-8 readonly">
-          <%= @usertask.task.description %>
-        </div>
-      </div>
-    <% end %>
-
-
-    <% if @usertask.task.specific %>
-      <% unless @usertask.urls.blank? %>
+    <% if current_task.need_review? %>
+      <% if @usertask.user == current_user && (@usertask.in_progress? || @usertask.submitted?) %>
+        <%= render 'url_form' %>
+      <% end %>
+      <% unless @usertask.urls.persisted.blank? %>
         <div class="form-group">
           <label class='col-sm-3'><strong>Solutions Submitted:</strong></label>
           <div class="col-sm-8 readonly">
-            <% @usertask.urls.each do |url| %>
-              <%= link_to url.name %><br>
+            <% @usertask.urls.persisted.order(updated_at: :desc).each do |url| %>
+              <%= link_to url.name, url.name %><br>
             <% end %>
           </div>
         </div>
       <% end %>
     <% end %>
 
-    <%= render 'form' %>
-
-    <% if @usertask.task.specific %>
-      <% unless @usertask.comments.blank? %>
-        <div class="form-group m-top">
-          <label class='col-sm-3'><strong>Comments:</strong></label>
-          <div class="col-sm-8">
-            <% @usertask.comments.each do |comment| %>
-              <p class="alert-info"><%= "#{ comment.data } (#{ comment.created_at.strftime '%H:%M %d/%m' })" %></p><br>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
+    <%= render 'comment_form' %>
+    <%= render 'comments' %>
   </div>
 </div>

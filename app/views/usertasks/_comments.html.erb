@@ -1,0 +1,10 @@
+<% unless @usertask.comments.blank? %>
+  <div class="form-group m-top">
+    <label class='col-sm-3'><strong>Comments:</strong></label>
+    <div class="col-sm-8">
+      <% @usertask.comments.persisted.order(created_at: :desc).includes(:commenter).each do |comment| %>
+        <p class="alert-info"><%== "#{ comment.data } (#{ comment.created_at.strftime '%H:%M %d/%m' })<br>Commented by: #{ comment.commenter.name }" %></p><br>
+      <% end %>
+    </div>
+  </div>
+<% end %>

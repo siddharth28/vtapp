@@ -17,6 +17,7 @@ class Usertask < ActiveRecord::Base
 
   aasm do
     state :not_started, initial: true
+    state :restart
     state :in_progress
     state :submitted
     state :completed
@@ -35,37 +36,22 @@ class Usertask < ActiveRecord::Base
     end
 
     event :reject do
-      transitions from: :submitted, to: :in_progress
+      transitions from: :submitted, to: :restart
+    end
+
+    event :restart do
+      transitions from: :restart, to: :in_progress
     end
   end
 
-  def submit_task(args)
-    if task.need_review?
-      arguments_present?(args) ? submit_data(args) : add_error_message
-    else
-      submit!
+  [:not_started, :in_progress, :submitted, :completed, :restart].each do |state|
+    define_method "#{ state }?" do
+      aasm_state == state.to_s
     end
   end
+
 
   private
-    def submit_comment(comment)
-      comments.create(data: comment, commenter: user)
-    end
-
-    def submit_url(solution)
-      urls.find_or_create_by(name: solution)
-    end
-
-    def submit_data(args)
-      if args[:url].present?
-        submit_url(args[:url])
-        submit! if (aasm_state != 'submitted')
-      end
-      if args[:comment].present?
-        submit_comment(args[:comment])
-      end
-    end
-
     def add_start_time
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
@@ -88,10 +74,6 @@ class Usertask < ActiveRecord::Base
       # FIXME : Not a right way to add errors
       errors[:base] << 'Either url or comment needs to be present for submission'
       false
-    end
-
-    def arguments_present?(args)
-      args[:url].present? || args[:comment].present?
     end
 
     def assign_reviewer

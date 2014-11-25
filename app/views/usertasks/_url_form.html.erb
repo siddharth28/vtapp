@@ -1,0 +1,13 @@
+<%= form_for(@url, url: url_for(controller: :usertasks, action: 'submit_url', id: @usertask)) do |url| %>
+  <div class="form-group">
+    <%= url.label :solution, class: 'col-sm-3' %>
+    <div class="col-sm-8">
+      <%= url.url_field :name, class: 'url_field form-control' %>
+      <%= errors_for_field(@url, :name) %>
+    </div>
+  </div>
+
+  <div class="col-sm-3"></div>
+  <%= url.submit 'Submit', class: 'btn btn-default' %>
+  <%= link_to 'Resubmit last URL', resubmit_usertask_path(@usertask), method: :post, class: 'btn btn-default' %>
+<% end %>

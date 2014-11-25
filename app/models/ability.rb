@@ -60,9 +60,10 @@ class Ability
       can :read, Track do |track|
         user.is_track_reviewer_of?(track)
       end
-      can :manage, Usertask do
+      can :manage, Usertask do |user_task|
         user_task.reviewer_id == user.id
       end
+      can :assign_to_me, Usertask
     end
 
     def track_runner_abilities(user)
@@ -72,8 +73,8 @@ class Ability
       can :start, Usertask do |user_task|
         user_task.user_id == user.id
       end
-      can [:read, :submit], Usertask do |user_task|
-        user_task.user_id == user.id && user_task.aasm_state != 'not_started'
+      can [:read, :submit_url, :submit_comment, :resubmit, :restart], Usertask do |user_task|
+        user_task.user_id == user.id && !user_task.not_started?
       end
     end
 

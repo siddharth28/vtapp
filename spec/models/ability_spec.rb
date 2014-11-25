@@ -109,10 +109,24 @@ describe Ability do
       before { user.add_role(:track_runner, track) }
 
       it { expect(ability).to be_able_to(:read, track) }
-      it { expect(ability).to be_able_to(:manage, usertask) }
+      it { expect(ability).to be_able_to(:start, usertask) }
+      it { expect(ability).not_to be_able_to(:read, usertask) }
+      it { expect(ability).not_to be_able_to(:submit, usertask) }
 
       it { expect(ability).not_to be_able_to(:read, track2) }
       it { expect(ability).not_to be_able_to(:manage, usertask2) }
+
+      context 'started task' do
+        before do
+          usertask.start!
+          usertask2.start!
+        end
+
+        it { expect(ability).to be_able_to(:read, usertask) }
+        it { expect(ability).to be_able_to(:submit, usertask) }
+        it { expect(ability).not_to be_able_to(:read, usertask2) }
+        it { expect(ability).not_to be_able_to(:submit, usertask2) }
+      end
     end
   end
 end

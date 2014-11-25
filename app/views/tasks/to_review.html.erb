@@ -23,7 +23,7 @@
               <td><%= task.title %></td>
               <td><%= "#{ usertask.user.name }: #{ usertask.user.email }" %></td>
               <td>
-                <%= link_to 'Show', usertask %>
+                <%= link_to 'Show', review_usertask_path(usertask) %>
               </td>
             </tr>
             <% end %>
