@@ -1,8 +1,6 @@
 class UsertasksController < ResourceController
 
   def start
-    # FIXED
-    # FIXME : Use build instead of create
     @usertask.start!
     render :show
   end

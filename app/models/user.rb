@@ -38,10 +38,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Not Fixed
-  #FIXED
-  #FIXME : method name not correct
-
   def active_for_authentication?
     if super_admin?
       super
@@ -54,7 +50,6 @@ class User < ActiveRecord::Base
     track_list.map!(&:to_i)
     remove_track_object_ids = tracks_with_role_runner_ids - track_list
     add_track_object_ids = track_list - tracks_with_role_runner_ids
-    # TIP : Can use unless here.
     remove_role_track_runner(remove_track_object_ids) unless remove_track_object_ids.blank?
     add_role_track_runner(add_track_object_ids) unless add_track_object_ids.blank?
   end
@@ -62,8 +57,6 @@ class User < ActiveRecord::Base
   def mentor_name
     mentor.try(:name)
   end
-
-  #FIXME : create reader for this
 
   def add_role_account_admin
     add_role(ROLES[:account_admin], company)

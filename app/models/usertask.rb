@@ -67,16 +67,10 @@ class Usertask < ActiveRecord::Base
     end
 
     def add_start_time
-      # FIXED
-      # FIXME : Do not use Time.now, start using Time.current
-      # self.start_time = Time.current
       update_attributes(start_time: Time.current)
     end
 
     def add_end_time
-      # Not fixed
-      # FIXED
-      # FIXME : Do not use Time.now, start using Time.current
       update_attributes(end_time: Time.current)
     end
 
@@ -85,7 +79,6 @@ class Usertask < ActiveRecord::Base
     end
 
     def add_error_message
-      # FIXME : Not a right way to add errors
       errors[:base] << 'Either url or comment needs to be present for submission'
       false
     end
