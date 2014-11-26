@@ -77,8 +77,11 @@ class Ability
       can :start, Usertask do |user_task|
         user_task.user_id == user.id
       end
-      can [:read, :submit_url, :submit_comment, :resubmit, :restart], Usertask do |user_task|
+      can [:read, :submit_url, :resubmit, :restart], Usertask do |user_task|
         user_task.user_id == user.id && !user_task.not_started?
+      end
+      can :submit_comment, Usertask do |user_task|
+        user_task.user_id == user.id
       end
     end
 

@@ -31,11 +31,11 @@ class Usertask < ActiveRecord::Base
       transitions from: :in_progress, to: :completed
     end
 
-    event :accept do
+    event :accept, after: :send_notification_email do
       transitions from: :submitted, to: :completed
     end
 
-    event :reject do
+    event :reject, after: :send_notification_email do
       transitions from: :submitted, to: :restart
     end
 
@@ -78,5 +78,9 @@ class Usertask < ActiveRecord::Base
 
     def assign_reviewer
       self.reviewer = task.reviewer
+    end
+
+    def send_notification_email
+      UserMailer.delay.exercise_review_email(self)
     end
 end

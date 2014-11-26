@@ -123,9 +123,10 @@ describe Ability do
         end
 
         it { expect(ability).to be_able_to(:read, usertask) }
-        it { expect(ability).to be_able_to(:submit, usertask) }
+        it { expect(ability).to be_able_to(:submit_url, usertask) }
+        it { expect(ability).to be_able_to(:submit_comment, usertask) }
         it { expect(ability).not_to be_able_to(:read, usertask2) }
-        it { expect(ability).not_to be_able_to(:submit, usertask2) }
+        it { expect(ability).not_to be_able_to(:submit_url, usertask2) }
       end
     end
   end
