@@ -32,6 +32,7 @@ class Ability
         can :manage, User, company: user.company
         can :manage, Track, company: user.company
         can :manage, Task
+        can :manage, Usertask
       end
     end
 
@@ -44,6 +45,7 @@ class Ability
         end
         can :manage, Track, company: user.company
         can :manage, Task
+        can :manage, Usertask
       end
     end
 
@@ -63,7 +65,9 @@ class Ability
       can :manage, Usertask do |user_task|
         user_task.reviewer_id == user.id
       end
-      can :assign_to_me, Usertask
+      can :assign_to_me, Usertask do |user_task|
+        user_task.task.track.reviewers.include?(user)
+      end
     end
 
     def track_runner_abilities(user)

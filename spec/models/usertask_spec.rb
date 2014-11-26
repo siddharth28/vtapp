@@ -79,44 +79,6 @@ describe Usertask do
 
   describe '#instance_methods' do
 
-    describe '#submit_task' do
-      context 'normal theory task' do
-        before { usertask.start! }
-        it { expect{ usertask.submit_task({}) }.to change{ user.usertasks.find(usertask.id).aasm_state }.from("in_progress").to("completed") }
-      end
-
-      context 'exercise' do
-        before do
-          exercise_usertask.start!
-          exercise_usertask.submit_task({ url: 'http://abc.com', comment: 'Comment' })
-        end
-        it { expect(user.usertasks.find(exercise_usertask.id).aasm_state).to eql("submitted") }
-        it { expect(exercise_usertask.comments.pluck(:data).include?(Task::STATE[:submitted])).to eql(true) }
-        it { expect(exercise_usertask.comments.pluck(:data).include?('Comment')).to eql(true)}
-        it { expect(exercise_usertask.urls.pluck(:name).include?('http://abc.com')).to eql(true) }
-
-        context 'resubmit' do
-          before { exercise_usertask.submit_task({ url: 'http://resubmit.com', comment: 'Comment2' }) }
-          it { expect(exercise_usertask.comments.pluck(:data).include?(Task::STATE[:submitted])).to eql(true) }
-          it { expect(exercise_usertask.urls.pluck(:name).include?('http://resubmit.com')).to eql(true) }
-          it { expect(exercise_usertask.comments.pluck(:data).include?('Comment2')).to eql(true) }
-        end
-      end
-
-      context '#submit_data' do
-        before { exercise_usertask.start! }
-
-        context 'blank' do
-          it { expect{ exercise_usertask.submit_task({ url: '', comment: 'Comment' }) }.to change{ exercise_usertask.comments.count }.by(1) }
-          it { expect{ exercise_usertask.submit_task({ url: 'http://abc.com', comment: '' }) }.to change{ exercise_usertask.urls.count }.by(1) }
-        end
-
-        context 'both present' do
-          it { expect{ exercise_usertask.submit_task({ url: 'http://abcd.com', comment: 'Comment2' }) }.to change{ exercise_usertask.comments.count }.by(2) }
-        end
-      end
-    end
-
     describe '#check_exercise?' do
       context 'normal theory exercise' do
         it { expect(usertask.send(:check_exercise?)).to eql(false) }

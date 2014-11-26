@@ -20,7 +20,7 @@ class UsertasksController < ResourceController
     if @url.save
       @url.touch
       @usertask.submit! unless @usertask.submitted?
-      redirect_to @usertask
+      redirect_to @usertask, notice: "Task #{ @usertask.task.title } is successfully submitted"
     else
       build_comment
       render :show
@@ -30,7 +30,7 @@ class UsertasksController < ResourceController
   def submit_comment
     @comment = @usertask.comments.build(commenter: current_user, data: params[:comment][:data])
     if @comment.save
-      redirect_to @usertask
+      redirect_to @usertask, notice: "Comment added"
     else
       build_url
       render :show
@@ -45,8 +45,7 @@ class UsertasksController < ResourceController
 
   def assign_to_me
     if @usertask.user == current_user
-      flash[:alert] = "Cannot change the reviewer of your own task"
-      redirect_to assigned_to_others_for_review_track_tasks_path(current_track)
+      redirect_to assigned_to_others_for_review_track_tasks_path(current_track), alert: "Cannot change the reviewer of your own task"
     else
       @usertask.update_attributes(reviewer: current_user)
       redirect_to assigned_to_others_for_review_track_tasks_path(current_track)
@@ -54,12 +53,14 @@ class UsertasksController < ResourceController
   end
 
   def review_task
-    if params[:task_status] == 'accept'
-      @usertask.accept!
-      @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is accepted', commenter: current_user)
-    elsif params[:task_status] == 'reject'
-      @usertask.reject!
-      @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is rejected', commenter: current_user)
+    if @usertask.submitted?
+      if params[:task_status] == 'accept'
+        @usertask.accept!
+        @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is accepted', commenter: current_user)
+      elsif params[:task_status] == 'reject'
+        @usertask.reject!
+        @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is rejected', commenter: current_user)
+      end
     end
     redirect_to @usertask
   end

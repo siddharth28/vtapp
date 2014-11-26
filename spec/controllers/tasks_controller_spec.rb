@@ -467,12 +467,14 @@ describe TasksController do
 
     before do
       allow(Task).to receive(:find).and_return(task)
-      allow(Usertask).to receive(:find_or_create_by).and_return(usertask)
+      allow(task).to receive(:usertasks).and_return(usertasks)
+      allow(usertasks).to receive(:find_or_create_by).and_return(usertask)
     end
 
     describe 'expects to receive' do
 
-      it { expect(Usertask).to receive(:find_or_create_by).and_return(usertask) }
+      it { expect(task).to receive(:usertasks).and_return(usertasks) }
+      it { expect(usertasks).to receive(:find_or_create_by).and_return(usertask) }
 
       after { send_request }
 

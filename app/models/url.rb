@@ -1,8 +1,7 @@
 class Url < ActiveRecord::Base
   belongs_to :usertask
 
-  after_create :add_submission_comment
-  after_touch :add_resubmission_comment
+  after_touch :add_submission_comment
 
   validates :usertask, presence: true
   validates :name, uniqueness: { scope: [:usertask_id], case_sensitive: false }, presence: true
@@ -12,12 +11,15 @@ class Url < ActiveRecord::Base
 
   private
     def add_submission_comment
-      comments = usertask.comments
-      comment = comments.blank? ? comments.create(data: Task::STATE[:submitted], commenter: usertask.user) : add_resubmission_comment
+      usertask.urls.persisted.blank? ? add_first_submission_comment : add_resubmission_comment
+    end
+
+    def add_first_submission_comment
+      usertask.comments.create(data: Task::STATE[:submitted], commenter: usertask.user)
     end
 
     def add_resubmission_comment
-      comments.create(data: Task::STATE[:resubmitted], commenter: usertask.user)
+      usertask.comments.create(data: Task::STATE[:resubmitted], commenter: usertask.user)
     end
 
 end
