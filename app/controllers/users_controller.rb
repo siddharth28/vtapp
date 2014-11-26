@@ -31,6 +31,11 @@ class UsersController < ResourceController
     end
   end
 
+  def mentees
+    @search = @user.mentees.includes(:roles, :company).search(params[:q] || { s: "name {name:'asc'}" })
+    @mentees = @search.result.page(params[:page]).per(20)
+  end
+
   private
     def user_params
       params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])

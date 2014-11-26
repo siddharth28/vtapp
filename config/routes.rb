@@ -18,6 +18,9 @@ Rails.application.routes.draw do
           get :autocomplete_user_name
           get :autocomplete_user_department
         end
+        member do
+          get :mentees
+        end
       end
 
       resources :usertasks, only: [:show] do
