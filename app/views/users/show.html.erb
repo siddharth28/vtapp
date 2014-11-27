@@ -60,4 +60,34 @@
     <p><%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default m-left-5x m-top' %></p>
   <% end %>
 
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Tracks Assigned:</strong></label>
+    <div class="col-md-9 readonly">
+      <p>
+        <% @user.tracks_with_role_runner.each do |track|%>
+          <%= link_to track.name, track %>
+        <% end %>
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Tracks Reviewer of:</strong></label>
+    <div class="col-md-9 readonly">
+      <p>
+        <% current_company.tracks.with_role(:track_reviewer, @user).each do |track|%>
+          <%= link_to track.name, track %>
+        <% end %>
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class='control-label col-md-3 m-top m-down-x'><strong>Tracks Owner of:</strong></label>
+    <div class="col-md-9 readonly">
+      <p>
+        <% current_company.tracks.with_role(:track_owner, @user).each do |track|%>
+          <%= link_to track.name, track %>
+        <% end %>
+      </p>
+    </div>
+  </div>
 </div>

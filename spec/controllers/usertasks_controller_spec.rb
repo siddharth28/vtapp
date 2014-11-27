@@ -27,6 +27,7 @@ describe UsertasksController do
 
   describe '#start' do
     before do
+      allow(usertask).to receive(:not_started?).and_return(true)
       allow(usertask).to receive(:start!)
     end
 
@@ -54,6 +55,7 @@ describe UsertasksController do
   describe '#restart' do
 
     before do
+      allow(usertask).to receive(:restart?).and_return(true)
       allow(usertask).to receive(:restart!)
     end
 
@@ -62,6 +64,7 @@ describe UsertasksController do
     end
 
     describe 'expects to receive' do
+      it { expect(usertask).to receive(:restart?).and_return(true) }
       it { expect(usertask).to receive(:restart!) }
 
       after { send_request }
@@ -80,7 +83,7 @@ describe UsertasksController do
     before do
       allow(Usertask).to receive(:find).and_return(usertask)
       allow(usertask).to receive(:urls).and_return(urls)
-      allow(urls).to receive(:find_or_create_by).with({name: 'http://Example.com'}).and_return(url)
+      allow(urls).to receive(:find_or_initialize_by).with({name: 'http://Example.com'}).and_return(url)
     end
 
     def send_request
@@ -90,22 +93,22 @@ describe UsertasksController do
     context 'url submitted successfully' do
       before do
         allow(url).to receive(:save).and_return(true)
-        allow(url).to receive(:touch)
+        allow(url).to receive(:add_submission_comment)
         allow(usertask).to receive(:task).and_return(task)
       end
 
       context 'task status submitted' do
         before do
-          allow(usertask).to receive(:submitted?).and_return(true)
+          allow(usertask).to receive(:in_progress?).and_return(false)
           allow(usertask).to receive(:submit!)
         end
 
         describe 'expects to send' do
           it { expect(usertask).to receive(:urls).and_return(urls) }
-          it { expect(urls).to receive(:find_or_create_by).with({ name: 'http://Example.com' }).and_return(url) }
+          it { expect(urls).to receive(:find_or_initialize_by).with({ name: 'http://Example.com' }).and_return(url) }
           it { expect(url).to receive(:save).and_return(true) }
-          it { expect(url).to receive(:touch) }
-          it { expect(usertask).to receive(:submitted?).and_return(true) }
+          it { expect(url).to receive(:add_submission_comment) }
+          it { expect(usertask).to receive(:in_progress?).and_return(false) }
           it { expect(usertask).not_to receive(:submit!) }
 
           after { send_request }
@@ -128,16 +131,16 @@ describe UsertasksController do
 
       context 'task status in_progress' do
         before do
-          allow(usertask).to receive(:submitted?).and_return(false)
+          allow(usertask).to receive(:in_progress?).and_return(true)
           allow(usertask).to receive(:submit!)
         end
 
         describe 'expects to send' do
           it { expect(usertask).to receive(:urls).and_return(urls) }
-          it { expect(urls).to receive(:find_or_create_by).with({ name: 'http://Example.com' }).and_return(url) }
+          it { expect(urls).to receive(:find_or_initialize_by).with({ name: 'http://Example.com' }).and_return(url) }
           it { expect(url).to receive(:save).and_return(true) }
-          it { expect(url).to receive(:touch) }
-          it { expect(usertask).to receive(:submitted?).and_return(false) }
+          it { expect(url).to receive(:add_submission_comment) }
+          it { expect(usertask).to receive(:in_progress?).and_return(true) }
           it { expect(usertask).to receive(:submit!) }
 
           after { send_request }
@@ -237,8 +240,10 @@ describe UsertasksController do
   describe '#resubmit' do
     before do
       allow(usertask).to receive(:submit!)
-      allow(usertask).to receive(:comments).and_return(comments)
-      allow(comments).to receive(:create).and_return(comment).with({commenter: user, data: Task::STATE[:resubmitted]})
+      allow(usertask).to receive(:urls).and_return(urls)
+      allow(urls).to receive(:order).and_return(urls)
+      allow(urls).to receive(:first).and_return(url)
+      allow(url).to receive(:add_submission_comment)
     end
 
     def send_request
@@ -247,13 +252,15 @@ describe UsertasksController do
 
     context 'usertask state in_progress' do
 
-      before { allow(usertask).to receive(:submitted?).and_return(false) }
+      before { allow(usertask).to receive(:in_progress?).and_return(true) }
 
       describe 'expects to receive' do
-        it { expect(usertask).to receive(:submitted?).and_return(false) }
+        it { expect(usertask).to receive(:in_progress?).and_return(true) }
         it { expect(usertask).to receive(:submit!) }
-        it { expect(usertask).to receive(:comments).and_return(comments) }
-        it { expect(comments).to receive(:create).and_return(comment).with({commenter: user, data: Task::STATE[:resubmitted]}) }
+        it { expect(usertask).to receive(:urls).and_return(urls) }
+        it { expect(urls).to receive(:order).and_return(urls) }
+        it { expect(urls).to receive(:first).and_return(url) }
+        it { expect(url).to receive(:add_submission_comment) }
 
         after { send_request }
 
@@ -335,7 +342,7 @@ describe UsertasksController do
 
     context 'task accepted' do
 
-      before { allow(usertask).to receive(:accept!) }
+      before { allow(usertask).to receive(:accept!).and_return(true) }
 
       def send_request
         patch :review_task, id: usertask.id, usertask: { comment: 'comment' }, task_status: 'accept'
@@ -360,7 +367,7 @@ describe UsertasksController do
 
     context 'task rejected' do
 
-      before { allow(usertask).to receive(:reject!) }
+      before { allow(usertask).to receive(:reject!).and_return(true) }
 
       def send_request
         patch :review_task, id: usertask.id, usertask: { comment: 'comment' }, task_status: 'reject'

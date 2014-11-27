@@ -1,0 +1,6 @@
+<%= render partial: 'tracks/side_navigation' %>
+<div class="col-md-10 bg-fff h500">
+  <ul>
+    <%= sortable_tree(@tasks, namespace: @track) %>
+  </ul>
+</div>

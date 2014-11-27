@@ -41,7 +41,7 @@ module RenderTreeHelper
         ns = options[:namespace]
         title_field = node.send(options[:title])
         usertask = options[:node].usertasks.first
-        unless usertask.not_started? || usertask.restart?
+        unless usertask.not_started? || usertask.restart? || options[:children].present?
           url = h.url_for(usertask)
           title_field = h.link_to(title_field, url, method: :get)
         end
@@ -49,16 +49,18 @@ module RenderTreeHelper
       end
 
       def controls
-        link_text = "Start #{ options[:node].need_review? ? 'Exercise' : 'Task' } "
         usertask = options[:node].usertasks.first
-        if usertask.not_started?
-          url = h.url_for(controller: :usertasks, action: :start, id: usertask)
-          link_text = h.link_to(link_text, url, method: :get)
-        else
-          link_text = Task::STATE[usertask.aasm_state.to_sym]
-          if usertask.restart?
-            url = h.url_for(controller: :usertasks, action: :restart, id: usertask)
+        if options[:children].blank?
+          if usertask.not_started?
+            link_text = "Start #{ options[:node].need_review? ? 'Exercise' : 'Task' } "
+            url = h.url_for(controller: :usertasks, action: :start, id: usertask)
             link_text = h.link_to(link_text, url, method: :get)
+          else
+            link_text = Task::STATE[usertask.aasm_state.to_sym]
+            if usertask.restart?
+              url = h.url_for(controller: :usertasks, action: :restart, id: usertask)
+              link_text = h.link_to(link_text, url, method: :get)
+            end
           end
         end
         "

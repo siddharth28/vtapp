@@ -1,5 +1,5 @@
 <div class='task_description'>
-  <%= link_to 'Back', :back, class: 'btn btn-default pull-right m-right-2x' %>
+  <%= link_to 'Back', track_tasks_path(current_track), class: 'btn btn-default pull-right m-right-2x' %>
   <h1 class='m-left-375x'>Task</h1>
   <div class='m-left-375x form-horizontal form-well col-sm-6' >
     <%= render 'usertask' %>
@@ -21,6 +21,7 @@
     <% end %>
 
     <%= render 'comment_form' %>
+    <%= link_to 'Submit task', submit_task_usertask_path, class: 'btn btn-default pull-right m-right-2x' %>
     <%= render 'comments' %>
   </div>
 </div>

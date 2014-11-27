@@ -8,7 +8,7 @@ class UsersController < ResourceController
   skip_load_resource only: [:create]
 
   def index
-    @search = current_company.users.includes(:roles, :company).search(params[:q] || { s: "name {name:'asc'}" })
+    @search = current_company.users.includes(:roles, :company).search(params[:q] || { s: "name asc" })
     @users = @search.result.page(params[:page]).per(20)
   end
 
@@ -32,7 +32,7 @@ class UsersController < ResourceController
   end
 
   def mentees
-    @search = @user.mentees.includes(:roles, :company).search(params[:q] || { s: "name {name:'asc'}" })
+    @search = @user.mentees.includes(:roles, :company).search(params[:q] || { s: "name asc" })
     @mentees = @search.result.page(params[:page]).per(20)
   end
 

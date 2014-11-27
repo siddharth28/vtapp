@@ -7,6 +7,7 @@ class ExerciseTask < ActiveRecord::Base
 
   validates_attachment :sample_solution, content_type: { content_type: "application/zip" }
   validates :reviewer, presence: true
+  validates :children, absence: { message: 'Cannot have children' }, on: :update
 
   strip_fields :instructions
 

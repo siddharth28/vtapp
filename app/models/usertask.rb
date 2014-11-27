@@ -13,7 +13,7 @@ class Usertask < ActiveRecord::Base
 
 
   before_create :assign_reviewer, if: -> { task.need_review? }
-  attr_accessor :url, :comment
+  attr_accessor :comment
 
   aasm do
     state :not_started, initial: true
@@ -22,11 +22,11 @@ class Usertask < ActiveRecord::Base
     state :submitted
     state :completed
 
-    event :start, after: :add_start_time do
+    event :start, after: [:add_start_time, :mark_parent_task_started] do
       transitions from: :not_started, to: :in_progress
     end
 
-    event :submit, after: :add_end_time do
+    event :submit, after: [:add_end_time, :mark_parent_task_finished] do
       transitions from: :in_progress, to: :submitted, guard: :check_exercise?
       transitions from: :in_progress, to: :completed
     end
@@ -55,25 +55,18 @@ class Usertask < ActiveRecord::Base
     def add_start_time
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
-      # self.start_time = Time.current
-      update_attributes(start_time: Time.current)
+      update_column(:start_time, Time.current)
     end
 
     def add_end_time
       # Not fixed
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
-      update_attributes(end_time: Time.current)
+      update_column(:end_time, Time.current)
     end
 
     def check_exercise?
       task.need_review?
-    end
-
-    def add_error_message
-      # FIXME : Not a right way to add errors
-      errors[:base] << 'Either url or comment needs to be present for submission'
-      false
     end
 
     def assign_reviewer
@@ -82,5 +75,24 @@ class Usertask < ActiveRecord::Base
 
     def send_notification_email
       UserMailer.delay.exercise_review_email(self)
+    end
+
+    def mark_parent_task_finished
+      if parent_task
+        children_submitted = parent_task.children.all? { |task| task.usertasks.find_by(user: user).completed? }
+        parent_usertask.try(:submit!) if children_submitted && parent_usertask.in_progress?
+      end
+    end
+
+    def mark_parent_task_started
+      parent_task && parent_usertask.not_started? && parent_usertask.try(:start!)
+    end
+
+    def parent_task
+      task.parent
+    end
+
+    def parent_usertask
+      parent_task.usertasks.find_by(user: user)
     end
 end

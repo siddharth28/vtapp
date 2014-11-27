@@ -6,20 +6,20 @@ class UsertasksController < ResourceController
   def start
     # FIXED
     # FIXME : Use build instead of create
-    @usertask.start!
+    @usertask.not_started? && @usertask.start!
     redirect_to @usertask
   end
 
   def restart
-    @usertask.restart!
+    @usertask.restart? && @usertask.restart!
     redirect_to @usertask
   end
 
   def submit_url
-    @url = @usertask.urls.find_or_create_by(name: params[:url][:name])
+    @url = @usertask.urls.find_or_initialize_by(name: params[:url][:name])
     if @url.save
-      @url.touch
-      @usertask.submit! unless @usertask.submitted?
+      submit_task_if_in_progress
+      @url.add_submission_comment
       redirect_to @usertask, notice: "Task #{ @usertask.task.title } is successfully submitted"
     else
       build_comment
@@ -37,9 +37,14 @@ class UsertasksController < ResourceController
     end
   end
 
+  def submit_task
+    submit_task_if_in_progress
+    redirect_to @usertask, notice: "Task submitted successfully"
+  end
+
   def resubmit
-    @usertask.submit! unless @usertask.submitted?
-    @usertask.comments.create(commenter: current_user, data: Task::STATE[:resubmitted])
+    submit_task_if_in_progress
+    @usertask.urls.order(submitted_at: :desc).first.add_submission_comment
     redirect_to @usertask
   end
 
@@ -54,15 +59,16 @@ class UsertasksController < ResourceController
 
   def review_task
     if @usertask.submitted?
-      if params[:task_status] == 'accept'
-        @usertask.accept!
+      if params[:task_status] == 'accept' && @usertask.accept!
         @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is accepted', commenter: current_user)
-      elsif params[:task_status] == 'reject'
-        @usertask.reject!
+        redirect_to @usertask
+      elsif params[:task_status] == 'reject' && @usertask.reject!
         @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is rejected', commenter: current_user)
+        redirect_to @usertask
       end
+    else
+      render 'review'
     end
-    redirect_to @usertask
   end
 
   private
@@ -82,5 +88,9 @@ class UsertasksController < ResourceController
 
     def current_track
       @track ||= @usertask.task.track
+    end
+
+    def submit_task_if_in_progress
+      @usertask.in_progress? && @usertask.submit!
     end
 end

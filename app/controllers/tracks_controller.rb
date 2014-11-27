@@ -36,6 +36,10 @@ class TracksController < ResourceController
     @track.remove_track_role(:track_reviewer, params[:format])
   end
 
+  def runners
+    @track_runners = current_company.users.with_role(:track_runner, @track)
+  end
+
   def update
     if @track.update(track_params)
       @track.replace_owner(params[:track][:owner_id])
@@ -43,6 +47,12 @@ class TracksController < ResourceController
     else
       render action: 'edit'
     end
+  end
+
+  def status
+    user = current_company.users.find_by(id: params[:runner])
+    @tasks = @track.tasks.includes(:usertasks).where(usertasks: { user: user }).nested_set
+    render 'tasks/index'
   end
 
   private
