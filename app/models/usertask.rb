@@ -31,7 +31,7 @@ class Usertask < ActiveRecord::Base
       transitions from: :in_progress, to: :completed
     end
 
-    event :accept, after: :send_notification_email do
+    event :accept, after: [:send_notification_email, :mark_parent_task_finished] do
       transitions from: :submitted, to: :completed
     end
 
