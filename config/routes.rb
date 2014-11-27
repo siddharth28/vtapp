@@ -87,6 +87,6 @@ Rails.application.routes.draw do
       root 'devise/sessions#new', as: :unauthenticated_root
     end
 
-    # get '*unmatched_route', to: 'devise/sessions#destroy'
+    get '*unmatched_route', to: 'devise/sessions#destroy'
   end
 end
