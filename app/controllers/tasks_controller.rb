@@ -24,8 +24,6 @@ class TasksController < ResourceController
     else
       @tasks = @tasks.includes(:usertasks).where(usertasks: { user: current_user }).nested_set
     end
-    # FIXED
-    # FIXME : If task is blank, unnecessary queries will be fired.
   end
 
   def new
@@ -69,8 +67,6 @@ class TasksController < ResourceController
     else
       @tasks = @tasks.includes(:actable).nested_set.all
     end
-    # FIXED
-    # FIXME : If task is blank, unnecessary queries will be fired.
   end
 
   def sample_solution
