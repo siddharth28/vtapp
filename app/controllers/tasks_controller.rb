@@ -84,7 +84,7 @@ class TasksController < ResourceController
   end
 
   def assign_runner
-    Usertask.find_or_create_by(user_id: params[:runner_id], task: @task)
+    @task.usertasks.find_or_create_by(user_id: params[:runner_id])
   end
 
   def remove_runner
@@ -99,6 +99,9 @@ class TasksController < ResourceController
     @tasks = @track.tasks.includes(usertasks: :user).where.not(usertasks: { reviewer_id: current_user.id }).where(usertasks: { aasm_state: 'submitted'})
   end
 
+  def list
+    @tasks = @track.tasks.includes(:actable).nested_set.all
+  end
 
   private
     def get_track
@@ -133,7 +136,7 @@ class TasksController < ResourceController
       if parameters[:method] == :name
         super(parameters).with_company(current_company).with_role(Track::ROLES[:track_reviewer], @track)
       elsif parameters[:method] == :title
-        super(parameters).with_track(@track).with_no_parent
+        super(parameters).with_track(@track).with_no_parent.study_tasks
       elsif parameters[:method] == :email
         super(parameters).with_company(current_company).with_role(Track::ROLES[:track_runner], @track)
       end

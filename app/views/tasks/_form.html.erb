@@ -3,7 +3,7 @@
     <%= task.label :task_title, class: 'col-sm-3 control-label' %>
     <div class="col-sm-8">
       <%= task.text_field :title, class: 'form-control' %>
-      <%= errors_for_field(@task, :title) %>
+      <%= errors_field_for_task_or_exercise(:title) %>
     </div>
   </div>
 
@@ -11,7 +11,7 @@
     <%= task.label :task_description, class: 'col-sm-3 control-label' %>
     <div class="col-sm-8">
       <%= task.text_area :description, class: 'form-control' %>
-      <%= errors_for_field(@task, :description) %>
+      <%= errors_field_for_task_or_exercise(:description) %>
     </div>
   </div>
 
@@ -20,7 +20,7 @@
     <div class="col-sm-8">
       <%= task.hidden_field :parent_id %>
       <%= task.autocomplete_field :parent_title, autocomplete_task_title_track_tasks_path, id_element: '#task_parent_id', class: 'form-control' %>
-      <%= errors_for_field(@task, :parent) %>
+      <%= errors_field_for_task_or_exercise(:parent) %>
     </div>
   </div>
 
@@ -29,6 +29,7 @@
     <%= task.label :need_review?, class: 'col-sm-3 control-label' %>
     <div class="col-sm-8">
       <%= task.check_box :need_review? %>
+      <%= errors_field_for_task_or_exercise(:children) %>
     </div>
   </div>
 
@@ -51,7 +52,7 @@
     <div class="col-sm-8">
       <%= task.hidden_field :reviewer_id %>
       <%= task.autocomplete_field :reviewer_name, autocomplete_user_name_track_tasks_path, id_element: '#task_reviewer_id', class: 'form-control' %>
-      <%= errors_for_field(@exercise_task, :reviewer) if @exercise_task %>
+      <%= errors_field_for_task_or_exercise(:reviewer) %>
     </div>
   </div>
 
@@ -59,7 +60,7 @@
     <%= task.label :sample_solution, class: 'col-sm-3 control-label' %>
     <div class="col-sm-8">
       <%= task.file_field :sample_solution %>
-      <%= errors_for_field(@exercise_task, :sample_solution) if @exercise_task %>
+      <%= errors_field_for_task_or_exercise(:sample_solution) %>
       <%= link_to 'Remove',[:remove_sample_solution, @track, @task] if @task.try(:sample_solution).try(:path) %>
     </div>
   </div>

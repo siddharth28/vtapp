@@ -468,27 +468,16 @@ describe TasksController do
     before do
       allow(Task).to receive(:find).and_return(task)
       allow(task).to receive(:usertasks).and_return(usertasks)
-      allow(usertasks).to receive(:create).and_return(usertask)
-      allow(usertasks).to receive(:exists?).and_return(true)
+      allow(usertasks).to receive(:find_or_create_by).and_return(usertask)
     end
 
     describe 'expects to receive' do
-      context 'usertask does not exist' do
-        before { allow(usertasks).to receive(:exists?).and_return(false) }
 
-        it { expect(task).to receive(:usertasks).and_return(usertasks) }
-        it { expect(usertasks).to receive(:create).and_return(usertask) }
+      it { expect(task).to receive(:usertasks).and_return(usertasks) }
+      it { expect(usertasks).to receive(:find_or_create_by).and_return(usertask) }
 
-        after { send_request }
-      end
+      after { send_request }
 
-      context 'usertask exists' do
-
-        it { expect(task).to receive(:usertasks).and_return(usertasks) }
-        it { expect(usertasks).not_to receive(:create) }
-
-        after { send_request }
-      end
     end
 
     describe 'assigns' do

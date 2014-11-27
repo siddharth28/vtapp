@@ -1,0 +1,14 @@
+<%= form_for(@comment, url: url_for(controller: :usertasks, action: 'submit_comment', id: @usertask)) do |comment| %>
+
+
+  <div class="form-group">
+    <%= comment.label :comment, class: 'col-sm-3' %>
+    <div class="col-sm-8">
+      <%= comment.text_area :data, class: 'form-control', rows: 3, placeholder: "Click to add in a comment.." %>
+        <%= errors_for_field(@comment, :data) %>
+    </div>
+  </div>
+
+  <div class="col-sm-3"></div>
+  <%= comment.submit 'Submit Comment', class: 'btn btn-default' %>
+<% end %>

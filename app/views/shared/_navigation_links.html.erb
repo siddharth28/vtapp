@@ -7,11 +7,15 @@
   <li><%= link_to 'Users', users_path, class: "#{ state(users_path) }" %></li>
 <% end %>
 
-<% if !current_user.super_admin? %>
+<% unless current_user.super_admin? %>
   <li class="dropdown mainmenu">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tracks<b class="caret"></b></a>
     <%= render 'shared/track_navigation_links' %>
   </li>
+<% end %>
+
+<% unless current_user.mentees.blank? %>
+  <li><%= link_to 'My mentees', mentees_user_path(current_user) %></li>
 <% end %>
 
 <li><%= link_to 'Account', edit_user_registration_path, class: "#{ state(edit_user_registration_path) }" %></li>

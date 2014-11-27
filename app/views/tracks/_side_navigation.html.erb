@@ -5,7 +5,7 @@
         <ul class="nav navbar-nav nav-pills nav-stacked">
           <li><%= link_to 'Track Details', track_path(@track) %></li><br>
           <% if current_user.is_track_runner_of?(@track) %>
-            <li><%= link_to 'Task List', track_tasks_path(@track) %></li><br>
+            <li><%= link_to 'My Task List', track_tasks_path(@track) %></li><br>
           <% end %>
           <% if can? :manage, @track %>
             <li><%= link_to 'Manage Task List', manage_track_tasks_path(@track) %></li><br>
@@ -15,6 +15,8 @@
             <li><%= link_to 'Tasks to review', to_review_track_tasks_path(@track) %></li>
             <li><%= link_to 'Assigned to others for review tasks', assigned_to_others_for_review_track_tasks_path(@track) %></li>
           <% end %>
+          <li><%= link_to 'Track runner list', runners_track_path(@track) %></li>
+          <li><%= link_to 'Track reviewer task list', task_list_track_tasks_path(@track) %></li>
         </ul>
       </div>
     </nav>

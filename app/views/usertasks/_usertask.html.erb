@@ -1,0 +1,31 @@
+<div class="form-group">
+  <label class='col-sm-3'><strong>Task Title:</strong></label>
+  <div class="col-sm-8 readonly">
+    <%= current_task.title %>
+  </div>
+</div>
+
+<% unless current_task.description.blank? %>
+  <div class="form-group">
+    <label class='col-sm-3'><strong>Task Description:</strong></label>
+    <div class="col-sm-8 readonly">
+      <%= current_task.description %>
+    </div>
+  </div>
+<% end %>
+<% if can? :review, @usertask %>
+  <% if current_task.sample_solution.path %>
+    <div class="form-group">
+      <label class='control-label col-md-3 m-top m-down-x'><strong>Task sample solution:</strong></label>
+      <div class="col-md-9 readonly">
+        <p><%= link_to 'Download',[:sample_solution, current_track, current_task] %></p>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+<div class="form-group">
+  <label class='col-sm-3'><strong>Task Status:</strong></label>
+  <div class="col-sm-8 readonly">
+    <%= Task::STATE[@usertask.aasm_state.to_sym] %>
+  </div>
+</div>

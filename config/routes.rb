@@ -18,18 +18,24 @@ Rails.application.routes.draw do
           get :autocomplete_user_name
           get :autocomplete_user_department
         end
+        member do
+          get :mentees
+        end
       end
 
       resources :usertasks, only: [:show] do
         member do
           get :start
-          patch :submit
+          get :restart
+          post :submit_comment
+          post :submit_url
+          get :submit_task
+          post :resubmit
           put :assign_to_me
+          get :review
+          patch :review_task
+          get :search
         end
-      end
-
-      namespace :tracks do
-        get :search
       end
 
       resources :tracks do
@@ -39,9 +45,12 @@ Rails.application.routes.draw do
           get :reviewers
           patch :assign_reviewer
           get :remove_reviewer
+          get :runners
+          get :status
         end
 
         get :autocomplete_user_name, on: :collection
+        get :search, on: :collection
 
         resources :tasks do
           collection do
@@ -52,6 +61,7 @@ Rails.application.routes.draw do
             get :manage
             get :to_review
             get :assigned_to_others_for_review
+            get :list
           end
           member do
             get :sample_solution
@@ -77,6 +87,6 @@ Rails.application.routes.draw do
       root 'devise/sessions#new', as: :unauthenticated_root
     end
 
-    get '*unmatched_route', to: 'devise/sessions#destroy'
+    # get '*unmatched_route', to: 'devise/sessions#destroy'
   end
 end

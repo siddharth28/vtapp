@@ -13,11 +13,12 @@ module RenderTreeHelper
         @h, @options = h, options
         node = options[:node]
         class_based_on_state = ''
-        if options[:node].usertasks.first.aasm_state == 'completed'
+        usertask = options[:node].usertasks.first
+        if usertask.completed?
           class_based_on_state = "alert-success"
-        elsif options[:node].usertasks.first.aasm_state == 'in_progress'
+        elsif usertask.in_progress?
           class_based_on_state = "alert-warning"
-        elsif options[:node].usertasks.first.aasm_state == 'submitted'
+        elsif usertask.submitted?
           class_based_on_state = "alert-warning"
         else
           class_based_on_state = "alert-start"
@@ -40,7 +41,7 @@ module RenderTreeHelper
         ns = options[:namespace]
         title_field = node.send(options[:title])
         usertask = options[:node].usertasks.first
-        if options[:node].usertasks.first.aasm_state != 'not_started'
+        unless usertask.not_started? || usertask.restart? || options[:children].present?
           url = h.url_for(usertask)
           title_field = h.link_to(title_field, url, method: :get)
         end
@@ -48,13 +49,19 @@ module RenderTreeHelper
       end
 
       def controls
-        link_text = "Start #{ options[:node].need_review? ? 'Exercise' : 'Task' } "
-        if options[:node].usertasks.first.aasm_state != 'not_started'
-          link_text = Task::STATE[options[:node].usertasks.first.aasm_state.to_sym]
-        else
-          usertask = options[:node].usertasks.first
-          url = h.url_for(controller: :usertasks, action: :start, id: usertask)
-          link_text = h.link_to(link_text, url, method: :get)
+        usertask = options[:node].usertasks.first
+        if options[:children].blank?
+          if usertask.not_started?
+            link_text = "Start #{ options[:node].need_review? ? 'Exercise' : 'Task' } "
+            url = h.url_for(controller: :usertasks, action: :start, id: usertask)
+            link_text = h.link_to(link_text, url, method: :get)
+          else
+            link_text = Task::STATE[usertask.aasm_state.to_sym]
+            if usertask.restart?
+              url = h.url_for(controller: :usertasks, action: :restart, id: usertask)
+              link_text = h.link_to(link_text, url, method: :get)
+            end
+          end
         end
         "
           <div>
