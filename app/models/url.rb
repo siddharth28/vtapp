@@ -8,7 +8,7 @@ class Url < ActiveRecord::Base
   scope :persisted, -> { where.not(id: nil) }
 
   def add_submission_comment
-    update_column(submitted_at: Time.current)
+    update_column(:submitted_at, Time.current)
     state = usertask.urls.persisted.blank? ? :submitted : :resubmitted
     usertask.comments.create(data: Task::STATE[state], commenter: usertask.user)
   end

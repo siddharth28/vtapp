@@ -15,6 +15,7 @@
             <% @usertask.urls.persisted.order(updated_at: :desc).each do |url| %>
               <%= link_to url.name, url.name %><br>
             <% end %>
+            <%= link_to 'Resubmit last URL', resubmit_usertask_path(@usertask), method: :post, class: 'btn btn-default' %>
           </div>
         </div>
       <% end %>
