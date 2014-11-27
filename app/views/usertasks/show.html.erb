@@ -22,7 +22,9 @@
     <% end %>
 
     <%= render 'comment_form' %>
-    <%= link_to 'Submit task', submit_task_usertask_path, class: 'btn btn-default pull-right m-right-2x' %>
+    <% if @usertask.user.eql?(current_user) && !current_task.need_review? %>
+      <%= link_to 'Submit task', submit_task_usertask_path, class: 'btn btn-default pull-right m-right-2x' %>
+    <% end %>
     <%= render 'comments' %>
   </div>
 </div>
