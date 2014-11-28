@@ -11,8 +11,11 @@ class Task < ActiveRecord::Base
 
   validates :track, presence: true
 
+  ## FIXED
   ## FIXME_NISH Please break the validation into multiple validations because this will fire a query even if there is nil value for title.
-  validates :title, presence: true, uniqueness: { scope: :track_id, case_sensitive: false }, length: { maximum: 255 }
+  validates :title, presence: true
+  validates :title, uniqueness: { scope: :track_id, case_sensitive: false }, allow_blank: true
+  validates :title, length: { maximum: 255 }
   validate :cannot_be_own_parent, on: :update
   validate :parent_cannot_be_exercise_task
 
@@ -27,16 +30,16 @@ class Task < ActiveRecord::Base
   strip_fields :title, :description
 
   delegate :is_hidden, :sample_solution, :instructions, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
+  delegate :title, :need_review?, to: :parent, prefix: :parent, allow_nil: true
 
-  def parent_title
-    ## FIXME_NISH make a delegate method to pluck title of the parent.
-    parent.try(:title)
-  end
+  alias_attribute :need_review, :actable_id
 
-  def need_review?
-    ## FIXME_NISH Please make it as an alias.
-    actable_id?
-  end
+
+  ## FIXED
+  ## FIXME_NISH make a delegate method to pluck title of the parent.
+
+  ## FIXED
+  ## FIXME_NISH Please make it as an alias.
 
   private
     def cannot_be_own_parent
@@ -44,8 +47,9 @@ class Task < ActiveRecord::Base
     end
 
     def parent_cannot_be_exercise_task
+      ## FIXED
       ## FIXME_NISH make a delegate method to pluck need_review? of the parent.
-      parent.try(:need_review?) && errors.add(:parent, 'parent cannot be exercise task')
+      parent_need_review? && errors.add(:parent, 'parent cannot be exercise task')
     end
 
     #callback awesome_nested_set

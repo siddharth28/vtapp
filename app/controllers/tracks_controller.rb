@@ -1,13 +1,13 @@
 class TracksController < ResourceController
-  autocomplete :user, :name, extra_data: [:email],  display_value: :display_user_details
+  autocomplete :user, :name, extra_data: [:email],  display_value: :display_details
 
   before_action :set_track, only: [:reviewers, :assign_reviewer, :remove_reviewer]
 
   def index
     if current_user.account_owner? || current_user.account_admin?
-      @tracks = current_company.tracks.load_with_owners.page(params[:page]).per(20)
+      @tracks = current_company.tracks.includes(:owner).page(params[:page]).per(20)
     else
-      @tracks = current_user.tracks.load_with_owners.page(params[:page]).per(20)
+      @tracks = current_user.tracks.includes(:owner).page(params[:page]).per(20)
     end
   end
 
@@ -28,7 +28,7 @@ class TracksController < ResourceController
   end
 
   def search
-    @tracks = current_company.tracks.load_with_owners.extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
+    @tracks = current_company.tracks.includes(:owner).extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
     render action: :index
   end
 

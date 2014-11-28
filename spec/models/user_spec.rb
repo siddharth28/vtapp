@@ -92,17 +92,23 @@ describe User do
 
     describe 'before destroy#ensure_an_account_owners_and_super_admin_remains' do
       context 'when super_admin' do
-        before { user.add_role(:super_admin) }
+        before do
+          user.add_role(:super_admin)
+          user.destroy
+        end
 
-        it { expect { user.destroy }.to raise_error("Can't delete Super Admin") }
+        it { expect(user.errors[:base]).to include("Can't delete super admin") }
       end
 
       context 'when account_owner' do
-        it { expect { company.reload.owner.destroy }.to raise_error("Can't delete Account Owner") }
+        before { company.reload.owner.destroy }
+        it { expect(company.owner.errors[:base]).to include('Can\'t delete Account Owner') }
       end
 
       context 'neither super_admin nor account_owner' do
-        before { user.add_role(:track_owner) }
+        before do
+          user.add_role(:track_owner)
+        end
 
         it { expect { user.destroy }.not_to raise_error }
       end
@@ -268,9 +274,12 @@ describe User do
       let(:company) { create(:company) }
       let(:user) { create(:user, company: company) }
 
-      before { company.reload }
+      before do
+        company.reload
+        user.add_role(:account_owner, company)
+      end
 
-      it { expect { user.add_role(:account_owner, company) }.to raise_error("There can be only one account owner") }
+      it { expect(user.errors[:base]).to include("There can be only one account owner") }
     end
 
     #FIXED
@@ -278,11 +287,13 @@ describe User do
     describe '#ensure_cannot_remove_account_owner_role' do
       let(:company) { create(:company) }
 
-      it { expect { company.reload.owner.remove_role(:account_owner, company) }.to raise_error('Cannot remove account_owner role') }
+      before { company.reload.owner.remove_role(:account_owner, company) }
+
+      it { expect(company.owner.errors[:base]).to include('Cannot remove account_owner role') }
     end
 
-    describe '#display_user_details' do
-      it { expect(user.send(:display_user_details)).to eql("#{ user.name } : #{ user.email }") }
+    describe '#display_details' do
+      it { expect(user.send(:display_details)).to eql("#{ user.name } : #{ user.email }") }
     end
 
     describe 'usertask' do

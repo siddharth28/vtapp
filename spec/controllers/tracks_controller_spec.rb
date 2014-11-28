@@ -21,7 +21,7 @@ describe TracksController do
 
   describe '#index' do
     before do
-      allow(tracks).to receive(:load_with_owners).and_return(tracks)
+      allow(tracks).to receive(:includes).with(:owner).and_return(tracks)
       allow(tracks).to receive(:page).with(nil).and_return(tracks)
       allow(tracks).to receive(:per).with(20).and_return(tracks)
     end
@@ -39,7 +39,7 @@ describe TracksController do
       describe 'expects to receive' do
         it { expect(user).to receive(:account_owner?).and_return(true) }
         it { expect(current_company).to receive(:tracks).and_return(tracks) }
-        it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
+        it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
         it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
         it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
@@ -69,7 +69,7 @@ describe TracksController do
         it { expect(user).to receive(:account_admin?).and_return(true) }
         it { expect(user).to receive(:account_owner?).and_return(false) }
         it { expect(current_company).to receive(:tracks).and_return(tracks) }
-        it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
+        it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
         it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
         it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
@@ -99,7 +99,7 @@ describe TracksController do
         it { expect(user).to receive(:account_owner?).and_return(false) }
         it { expect(user).to receive(:account_admin?).and_return(false) }
         it { expect(user).to receive(:tracks).and_return(tracks) }
-        it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
+        it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
         it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
         it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
@@ -360,7 +360,7 @@ describe TracksController do
   describe '#search' do
     before do
       allow(current_company).to receive(:tracks).and_return(tracks)
-      allow(tracks).to receive(:load_with_owners).and_return(tracks)
+      allow(tracks).to receive(:includes).with(:owner).and_return(tracks)
       allow(tracks).to receive(:extract).with('Owner', user).and_return(tracks)
       allow(tracks).to receive(:search).with('example').and_return(tracks)
       allow(tracks).to receive(:result).and_return(tracks)
@@ -374,7 +374,7 @@ describe TracksController do
 
     describe 'expects to receive' do
       it { expect(current_company).to receive(:tracks).and_return(tracks) }
-      it { expect(tracks).to receive(:load_with_owners).and_return(tracks) }
+      it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
       it { expect(tracks).to receive(:extract).with('Owner', user).and_return(tracks) }
       it { expect(tracks).to receive(:search).with('example').and_return(tracks) }
       it { expect(tracks).to receive(:result).and_return(tracks) }

@@ -5,7 +5,7 @@ class CompaniesController < ResourceController
   skip_load_resource only: [:create]
 
   def index
-    @search = Company.load_with_owners.search(params[:q])
+    @search = Company.includes(:owner).search(params[:q])
     @companies = @search.result.page(params[:page]).per(20)
   end
 

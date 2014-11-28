@@ -21,9 +21,9 @@ class User < ActiveRecord::Base
   validates :company, presence: true, unless: :super_admin?
   validates :name, presence: true
 
+  ## FIXED
   ## FIXME_NISH Please verify if we require to override these validations already present in devise.
-  validates :password, presence: true, on: :create
-  validates :password_confirmation, presence: true, allow_blank: true
+
   validates :email, :name, :department, length: { maximum: 255 }
 
   before_destroy :ensure_an_account_owners_and_super_admin_remains
@@ -33,6 +33,8 @@ class User < ActiveRecord::Base
 
   scope :with_company, ->(company) { where(company: company) }
   scope :group_by_department, -> { group(:department) }
+
+  delegate :name, to: :mentor, prefix: :mentor, allow_nil: true
 
   ROLES.each do |key, method|
     define_method "#{ method }?" do
@@ -56,10 +58,8 @@ class User < ActiveRecord::Base
     add_role_track_runner(add_track_object_ids) unless add_track_object_ids.blank?
   end
 
-  def mentor_name
-    ## FIXME_NISH use delegate.
-    mentor.try(:name)
-  end
+  ## FIXED
+  ## FIXME_NISH use delegate.
 
   def add_role_account_admin
     add_role(ROLES[:account_admin], company)
@@ -75,9 +75,8 @@ class User < ActiveRecord::Base
     end
 
     def send_password_email
+      ## FIXED
       ## FIXME_NISH We don't need the following two lines.
-      password = self.password
-      email = self.email
       UserMailer.delay.welcome_email(email, password)
     end
 
@@ -89,26 +88,27 @@ class User < ActiveRecord::Base
     #FIXME_AB: why are we raising exceptoins from callbacks. would returning false not help? Also, if raising exception is only solution, we should handle the exception.
     def ensure_an_account_owners_and_super_admin_remains
       if super_admin?
-        raise 'Can\'t delete Super Admin'
+        errors.add(:base, 'Can\'t delete super admin')
       elsif account_owner?
-        raise 'Can\'t delete Account Owner'
+        errors.add(:base, 'Can\'t delete Account Owner')
       end
     end
 
     def ensure_only_one_account_owner(role)
       if role.name == ROLES[:account_owner] && company.owner
-        raise 'There can be only one account owner'
+        errors.add(:base, 'There can be only one account owner')
       end
     end
 
     #rolify callback
     def ensure_cannot_remove_account_owner_role(role)
       if role.name == ROLES[:account_owner]
-        raise 'Cannot remove account_owner role'
+        errors.add(:base, 'Cannot remove account_owner role')
       end
     end
 
-    def display_user_details
+    def display_details
+      ## FIXED
       ## FIXME_NISH Please remove user in the method name.
       "#{ name } : #{ email }"
     end

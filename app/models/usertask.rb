@@ -11,9 +11,12 @@ class Usertask < ActiveRecord::Base
   has_many :comments, dependent: :destroy
 
   ## FIXME_NISH delegate need_review to task.
-  before_create :assign_reviewer, if: -> { task.need_review? }
+  before_create :assign_reviewer if :need_review?
 
   attr_accessor :comment
+
+  delegate :need_review?, to: :task
+  alias_method :check_exercise?, :need_review?
 
   aasm do
     state :not_started, initial: true
@@ -59,14 +62,11 @@ class Usertask < ActiveRecord::Base
     end
 
     def add_end_time
+      # FIXED
       # Not fixed
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
       update_column(:end_time, Time.current)
-    end
-
-    def check_exercise?
-      task.need_review?
     end
 
     def assign_reviewer
@@ -78,6 +78,7 @@ class Usertask < ActiveRecord::Base
     end
 
     def mark_parent_task_finished
+      ## FIXED
       ## FIXME_NISH we can add a check of parent_usertaks rather than using try.
       if parent_task
         children_submitted = parent_task.children.all? { |task| task.usertasks.find_by(user: user).completed? }
@@ -86,8 +87,9 @@ class Usertask < ActiveRecord::Base
     end
 
     def mark_parent_task_started
+      ## FIXED
       ## FIXME_NISH we can add a check of parent_usertaks rather than using try.
-      parent_task && parent_usertask.try(:not_started?) && parent_usertask.try(:start!)
+      parent_task && parent_usertask && parent_usertask.not_started? && parent_usertask.start!
     end
 
     def parent_task
