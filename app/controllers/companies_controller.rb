@@ -6,8 +6,9 @@ class CompaniesController < ResourceController
   skip_load_resource only: [:create]
 
   def index
-    @search = Company.load_with_owners.search(params[:q])
     ## FIXME_NISH You don't need to explicitely specify 20, by default it will rake 25.
+    @search = Company.includes(:owner).search(params[:q])
+    ## FIXME_NISH Lets move includes after result.
     @companies = @search.result.page(params[:page]).per(20)
   end
 

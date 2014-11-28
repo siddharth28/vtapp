@@ -7,7 +7,7 @@ class Track < ActiveRecord::Base
   belongs_to :company
   has_one :owner, through: :owner_role, source: :users
   ## FIXME_NISH Please create a scope for this and reuse it in reviewer_role.
-  has_one :owner_role, -> { where(roles: { name: Track::ROLES[:track_owner], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
+  has_one :owner_role, -> { track_with_role(Track::ROLES[:track_owner]) }, class_name: 'Role', foreign_key: :resource_id
   has_many :tasks, dependent: :destroy
   has_many :reviewer_role, -> { where(roles: { name: Track::ROLES[:track_reviewer], resource_type: 'Track' }) }, class_name: 'Role', foreign_key: :resource_id
   has_many :reviewers, through: :reviewer_role, source: :users
@@ -26,7 +26,6 @@ class Track < ActiveRecord::Base
   strip_fields :name
 
   ## FIXME_NISH We don't need this scope.
-  scope :load_with_owners, -> { includes(:owner) }
 
   def self.extract(type, user)
     ## FIXME_NISH Please pass whole role name in it rather than a type. And After I think we don't need this method.

@@ -1,14 +1,14 @@
 class TracksController < ResourceController
-  autocomplete :user, :name, extra_data: [:email],  display_value: :display_user_details
+  autocomplete :user, :name, extra_data: [:email],  display_value: :display_details
 
   before_action :set_track, only: [:reviewers, :assign_reviewer, :remove_reviewer]
 
   def index
     ## FIXME_NISH You don't need to add a check here, you have added it in ability.rb, use accessible_by method for this.
     if current_user.account_owner? || current_user.account_admin?
-      @tracks = current_company.tracks.load_with_owners.page(params[:page]).per(20)
+      @tracks = current_company.tracks.includes(:owner).page(params[:page]).per(20)
     else
-      @tracks = current_user.tracks.load_with_owners.page(params[:page]).per(20)
+      @tracks = current_user.tracks.includes(:owner).page(params[:page]).per(20)
     end
   end
 
@@ -29,8 +29,12 @@ class TracksController < ResourceController
   end
 
   def search
+<<<<<<< HEAD
     ## FIXME_NISH I think we don't require this action, we can do search with inde action, what say?
     @tracks = current_company.tracks.load_with_owners.extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
+=======
+    @tracks = current_company.tracks.includes(:owner).extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
+>>>>>>> 08a2cd5d989761f898e9ad8878c07f99721a4c5f
     render action: :index
   end
 

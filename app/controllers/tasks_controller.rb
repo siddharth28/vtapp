@@ -6,8 +6,8 @@ class TasksController < ResourceController
   skip_authorize_resource only: [:index, :new, :manage]
 
   autocomplete :task, :title
-  autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_user_details
-  autocomplete :user, :email, full: true, extra_data: [:name], display_value: :display_user_details
+  autocomplete :user, :name, full: true, extra_data: [:email], display_value: :display_details
+  autocomplete :user, :email, full: true, extra_data: [:name], display_value: :display_details
 
   rescue_from ActiveRecord::ActiveRecordError do |exception|
     if request.format == :js

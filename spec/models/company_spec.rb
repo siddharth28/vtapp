@@ -55,16 +55,6 @@ describe Company do
 
   #FIXME -> Change rspecs of these scopes as discussed.
   describe 'scopes' do
-    describe 'load_with_owners' do
-      describe 'includes' do
-        before { allow(Company).to receive(:includes).with(:owner).and_return(Company) }
-
-        it { expect(Company).to receive(:includes).with(:owner) }
-
-        after { Company.load_with_owners }
-      end
-    end
-
     describe 'enabled' do
       let(:disabled_company) { create(:company, enabled: false) }
 
