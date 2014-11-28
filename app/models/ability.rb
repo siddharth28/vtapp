@@ -32,7 +32,7 @@ class Ability
         can :manage, User, company: user.company
         can :manage, Track, company: user.company
         can :manage, Task
-        can :manage, Usertask
+        can [:read, :review, :submit_comment, :review_task, :assign_to_me], Usertask
       end
     end
 
@@ -45,7 +45,7 @@ class Ability
         end
         can :manage, Track, company: user.company
         can :manage, Task
-        can :manage, Usertask
+        can [:read, :review, :submit_comment, :review_task, :assign_to_me], Usertask
       end
     end
 
@@ -56,13 +56,16 @@ class Ability
       can :manage, Task do |task|
         user.is_track_owner_of?(task.track)
       end
+      can [:read, :review, :submit_comment, :review_task, :assign_to_me], Usertask do |user_task|
+        user.is_track_owner_of?(user_task.task.track)
+      end
     end
 
     def track_reviewer_abilities(user)
       can :read, Track do |track|
         user.is_track_reviewer_of?(track)
       end
-      can :manage, Usertask do |user_task|
+      can [:read, :review, :submit_comment, :review_task], Usertask do |user_task|
         user_task.reviewer_id == user.id
       end
       can :assign_to_me, Usertask do |user_task|
@@ -75,10 +78,16 @@ class Ability
         user.is_track_runner_of?(track)
       end
       can :start, Usertask do |user_task|
-        user_task.user_id == user.id
+        user_task.user_id == user.id && user_task.not_started?
       end
-      can [:read, :submit_url, :resubmit, :restart, :submit_task], Usertask do |user_task|
-        user_task.user_id == user.id && !user_task.not_started?
+      can [:read, :submit_task], Usertask do |user_task|
+        user_task.user_id == user.id && !user_task.not_started? && !user_task.task.need_review?
+      end
+      can [:read, :submit_url, :resubmit], Usertask do |user_task|
+        user_task.user_id == user.id && !user_task.not_started? && user_task.task.need_review?
+      end
+      can :restart, Usertask do |user_task|
+        user_task.user_id == user.id && user_task.restart? && user_task.task.need_review?
       end
       can :submit_comment, Usertask do |user_task|
         user_task.user_id == user.id

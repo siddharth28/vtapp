@@ -1,11 +1,11 @@
 <div class='task_description'>
-  <%= link_to 'Back', track_tasks_path(current_track), class: 'btn btn-default pull-right m-right-2x' %>
+  <%= link_to 'Back', 'javascript:history.go(-1);', class: 'btn btn-default pull-right m-right-2x' %>
   <h1 class='m-left-375x'>Task</h1>
   <div class='m-left-375x form-horizontal form-well col-sm-6' >
     <%= render 'usertask' %>
 
     <% if current_task.need_review? %>
-      <% if @usertask.user == current_user && (@usertask.in_progress? || @usertask.submitted?) %>
+      <% if can? :submit_url, @usertask %>
         <%= render 'url_form' %>
       <% end %>
       <% unless @usertask.urls.persisted.blank? %>
@@ -22,7 +22,7 @@
     <% end %>
 
     <%= render 'comment_form' %>
-    <% if @usertask.user.eql?(current_user) && !current_task.need_review? %>
+    <% if can?(:submit_task, @usertask) %>
       <%= link_to 'Submit task', submit_task_usertask_path, class: 'btn btn-default pull-right m-right-2x' %>
     <% end %>
     <%= render 'comments' %>
