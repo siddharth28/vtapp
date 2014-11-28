@@ -431,4 +431,49 @@ describe TracksController do
       it { expect(flash[:notice]).to be_nil }
     end
   end
+
+  describe 'status' do
+    let(:tasks) { double(ActiveRecord::Relation) }
+
+    before do
+      allow(Track).to receive(:find).and_return(track)
+      allow(current_company).to receive(:users).and_return(users)
+      allow(users).to receive(:find_by).and_return(user)
+      allow(track).to receive(:tasks).and_return(tasks)
+      allow(tasks).to receive(:includes).with(:usertasks).and_return(tasks)
+      allow(tasks).to receive(:where).and_return(tasks)
+      allow(tasks).to receive(:nested_set).and_return(tasks)
+    end
+
+    def send_request
+      get :status, id: track.id
+    end
+
+    describe 'expects to receive' do
+
+      it { expect(current_company).to receive(:users).and_return(users) }
+      it { expect(users).to receive(:find_by).and_return(user) }
+      it { expect(track).to receive(:tasks).and_return(tasks) }
+      it { expect(tasks).to receive(:includes).with(:usertasks).and_return(tasks) }
+      it { expect(tasks).to receive(:where).and_return(tasks) }
+      it { expect(tasks).to receive(:nested_set).and_return(tasks) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+
+      it { expect(assigns(:tasks)).to eq(tasks) }
+    end
+
+    describe 'response' do
+      before { send_request }
+
+      it { expect(response).to render_template 'tasks/index' }
+      it { expect(response).to have_http_status(200) }
+      it { expect(flash[:notice]).to be_nil }
+    end
+
+  end
 end
