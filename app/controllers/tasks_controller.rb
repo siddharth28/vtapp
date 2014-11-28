@@ -92,7 +92,7 @@ class TasksController < ResourceController
   end
 
   def assigned_to_others_for_review
-    @tasks = @track.tasks.includes(usertasks: :user).where.not(usertasks: { reviewer_id: current_user.id }).where(usertasks: { aasm_state: 'submitted'})
+    @tasks = @track.tasks.includes(usertasks: :user).where.not(usertasks: { reviewer_id: current_user.id }).where(usertasks: { aasm_state: 'submitted' })
   end
 
   def list

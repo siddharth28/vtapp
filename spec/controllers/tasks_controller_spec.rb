@@ -570,4 +570,38 @@ describe TasksController do
 
   end
 
+  describe '#to_review' do
+
+    before do
+      allow(track).to receive(:tasks).and_return(tasks)
+      allow(tasks).to receive(:includes).with(usertasks: :user, usertasks: :reviewer).and_return(tasks)
+      allow(tasks).to receive(:where).with({usertasks: { aasm_state: 'submitted', reviewer_id: user.id }}).and_return(tasks)
+    end
+
+    def send_request
+      get :to_review, track_id: track.id
+    end
+
+    describe 'expects to receive' do
+      it { expect(track).to receive(:tasks).and_return(tasks) }
+      it { expect(tasks).to receive(:includes).with(usertasks: :user, usertasks: :reviewer).and_return(tasks) }
+      it { expect(tasks).to receive(:where).with({usertasks: { aasm_state: 'submitted', reviewer_id: user.id }}).and_return(tasks) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+
+      it { expect(assigns(:tasks)).to eq(tasks) }
+    end
+
+    describe 'response' do
+      before { send_request }
+
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template :to_review }
+    end
+  end
+
 end
