@@ -7,12 +7,12 @@ class Usertask < ActiveRecord::Base
   belongs_to :task
   belongs_to :reviewer, class_name: 'User'
 
-
   has_many :urls, dependent: :destroy
   has_many :comments, dependent: :destroy
 
-
+  ## FIXME_NISH delegate need_review to task.
   before_create :assign_reviewer, if: -> { task.need_review? }
+
   attr_accessor :comment
 
   aasm do
@@ -78,13 +78,15 @@ class Usertask < ActiveRecord::Base
     end
 
     def mark_parent_task_finished
+      ## FIXME_NISH we can add a check of parent_usertaks rather than using try.
       if parent_task
         children_submitted = parent_task.children.all? { |task| task.usertasks.find_by(user: user).completed? }
-        parent_usertask.try(:submit!) if children_submitted && parent_usertask.in_progress?
+        parent_usertask.try(:submit!) if parent_usertask && children_submitted && parent_usertask.in_progress?
       end
     end
 
     def mark_parent_task_started
+      ## FIXME_NISH we can add a check of parent_usertaks rather than using try.
       parent_task && parent_usertask.try(:not_started?) && parent_usertask.try(:start!)
     end
 

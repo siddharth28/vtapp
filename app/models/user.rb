@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
   validates :mentor, presence: true, if: :mentor_id?
   validates :company, presence: true, unless: :super_admin?
   validates :name, presence: true
+
+  ## FIXME_NISH Please verify if we require to override these validations already present in devise.
   validates :password, presence: true, on: :create
   validates :password_confirmation, presence: true, allow_blank: true
   validates :email, :name, :department, length: { maximum: 255 }
@@ -55,6 +57,7 @@ class User < ActiveRecord::Base
   end
 
   def mentor_name
+    ## FIXME_NISH use delegate.
     mentor.try(:name)
   end
 
@@ -72,6 +75,7 @@ class User < ActiveRecord::Base
     end
 
     def send_password_email
+      ## FIXME_NISH We don't need the following two lines.
       password = self.password
       email = self.email
       UserMailer.delay.welcome_email(email, password)
@@ -105,6 +109,7 @@ class User < ActiveRecord::Base
     end
 
     def display_user_details
+      ## FIXME_NISH Please remove user in the method name.
       "#{ name } : #{ email }"
     end
 
@@ -122,7 +127,7 @@ class User < ActiveRecord::Base
         already_assigned_tasks = usertasks.pluck(:task_id)
         tasks = role.resource.tasks.visible_tasks.where.not(id: already_assigned_tasks).includes(:actable)
         tasks.each { |task| usertasks.build(task: task) }
-      end 
+      end
     end
 
 end

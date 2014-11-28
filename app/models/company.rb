@@ -10,10 +10,12 @@ class Company < ActiveRecord::Base
   before_validation :build_owner, on: :create
   after_create :make_owner
 
+  ## FIXME_NISH Please break the validation into multiple validations because this will fire a query even if there is nil value for name.
   validates :name, presence: true, uniqueness: { case_sensitive: false }, length: { maximum: 255 }
 
   strip_fields :name
 
+  ## FIXME_NISH This scope is not required we can directly write includes(:owner) wherever it is required.
   scope :load_with_owners, -> { includes(:owner) }
   scope :enabled, -> { where(enabled: true) }
 

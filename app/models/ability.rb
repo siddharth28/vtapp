@@ -3,7 +3,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    user ||= User.new # guest user (not logged in)
+    user ||= User.new
     normal_user_abilities(user)
     super_admin_abilities(user)
     account_owner_abilities(user)
@@ -16,6 +16,7 @@ class Ability
   private
 
     def normal_user_abilities(user)
+      ## FIXME_NISH: Please change the name of the method.
       can :read, user
     end
 
