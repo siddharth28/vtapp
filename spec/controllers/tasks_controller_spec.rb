@@ -529,4 +529,45 @@ describe TasksController do
     end
   end
 
+  describe '#list' do
+
+    before do
+      allow(track).to receive(:tasks).and_return(tasks)
+      allow(tasks).to receive(:includes).with(:actable).and_return(tasks)
+      allow(tasks).to receive(:nested_set).and_return(tasks)
+      allow(tasks).to receive(:all).and_return(tasks)
+    end
+
+    def send_request
+      get :list, track_id: track.id
+    end
+
+    context 'tasks present' do
+
+      describe 'expects to receive' do
+        it { expect(track).to receive(:tasks).and_return(tasks) }
+        it { expect(tasks).to receive(:includes).with(:actable).and_return(tasks) }
+        it { expect(tasks).to receive(:nested_set).and_return(tasks) }
+        it { expect(tasks).to receive(:all).and_return(tasks) }
+
+        after { send_request }
+      end
+
+      describe 'assigns' do
+        before { send_request }
+
+        it { expect(assigns(:tasks)).to eq(tasks) }
+      end
+
+      describe 'response' do
+        before { send_request }
+
+        it { expect(response).to have_http_status(200) }
+        it { expect(response).to render_template :list }
+      end
+
+    end
+
+  end
+
 end
