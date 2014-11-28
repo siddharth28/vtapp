@@ -85,7 +85,7 @@ class Usertask < ActiveRecord::Base
     end
 
     def mark_parent_task_started
-      parent_task && parent_usertask.not_started? && parent_usertask.try(:start!)
+      parent_task && parent_usertask.try(:not_started?) && parent_usertask.try(:start!)
     end
 
     def parent_task
