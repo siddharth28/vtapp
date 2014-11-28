@@ -604,4 +604,40 @@ describe TasksController do
     end
   end
 
+  describe '#assigned_to_others_for_review' do
+
+    before do
+      allow(track).to receive(:tasks).and_return(tasks)
+      allow(tasks).to receive(:includes).with(usertasks: :user).and_return(tasks)
+      allow(tasks).to receive(:where).and_return(tasks)
+      allow(tasks).to receive(:not).with({usertasks: { reviewer_id: user.id }}).and_return(tasks)
+    end
+
+    def send_request
+      get :assigned_to_others_for_review, track_id: track.id
+    end
+
+    describe 'expects to receive' do
+      it { expect(track).to receive(:tasks).and_return(tasks) }
+      it { expect(tasks).to receive(:includes).with(usertasks: :user).and_return(tasks) }
+      it { expect(tasks).to receive(:where).and_return(tasks) }
+      it { expect(tasks).to receive(:not).with({usertasks: { reviewer_id: user.id }}).and_return(tasks) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+
+      it { expect(assigns(:tasks)).to eq(tasks) }
+    end
+
+    describe 'response' do
+      before { send_request }
+
+      it { expect(response).to have_http_status(200) }
+      it { expect(response).to render_template :assigned_to_others_for_review }
+    end
+  end
+
 end
