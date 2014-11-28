@@ -386,12 +386,47 @@ describe TracksController do
 
     describe 'assigns' do
       before { send_request }
+
       it { expect(assigns(:tracks)).to eq(tracks) }
     end
 
     describe 'response' do
       before { send_request }
+
       it { expect(response).to render_template :index }
+      it { expect(response).to have_http_status(200) }
+      it { expect(flash[:notice]).to be_nil }
+    end
+  end
+
+  describe '#runners' do
+    before do
+      allow(Track).to receive(:find).and_return(track)
+      allow(current_company).to receive(:users).and_return(users)
+      allow(users).to receive(:with_role).with(:track_runner, track).and_return(users)
+    end
+
+    def send_request
+      get :runners, id: track.id
+    end
+
+    describe 'expects to receive' do
+      it { expect(current_company).to receive(:users).and_return(users) }
+      it { expect(users).to receive(:with_role).with(:track_runner, track) }
+
+      after { send_request }
+    end
+
+    describe 'assigns' do
+      before { send_request }
+
+      it { expect(assigns(:track_runners)).to eq(users) }
+    end
+
+    describe 'response' do
+      before { send_request }
+
+      it { expect(response).to render_template :runners }
       it { expect(response).to have_http_status(200) }
       it { expect(flash[:notice]).to be_nil }
     end
