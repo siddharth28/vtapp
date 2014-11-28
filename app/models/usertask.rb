@@ -74,7 +74,7 @@ class Usertask < ActiveRecord::Base
     end
 
     def send_notification_email
-      UserMailer.delay.exercise_review_email(self)
+      UsertaskMailer.delay.exercise_review_email(self)
     end
 
     def mark_parent_task_finished
