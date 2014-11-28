@@ -1,4 +1,9 @@
 <div class='task_description'>
+  <h1>
+    <%= link_to current_track.name, current_track %> 
+    >> 
+    <%= link_to 'Tasks', track_tasks_path(current_track) %>
+  </h1>
   <%= link_to 'Back', 'javascript:history.go(-1);', class: 'btn btn-default pull-right m-right-2x' %>
   <h1 class='m-left-375x'>Task</h1>
   <div class='m-left-375x form-horizontal form-well col-sm-6' >
