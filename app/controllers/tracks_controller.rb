@@ -4,6 +4,7 @@ class TracksController < ResourceController
   before_action :set_track, only: [:reviewers, :assign_reviewer, :remove_reviewer]
 
   def index
+    ## FIXME_NISH You don't need to add a check here, you have added it in ability.rb, use accessible_by method for this.
     if current_user.account_owner? || current_user.account_admin?
       @tracks = current_company.tracks.load_with_owners.page(params[:page]).per(20)
     else
@@ -28,6 +29,7 @@ class TracksController < ResourceController
   end
 
   def search
+    ## FIXME_NISH I think we don't require this action, we can do search with inde action, what say?
     @tracks = current_company.tracks.load_with_owners.extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
     render action: :index
   end
@@ -37,11 +39,13 @@ class TracksController < ResourceController
   end
 
   def runners
+    ## FIXME_NISH runners and reviewers are same, just a difference of role. do you think we should make them in one action.
     @track_runners = current_company.users.with_role(:track_runner, @track)
   end
 
   def update
     if @track.update(track_params)
+      ## FIXME_NISH Please do this operation in model through callbacks.
       @track.replace_owner(params[:track][:owner_id])
       redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
     else

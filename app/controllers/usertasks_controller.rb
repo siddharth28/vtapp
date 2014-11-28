@@ -16,6 +16,7 @@ class UsertasksController < ResourceController
   end
 
   def submit_url
+    ## FIXME_NISH refactor this action.
     @url = @usertask.urls.find_or_initialize_by(name: params[:url][:name])
     if @url.save
       submit_task_if_in_progress
@@ -28,6 +29,7 @@ class UsertasksController < ResourceController
   end
 
   def submit_comment
+    ## FIXME_NISH refactor this action!
     @comment = @usertask.comments.build(commenter: current_user, data: params[:comment][:data])
     if @comment.save
       redirect_to @usertask, notice: "Comment added"
@@ -49,6 +51,8 @@ class UsertasksController < ResourceController
   end
 
   def assign_to_me
+    ## FIXME_NISH use appt. name.
+    ## FIXME_NISH move the verification part of usertask.user == current_user in a before_action
     if @usertask.user == current_user
       redirect_to assigned_to_others_for_review_track_tasks_path(current_track), alert: "Cannot change the reviewer of your own task"
     else
@@ -58,6 +62,7 @@ class UsertasksController < ResourceController
   end
 
   def review_task
+    ## FIXME_NISH refactor this action and use appt. name.
     if @usertask.submitted?
       if params[:task_status] == 'accept' && @usertask.accept!
         @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is accepted', commenter: current_user)
@@ -77,6 +82,7 @@ class UsertasksController < ResourceController
     end
 
     def build_url
+      ## FIXME_NISH method name should specify everything about the method.
       if @usertask.user == current_user
         @url = @usertask.urls.build
       end

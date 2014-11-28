@@ -10,6 +10,7 @@ class UsersController < ResourceController
   def index
     # FIXED
     # FIXME : sort params not correct
+    ## FIXME_NISH move this logic params[:q] || { s: "name asc" } in a method.
     @search = current_company.users.includes(:roles, :company).search(params[:q] || { s: "name asc" })
     @users = @search.result.page(params[:page]).per(20)
   end
@@ -34,6 +35,7 @@ class UsersController < ResourceController
   end
 
   def mentees
+    ## FIXME_NISH this action has identical code as index, please look into it.
     @search = @user.mentees.includes(:roles, :company).search(params[:q] || { s: "name asc" })
     @mentees = @search.result.page(params[:page]).per(20)
   end

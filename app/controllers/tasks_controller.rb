@@ -27,11 +27,14 @@ class TasksController < ResourceController
   end
 
   def new
+    ## FIXME_NISH Please be specific about the permission for actions, don't just write manage.
     authorize! :manage, @track
     @task = @track.tasks.build
   end
 
   def create
+    ## FIXME_NISH we can create a method here like params[:task][:need_review] == '1' ? ExerciseTask and Task.
+    ## And rest everything is almost same.
     if params[:task][:need_review] == '1'
       @exercise_task = ExerciseTask.new(task_params)
       @task = @exercise_task.task
@@ -43,6 +46,7 @@ class TasksController < ResourceController
   end
 
   def update
+    ## FIXME_NISH same review comments as create method.
     if params[:task][:need_review] == '1'
       @exercise_task = @task.specific || ExerciseTask.new
       @exercise_task.task ||= @task
@@ -54,12 +58,14 @@ class TasksController < ResourceController
   end
 
   def destroy
+    ## FIXME_NISH what happens if task is not destroyed?
     @task.destroy
     redirect_to manage_track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
   end
 
   # FIXME : Index and manage actions are almost same, follow DRY
   def manage
+    ## FIXME_NISH Please be specific about the permission for actions, don't just write manage.
     authorize! :manage, @track
     @tasks = @track.tasks
     if @tasks.blank?
@@ -69,29 +75,36 @@ class TasksController < ResourceController
     end
   end
 
+  ## FIXME_NISH Lets discuss on monday, if it is good to create a new controller for sample_solution.
   def sample_solution
+    ## FIXME_NISH the action should also specify about download, please verify?
     send_file @task.sample_solution.path
   end
 
   def remove_sample_solution
+    ## FIXME_NISH Please use update_attributes here and also handle the case if it is not updated.
     @task.specific.sample_solution = nil
     @task.save
     redirect_to edit_track_task_path
   end
 
   def assign_runner
+    ## FIXME_NISH This action should be in usertasks_controller, what say?
     @task.usertasks.find_or_create_by(user_id: params[:runner_id])
   end
 
   def remove_runner
+    ## FIXME_NISH This action should be in usertasks_controller, what say?
     @task.usertasks.find_by(user: params[:runner_id]).destroy
   end
 
   def to_review
+    ## FIXME_NISH Use scopes.
     @tasks = @track.tasks.includes(usertasks: :user, usertasks: :reviewer).where(usertasks: { reviewer_id: current_user.id, aasm_state: 'submitted' })
   end
 
   def assigned_to_others_for_review
+    ## FIXME_NISH Use scopes.
     @tasks = @track.tasks.includes(usertasks: :user).where.not(usertasks: { reviewer_id: current_user.id }).where(usertasks: { aasm_state: 'submitted' })
   end
 
@@ -113,6 +126,7 @@ class TasksController < ResourceController
     end
 
     def save_task(task)
+      ## FIXME_NISH we will not require these methods as comment in create and update action.
       if task.save
         redirect_to manage_track_tasks_path, notice: "Task #{ task.title } is successfully created."
       else

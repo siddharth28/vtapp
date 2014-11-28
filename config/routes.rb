@@ -87,6 +87,7 @@ Rails.application.routes.draw do
       root 'devise/sessions#new', as: :unauthenticated_root
     end
 
+    ## FIXME_NISH why we have written the following line?
     get '*unmatched_route', to: 'devise/sessions#destroy'
   end
 end
