@@ -62,7 +62,7 @@ class Ability
     end
 
     def track_reviewer_abilities(user)
-      can :read, Track do |track|
+      can [:read, :runners, :reviewers], Track do |track|
         user.is_track_reviewer_of?(track)
       end
       can [:read, :review, :submit_comment, :review_task], Usertask do |user_task|

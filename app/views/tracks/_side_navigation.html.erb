@@ -14,9 +14,11 @@
           <% if current_user.is_track_reviewer_of?(@track) %>
             <li><%= link_to 'Tasks to review', to_review_track_tasks_path(@track) %></li>
             <li><%= link_to 'Assigned to others for review tasks', assigned_to_others_for_review_track_tasks_path(@track) %></li>
+            <li><%= link_to 'Track reviewer task list', list_track_tasks_path(@track) %></li>
           <% end %>
-          <li><%= link_to 'Track runner list', runners_track_path(@track) %></li>
-          <li><%= link_to 'Track reviewer task list', list_track_tasks_path(@track) %></li>
+          <% if can? :runners, @track %>
+            <li><%= link_to 'Track runner list', runners_track_path(@track) %></li>
+          <% end %>
         </ul>
       </div>
     </nav>
