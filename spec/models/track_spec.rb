@@ -36,15 +36,6 @@ describe Track do
       it { expect(track.owner_id).to eql(9) }
     end
 
-    describe '#owner_name' do
-      it { expect(track.owner_name).to eql('Owner') }
-    end
-
-    describe '#owner_name=' do
-      before { track.owner_name = 'Owner1' }
-      it { expect(track.owner_name).to eql('Owner1') }
-    end
-
     describe '#reviewer_id' do
       it { expect(track.reviewer_id).to eql(99999) }
     end
@@ -52,59 +43,6 @@ describe Track do
     describe '#reviewer_id=' do
       before { track.reviewer_id = 9 }
       it { expect(track.reviewer_id).to eq(9)  }
-    end
-
-    describe '#reviewer_name' do
-      it { expect(track.reviewer_name).to eql('Reviewer') }
-    end
-
-    describe '#reviewer_name=' do
-      before { track.reviewer_name = 'Reviewer1' }
-      it { expect(track.reviewer_name).to eq('Reviewer1')  }
-    end
-  end
-
-  describe '#class methods' do
-    describe '#extract' do
-      let(:track2) { build(:track, name: 'Track', company: company.reload) }
-      let(:mentor) { create(:user, name: 'Mentor 1', email: 'Mentor@example.com', company: company) }
-      let(:user) { build(:user, company: company) }
-
-      context 'track_runner_given' do
-        before do
-          track.save
-          user.save
-          track.company_id = company.id
-          user.add_role(:track_runner, track)
-        end
-
-        it { expect(Track.extract('runner', user).include?(track)).to eql(true) }
-        it { expect(Track.extract('runner', user).include?(track2)).to eql(false) }
-      end
-
-      context 'track_reviewer_given' do
-        before do
-          track.company_id = company.id
-          user.add_role(:track_reviewer, track)
-          track.save
-          user.save
-        end
-
-        it { expect(Track.extract('reviewer', user).include?(track)).to eql(true) }
-        it { expect(Track.extract('reviewer', user).include?(track2)).to eql(false) }
-      end
-
-      context 'track_owner_given' do
-        before do
-          track.company_id = company.id
-          user.add_role(:track_owner, track)
-          track.save
-          user.save
-        end
-
-        it { expect(Track.extract('owner', user).include?(track)).to eql(true) }
-        it { expect(Track.extract('owner', user).include?(track2)).to eql(false) }
-      end
     end
   end
 
@@ -120,14 +58,13 @@ describe Track do
       context 'track_owner_not_given' do
         before do
           track_without_owner.company_id = company.id
-          track_without_owner.owner_id = 123456
           track_without_owner.save
         end
-        it { expect(track_without_owner.owner.name).to eql('Test Owner') }
+        it { expect(track_without_owner.owner).to eql(company.owner) }
       end
     end
 
-    let(:track) { create(:track, company: company, owner_id: user.id, owner_name: user.name) }
+    let(:track) { create(:track, company: company, owner_id: user.id) }
 
     describe '#add_track_role' do
       context 'add reviewer' do
@@ -152,7 +89,7 @@ describe Track do
         end
 
         #add_error rspec
-        it { expect(track.errors[:base]).to eql(["can't be blank"]) }
+        it { expect(track.errors[:base]).to eql(["Please enter a valid User"]) }
       end
     end
 
@@ -178,20 +115,39 @@ describe Track do
         it { expect(track.send(:find_user, user.id)).to eql(user) }
         it { expect(track.owner).to be_nil }
       end
+
+      context 'invalid owner' do
+        before do
+          track.remove_track_role(:track_owner, 123456)
+        end
+        it { expect(track.errors[:base]).to eql(["Please enter a valid User"]) }
+      end
     end
 
     describe '#replace_owner' do
-      before do
-        mentor.add_role(:track_owner, track)
+      context 'valid owner' do
+        before do
+          mentor.add_role(:track_owner, track)
+          track.owner_id = user.id
+        end
+        it { expect{ track.send(:replace_owner)}.to change{ track.reload.owner }.to(user).from(mentor) }
       end
-      it { expect{ track.replace_owner(user.id) }.to change{ track.reload.owner }.to(user).from(mentor) }
-    end
 
-    describe '#replace_owner' do
-      before do
-        mentor.add_role(:track_owner, track)
+      context 'invalid owner' do
+        before do
+          track.owner_id = 123456
+          track.send(:replace_owner)
+        end
+        it { expect(track.errors[:base]).to eql(["Please enter a valid User"]) }
       end
-      it { expect{ track.replace_owner(user.id) }.to change{ track.reload.owner }.to(user).from(mentor) }
+
+      context 'blank owner' do
+        before do
+          track.owner_id = ' '
+          track.send(:replace_owner)
+        end
+        it { expect(track.errors[:base]).to eql(["Please enter a valid User"]) }
+      end
     end
 
     describe '#company_users' do
@@ -200,7 +156,7 @@ describe Track do
       end
 
       context 'user belongs different company' do
-        let(:company2) { create(:company, name: 'Company2', owner_name: 'Test Owner', owner_email: 'owner_email2@owner.com') }
+        let(:company2) { create(:company, name: 'Company2', owner_email: 'owner_email2@owner.com') }
         let(:user2) { create(:user,  company: company2, email: 'User2@example.com') }
 
         before { user.company = company2 }

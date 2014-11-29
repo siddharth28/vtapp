@@ -221,7 +221,6 @@ describe TracksController do
     before do
       allow(Track).to receive(:find).and_return(track)
       allow(track).to receive(:update).and_return(true)
-      allow(track).to receive(:replace_owner).with('4').and_return(role)
     end
 
     def send_request
@@ -231,7 +230,6 @@ describe TracksController do
     describe 'expects to receive' do
       it { expect(Track).to receive(:find).and_return(track) }
       it { expect(track).to receive(:update).and_return(true) }
-      it { expect(track).to receive(:replace_owner).with('4').and_return(role) }
 
       after { send_request }
     end
@@ -361,7 +359,7 @@ describe TracksController do
     before do
       allow(current_company).to receive(:tracks).and_return(tracks)
       allow(tracks).to receive(:includes).with(:owner).and_return(tracks)
-      allow(tracks).to receive(:extract).with('Owner', user).and_return(tracks)
+      allow(tracks).to receive(:with_roles).with('track_owner', user).and_return(tracks)
       allow(tracks).to receive(:search).with('example').and_return(tracks)
       allow(tracks).to receive(:result).and_return(tracks)
       allow(tracks).to receive(:page).with(nil).and_return(tracks)
@@ -369,13 +367,13 @@ describe TracksController do
     end
 
     def send_request
-      get :search, { type: 'Owner', q: 'example',  page: nil }
+      get :search, { type: 'track_owner', q: 'example',  page: nil }
     end
 
     describe 'expects to receive' do
       it { expect(current_company).to receive(:tracks).and_return(tracks) }
       it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
-      it { expect(tracks).to receive(:extract).with('Owner', user).and_return(tracks) }
+      it { expect(tracks).to receive(:with_roles).with('track_owner', user).and_return(tracks) }
       it { expect(tracks).to receive(:search).with('example').and_return(tracks) }
       it { expect(tracks).to receive(:result).and_return(tracks) }
       it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }

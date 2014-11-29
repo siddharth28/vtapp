@@ -6,9 +6,7 @@ FactoryGirl.define do
     instructions 'instruction'
     description 'descriptions'
     owner_id 11111
-    owner_name 'Owner'
     reviewer_id 99999
-    reviewer_name 'Reviewer'
   end
 
   factory :track_without_owner, class: 'Track' do

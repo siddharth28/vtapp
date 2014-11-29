@@ -30,7 +30,7 @@ class TracksController < ResourceController
 
   def search
     ## FIXME_NISH I think we don't require this action, we can do search with inde action, what say?
-    @tracks = current_company.tracks.includes(:owner).extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
+    @tracks = current_company.tracks.includes(:owner).with_roles(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
     render action: :index
   end
 
@@ -46,7 +46,6 @@ class TracksController < ResourceController
   def update
     if @track.update(track_params)
       ## FIXME_NISH Please do this operation in model through callbacks.
-      @track.replace_owner(params[:track][:owner_id])
       redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
     else
       render action: 'edit'
