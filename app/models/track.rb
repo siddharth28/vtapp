@@ -72,7 +72,7 @@ class Track < ActiveRecord::Base
 
     def replace_owner
       if owner_id.blank? && !find_user(owner_id)
-        errors.add(:base, "Please enter a valid User to be owner")
+        errors.add(:base, "Please enter a valid User")
       else
         remove_track_role(ROLES[:track_owner], owner.id)
         add_track_role(ROLES[:track_owner], owner_id)
