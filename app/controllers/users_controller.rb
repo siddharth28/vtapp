@@ -10,9 +10,10 @@ class UsersController < ResourceController
   def index
     # FIXED
     # FIXME : sort params not correct
+    ## FIXED
     ## FIXME_NISH move this logic params[:q] || { s: "name asc" } in a method.
-    @search = current_company.users.includes(:roles, :company).search(params[:q] || { s: "name asc" })
-    @users = @search.result.page(params[:page]).per(20)
+    @search = current_company.users.search(default_sort_order_if_sort_params_nil)
+    @users = @search.result.includes(:roles, :company).page(params[:page])
   end
 
   def create
@@ -36,8 +37,8 @@ class UsersController < ResourceController
 
   def mentees
     ## FIXME_NISH this action has identical code as index, please look into it.
-    @search = @user.mentees.includes(:roles, :company).search(params[:q] || { s: "name asc" })
-    @mentees = @search.result.page(params[:page]).per(20)
+    @search = @user.mentees.search(default_sort_order_if_sort_params_nil)
+    @mentees = @search.result.includes(:roles, :company).page(params[:page])
   end
 
   private
@@ -67,5 +68,9 @@ class UsersController < ResourceController
       else
         super(parameters).with_company(current_company)
       end
+    end
+
+    def default_sort_order_if_sort_params_nil
+      params[:q] || { s: "name asc" }
     end
 end

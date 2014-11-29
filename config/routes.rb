@@ -64,7 +64,7 @@ Rails.application.routes.draw do
             get :list
           end
           member do
-            get :sample_solution
+            get :download_sample_solution
             get :remove_sample_solution
             get :autocomplete_user_email
             get :reviewers

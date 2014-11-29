@@ -118,11 +118,10 @@ describe CompaniesController do
   #FIXME -> Change rspecs as discussed
   describe '#index' do
     before do
-      allow(Company).to receive(:includes).with(:owner).and_return(companies)
-      allow(companies).to receive(:search).with('example').and_return(companies)
+      allow(Company).to receive(:search).with('example').and_return(companies)
+      allow(companies).to receive(:includes).with(:owner).and_return(companies)
       allow(companies).to receive(:result).and_return(companies)
       allow(companies).to receive(:page).with(nil).and_return(companies)
-      allow(companies).to receive(:per).with(20).and_return(companies)
     end
 
     def send_request
@@ -132,11 +131,11 @@ describe CompaniesController do
     #FIXME Test call with arguments.
     describe 'expects to receive' do
       after { send_request }
-      it { expect(Company).to receive(:includes).with(:owner).and_return(companies) }
-      it { expect(companies).to receive(:search).with('example').and_return(companies) }
+
+      it { expect(Company).to receive(:search).with('example').and_return(companies) }
+      it { expect(companies).to receive(:includes).with(:owner).and_return(companies) }
       it { expect(companies).to receive(:result).and_return(companies) }
       it { expect(companies).to receive(:page).with(nil).and_return(companies) }
-      it { expect(companies).to receive(:per).with(20).and_return(companies) }
     end
 
     describe 'assigns' do

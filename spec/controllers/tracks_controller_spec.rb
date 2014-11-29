@@ -23,7 +23,6 @@ describe TracksController do
     before do
       allow(tracks).to receive(:includes).with(:owner).and_return(tracks)
       allow(tracks).to receive(:page).with(nil).and_return(tracks)
-      allow(tracks).to receive(:per).with(20).and_return(tracks)
     end
 
     def send_request
@@ -41,7 +40,6 @@ describe TracksController do
         it { expect(current_company).to receive(:tracks).and_return(tracks) }
         it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
         it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
-        it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
         after { send_request }
       end
@@ -71,7 +69,6 @@ describe TracksController do
         it { expect(current_company).to receive(:tracks).and_return(tracks) }
         it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
         it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
-        it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
         after { send_request }
       end
@@ -101,7 +98,6 @@ describe TracksController do
         it { expect(user).to receive(:tracks).and_return(tracks) }
         it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
         it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
-        it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
         after { send_request }
       end
@@ -363,7 +359,6 @@ describe TracksController do
       allow(tracks).to receive(:search).with('example').and_return(tracks)
       allow(tracks).to receive(:result).and_return(tracks)
       allow(tracks).to receive(:page).with(nil).and_return(tracks)
-      allow(tracks).to receive(:per).with(20).and_return(tracks)
     end
 
     def send_request
@@ -377,7 +372,6 @@ describe TracksController do
       it { expect(tracks).to receive(:search).with('example').and_return(tracks) }
       it { expect(tracks).to receive(:result).and_return(tracks) }
       it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
-      it { expect(tracks).to receive(:per).with(20).and_return(tracks) }
 
       after { send_request }
     end

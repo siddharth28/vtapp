@@ -36,7 +36,6 @@ describe UsersController do
       allow(users).to receive(:search).with({ s: "name asc" }).and_return(users)
       allow(users).to receive(:result).and_return(users)
       allow(users).to receive(:page).with(nil).and_return(users)
-      allow(users).to receive(:per).with(20).and_return(users)
     end
 
     def send_request
@@ -50,7 +49,7 @@ describe UsersController do
       it { expect(users).to receive(:search).with({ s: "name asc" }).and_return(users) }
       it { expect(users).to receive(:result).and_return(users) }
       it { expect(users).to receive(:page).with(nil).and_return(users) }
-      it { expect(users).to receive(:per).with(20).and_return(users) }
+
       after { send_request }
     end
 
@@ -226,7 +225,6 @@ describe UsersController do
       allow(users).to receive(:search).with({ s: "name asc" }).and_return(users)
       allow(users).to receive(:result).and_return(users)
       allow(users).to receive(:page).with(nil).and_return(users)
-      allow(users).to receive(:per).with(20).and_return(users)
     end
 
     def send_request
@@ -239,7 +237,7 @@ describe UsersController do
       it { expect(users).to receive(:search).with({ s: "name asc" }).and_return(users) }
       it { expect(users).to receive(:result).and_return(users) }
       it { expect(users).to receive(:page).with(nil).and_return(users) }
-      it { expect(users).to receive(:per).with(20).and_return(users) }
+
       after { send_request }
     end
 

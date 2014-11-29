@@ -27,8 +27,9 @@ class TasksController < ResourceController
   end
 
   def new
+    ## FIXED
     ## FIXME_NISH Please be specific about the permission for actions, don't just write manage.
-    authorize! :manage, @track
+    authorize! :update, @track
     @task = @track.tasks.build
   end
 
@@ -58,15 +59,19 @@ class TasksController < ResourceController
   end
 
   def destroy
+    ## FIXED
     ## FIXME_NISH what happens if task is not destroyed?
-    @task.destroy
-    redirect_to manage_track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
+    if @task.destroy
+      redirect_to manage_track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
+    else
+      redirect_to manage_track_tasks_path, notice: "Task #{ @task.title } cannot be deleted."
+    end
   end
 
   # FIXME : Index and manage actions are almost same, follow DRY
   def manage
     ## FIXME_NISH Please be specific about the permission for actions, don't just write manage.
-    authorize! :manage, @track
+    authorize! :update, @track
     @tasks = @track.tasks
     if @tasks.blank?
       flash.now[:alert] = "Track: #{ @track.name } has no tasks at this moment"
@@ -76,16 +81,19 @@ class TasksController < ResourceController
   end
 
   ## FIXME_NISH Lets discuss on monday, if it is good to create a new controller for sample_solution.
-  def sample_solution
+  def download_sample_solution
     ## FIXME_NISH the action should also specify about download, please verify?
     send_file @task.sample_solution.path
   end
 
   def remove_sample_solution
+    ## FIXED
     ## FIXME_NISH Please use update_attributes here and also handle the case if it is not updated.
-    @task.specific.sample_solution = nil
-    @task.save
-    redirect_to edit_track_task_path
+    if @task.specific.update_attributes(sample_solution: nil)
+      redirect_to edit_track_task_path
+    else
+      render :edit
+    end
   end
 
   def assign_runner

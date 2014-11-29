@@ -302,7 +302,7 @@ describe TasksController do
   describe '#destroy' do
     before do
       allow(Task).to receive(:find).and_return(task)
-      allow(task).to receive(:destroy)
+      allow(task).to receive(:destroy).and_return(task)
     end
 
     def send_request
@@ -395,7 +395,7 @@ describe TasksController do
   end
 
 
-  describe '#sample_solution' do
+  describe '#download_sample_solution' do
     let(:sample_solution) { instance_double('Paperclip::Attachment') }
 
 
@@ -408,7 +408,7 @@ describe TasksController do
     end
 
     def send_request
-      get :sample_solution, track_id: track.id, id: task.id
+      get :download_sample_solution, track_id: track.id, id: task.id
     end
 
     describe 'expects to receive' do
@@ -432,8 +432,7 @@ describe TasksController do
     before do
       allow(Task).to receive(:find).and_return(task)
       allow(task).to receive(:specific).and_return(exercise_task)
-      allow(exercise_task).to receive(:sample_solution=).with(nil)
-      allow(task).to receive(:save).and_return(true)
+      allow(exercise_task).to receive(:update_attributes).and_return(true)
     end
 
     def send_request
@@ -443,8 +442,7 @@ describe TasksController do
     describe 'expects to receive' do
       it { expect(Task).to receive(:find).and_return(task) }
       it { expect(task).to receive(:specific).and_return(exercise_task) }
-      it { expect(exercise_task).to receive(:sample_solution=).with(nil) }
-      it { expect(task).to receive(:save).and_return(true) }
+      it { expect(exercise_task).to receive(:update_attributes) }
 
       after { send_request }
     end

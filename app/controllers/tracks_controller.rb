@@ -6,9 +6,9 @@ class TracksController < ResourceController
   def index
     ## FIXME_NISH You don't need to add a check here, you have added it in ability.rb, use accessible_by method for this.
     if current_user.account_owner? || current_user.account_admin?
-      @tracks = current_company.tracks.includes(:owner).page(params[:page]).per(20)
+      @tracks = current_company.tracks.includes(:owner).page(params[:page])
     else
-      @tracks = current_user.tracks.includes(:owner).page(params[:page]).per(20)
+      @tracks = current_user.tracks.includes(:owner).page(params[:page])
     end
   end
 
@@ -30,7 +30,7 @@ class TracksController < ResourceController
 
   def search
     ## FIXME_NISH I think we don't require this action, we can do search with inde action, what say?
-    @tracks = current_company.tracks.includes(:owner).with_roles(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
+    @tracks = current_company.tracks.includes(:owner).with_roles(params[:type], current_user).search(params[:q]).result.page(params[:page])
     render action: :index
   end
 
@@ -45,6 +45,7 @@ class TracksController < ResourceController
 
   def update
     if @track.update(track_params)
+      ## FIXED
       ## FIXME_NISH Please do this operation in model through callbacks.
       redirect_to @track, notice: "Track #{ @track.name } is successfully updated."
     else
