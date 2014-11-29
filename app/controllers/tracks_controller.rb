@@ -29,12 +29,8 @@ class TracksController < ResourceController
   end
 
   def search
-<<<<<<< HEAD
     ## FIXME_NISH I think we don't require this action, we can do search with inde action, what say?
-    @tracks = current_company.tracks.load_with_owners.extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
-=======
     @tracks = current_company.tracks.includes(:owner).extract(params[:type], current_user).search(params[:q]).result.page(params[:page]).per(20)
->>>>>>> 08a2cd5d989761f898e9ad8878c07f99721a4c5f
     render action: :index
   end
 
