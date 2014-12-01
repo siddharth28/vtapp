@@ -1,6 +1,8 @@
 class UsertasksController < ResourceController
 
   before_action :build_url, :build_comment, only: :show
+  before_action :load_comments, :load_urls, only: [:show, :submit_url, :submit_comment, :review, :review_exercise]
+  before_action :redirect_if_assigning_own_task, only: :assign_to_me
   helper_method :current_track
 
   def start
@@ -17,9 +19,8 @@ class UsertasksController < ResourceController
 
   def submit_url
     ## FIXME_NISH refactor this action.
-    @url = @usertask.urls.find_or_initialize_by(name: params[:url][:name])
-    if @url.save
-      submit_task_if_in_progress
+    @url = @usertask.urls.find_or_initialize_by(url_params)
+    if @url.save && submit_task_if_in_progress
       @url.add_submission_comment
       redirect_to @usertask, notice: "Task #{ @usertask.task.title } is successfully submitted"
     else
@@ -30,7 +31,7 @@ class UsertasksController < ResourceController
 
   def submit_comment
     ## FIXME_NISH refactor this action!
-    @comment = @usertask.comments.build(commenter: current_user, data: params[:comment][:data])
+    @comment = @usertask.comments.build(comment_params)
     if @comment.save
       redirect_to @usertask, notice: "Comment added"
     else
@@ -40,56 +41,62 @@ class UsertasksController < ResourceController
   end
 
   def submit_task
-    submit_task_if_in_progress
-    redirect_to @usertask, notice: "Task submitted successfully"
+    if submit_task_if_in_progress
+      redirect_to @usertask, notice: "Task submitted successfully"
+    else
+      redirect_to @usertask, error: "Unable to submit the task"
+    end
   end
 
   def resubmit
-    submit_task_if_in_progress
-    @usertask.urls.order(submitted_at: :desc).first.add_submission_comment
-    redirect_to @usertask
+    if submit_task_if_in_progress
+      @usertask.urls.order(submitted_at: :desc).first.add_submission_comment
+      redirect_to @usertask, notice: "Task resubmitted successfully"
+    else
+      redirect_to @usertask, error: "Unable to resubmit the task"
+    end
   end
 
   def assign_to_me
     ## FIXME_NISH use appt. name.
+    ## FIXED
     ## FIXME_NISH move the verification part of usertask.user == current_user in a before_action
-    if @usertask.user == current_user
-      redirect_to assigned_to_others_for_review_track_tasks_path(current_track), alert: "Cannot change the reviewer of your own task"
-    else
-      @usertask.update_attributes(reviewer: current_user)
-      redirect_to assigned_to_others_for_review_track_tasks_path(current_track)
-    end
+    @usertask.update_attributes(reviewer: current_user)
+    redirect_to assigned_to_others_for_review_track_tasks_path(current_track)
   end
 
-  def review_task
+  def review_exercise
     ## FIXME_NISH refactor this action and use appt. name.
-    if @usertask.submitted?
-      if params[:task_status] == 'accept' && @usertask.accept!
-        @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is accepted', commenter: current_user)
-        redirect_to @usertask
-      elsif params[:task_status] == 'reject' && @usertask.reject!
-        @usertask.comments.create(data: params[:usertask][:comment] << 'Your exercise is rejected', commenter: current_user)
-        redirect_to @usertask
-      end
+    @usertask.attributes = usertask_params
+    if @usertask.review_exercise
+      redirect_to @usertask
     else
-      render 'review'
+      render :review
     end
   end
 
   private
     def usertask_params
-      params.require(:usertask).permit(:user_id, :task_id, :url, :comment)
+      params.require(:usertask).permit(:comment, :task_status)
     end
 
     def build_url
       ## FIXME_NISH method name should specify everything about the method.
       if @usertask.user == current_user
-        @url = @usertask.urls.build
+        @url = Url.new
       end
     end
 
     def build_comment
-      @comment = @usertask.comments.build
+      @comment = Comment.new
+    end
+
+    def load_comments
+      @comments = @usertask.comments.order(:created_at).includes(:commenter).persisted
+    end
+
+    def load_urls
+      @urls = @usertask.urls.order(submitted_at: :desc).persisted
     end
 
     def current_track
@@ -98,5 +105,20 @@ class UsertasksController < ResourceController
 
     def submit_task_if_in_progress
       @usertask.in_progress? && @usertask.submit!
+      @usertask.submitted? || @usertask.completed?
+    end
+
+    def redirect_if_assigning_own_task
+      if @usertask.user == current_user
+        redirect_to assigned_to_others_for_review_track_tasks_path(current_track), alert: "Cannot change the reviewer of your own task"
+      end
+    end
+
+    def comment_params
+      params.require(:comment).permit(:data, :commenter).merge(commenter: current_user)
+    end
+
+    def url_params
+      params.require(:url).permit(:name)
     end
 end

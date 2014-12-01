@@ -23,22 +23,26 @@ class Task < ActiveRecord::Base
   ## FIXME_NISH Please use appt. name for this scope.
   scope :study_tasks, -> { where(actable_id: nil) }
   scope :with_track, ->(track) { where(track: track) }
+  scope :to_review, ->(user) { includes(usertasks: :user).where(usertasks: { reviewer: user, aasm_state: 'submitted' }) }
+  scope :assigned_to_others_for_review, ->(user) { includes(usertasks: :user).where.not(usertasks: { reviewer_id: user.id }).where(usertasks: { aasm_state: 'submitted' }) }
+  ## FIXED
   ## FIXME_NISH Please use appt. name for this scope.
   ## FIXME_NISH Please habe a look if we can do this with Arel Table.
-  scope :visible_tasks, -> { joins("LEFT OUTER JOIN exercise_tasks ON exercise_tasks.id = tasks.actable_id").where("(tasks.actable_id IS NULL) OR (tasks.actable_id IS NOT NULL AND exercise_tasks.is_hidden = '0')") }
+  scope :visible, -> { joins("LEFT OUTER JOIN exercise_tasks ON exercise_tasks.id = tasks.actable_id").where("(tasks.actable_id IS NULL) OR (tasks.actable_id IS NOT NULL AND exercise_tasks.is_hidden = '0')") }
 
   strip_fields :title, :description
 
   delegate :is_hidden, :sample_solution, :instructions, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
   delegate :title, :need_review?, to: :parent, prefix: :parent, allow_nil: true
 
-  alias_attribute :need_review, :actable_id
+  def need_review?
+    actable_id?
+  end
 
 
   ## FIXED
   ## FIXME_NISH make a delegate method to pluck title of the parent.
 
-  ## FIXED
   ## FIXME_NISH Please make it as an alias.
 
   private

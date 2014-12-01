@@ -13,10 +13,9 @@ class Usertask < ActiveRecord::Base
   ## FIXME_NISH delegate need_review to task.
   before_create :assign_reviewer if :need_review?
 
-  attr_accessor :comment
+  attr_accessor :comment, :task_status
 
   delegate :need_review?, to: :task
-  alias_method :check_exercise?, :need_review?
 
   aasm do
     state :not_started, initial: true
@@ -30,7 +29,7 @@ class Usertask < ActiveRecord::Base
     end
 
     event :submit, after: [:add_end_time, :mark_parent_task_finished] do
-      transitions from: :in_progress, to: :submitted, guard: :check_exercise?
+      transitions from: :in_progress, to: :submitted, guard: :need_review?
       transitions from: :in_progress, to: :completed
     end
 
@@ -47,18 +46,21 @@ class Usertask < ActiveRecord::Base
     end
   end
 
-  [:not_started, :in_progress, :submitted, :completed, :restart].each do |state|
-    define_method "#{ state }?" do
-      aasm_state == state.to_s
+  def review_exercise
+    if submitted?
+      if task_status == 'accept'
+        accept! && comments.create(data: comment + 'Your exercise is accepted', commenter: reviewer)
+      elsif task_status == 'reject'
+        reject! && comments.create(data: comment + 'Your exercise is rejected', commenter: reviewer)
+      end
     end
   end
-
 
   private
     def add_start_time
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
-      update_column(:start_time, Time.current)
+      touch(:start_time)
     end
 
     def add_end_time
@@ -66,7 +68,7 @@ class Usertask < ActiveRecord::Base
       # Not fixed
       # FIXED
       # FIXME : Do not use Time.now, start using Time.current
-      update_column(:end_time, Time.current)
+      touch(:end_time)
     end
 
     def assign_reviewer

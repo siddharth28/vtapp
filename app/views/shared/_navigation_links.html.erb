@@ -14,8 +14,8 @@
   </li>
 <% end %>
 
-<% unless current_user.mentees.blank? %>
-  <li><%= link_to 'My mentees', mentees_user_path(current_user) %></li>
+<% if current_user.mentees.exists? %>
+  <li><%= link_to 'My mentees', '/mentees' %></li>
 <% end %>
 
 <li><%= link_to 'Account', edit_user_registration_path, class: "#{ state(edit_user_registration_path) }" %></li>

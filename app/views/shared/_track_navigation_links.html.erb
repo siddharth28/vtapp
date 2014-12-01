@@ -1,15 +1,15 @@
 <ul class="dropdown-menu dropdown" >
   <li><%= link_to 'All Tracks', tracks_path %></li>
 
-  <% if current_user.is_track_owner_of?(:any) %>
-    <li><%= link_to 'Track Owned', search_tracks_path(type: Track::ROLES[:track_owner]) %></li>
+  <% if can? :udpate, Track %>
+    <li><%= link_to 'Track Owned', tracks_path(type: Track::ROLES[:track_owner]) %></li>
   <% end %>
 
-  <% if current_user.is_track_reviewer_of?(:any) %>
-    <li><%= link_to 'Track to review', search_tracks_path(type: Track::ROLES[:track_reviewer]) %></li>
+  <% if can? :runners, Track %>
+    <li><%= link_to 'Track to review', tracks_path(type: Track::ROLES[:track_reviewer]) %></li>
   <% end %>
 
-  <% if current_user.is_track_runner_of?(:any) %>
-    <li><%= link_to 'Track Assigned', search_tracks_path(type: Track::ROLES[:track_runner]) %></li>
+  <% if can? :show, Track %>
+    <li><%= link_to 'Track Assigned', tracks_path(type: Track::ROLES[:track_runner]) %></li>
   <% end %>
 </ul>

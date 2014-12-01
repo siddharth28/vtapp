@@ -46,18 +46,16 @@ class Ability
         end
         can :manage, Track, company: user.company
         can :manage, Task
-        can [:read, :review, :submit_comment, :review_task, :assign_to_me], Usertask
+        can [:read, :submit_comment, :assign_to_me], Usertask
       end
     end
 
     def track_owner_abilities(user)
-      can :manage, Track do |track|
-        track.owner == user
-      end
+      can :manage, Track, owner_id: user.id
       can :manage, Task do |task|
         user.is_track_owner_of?(task.track)
       end
-      can [:read, :review, :submit_comment, :review_task, :assign_to_me], Usertask do |user_task|
+      can [:read, :submit_comment, :assign_to_me], Usertask do |user_task|
         user.is_track_owner_of?(user_task.task.track)
       end
     end
@@ -66,9 +64,8 @@ class Ability
       can [:read, :runners, :reviewers], Track do |track|
         user.is_track_reviewer_of?(track)
       end
-      can [:read, :review, :submit_comment, :review_task], Usertask do |user_task|
-        user_task.reviewer_id == user.id
-      end
+      can [:read, :review, :submit_comment, :review_exercise], Usertask, reviewer_id: user.id
+
       can :assign_to_me, Usertask do |user_task|
         user_task.task.track.reviewers.include?(user)
       end
@@ -85,10 +82,10 @@ class Ability
         user_task.user_id == user.id && !user_task.not_started? && !user_task.task.need_review?
       end
       can [:read, :submit_url, :resubmit], Usertask do |user_task|
-        user_task.user_id == user.id && !user_task.not_started? && user_task.task.need_review?
+        user_task.user_id == user.id && !user_task.not_started? && !user_task.restart? && user_task.task.need_review?
       end
       can :restart, Usertask do |user_task|
-        user_task.user_id == user.id && user_task.restart? && user_task.task.need_review?
+        user_task.user_id == user.id && user_task.restart?
       end
       can :submit_comment, Usertask do |user_task|
         user_task.user_id == user.id

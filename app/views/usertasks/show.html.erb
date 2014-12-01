@@ -13,11 +13,11 @@
       <% if can? :submit_url, @usertask %>
         <%= render 'url_form' %>
       <% end %>
-      <% unless @usertask.urls.persisted.blank? %>
+      <% unless @urls.blank? %>
         <div class="form-group">
           <label class='col-sm-3'><strong>Solutions Submitted:</strong></label>
           <div class="col-sm-8 readonly">
-            <% @usertask.urls.persisted.order(updated_at: :desc).each do |url| %>
+            <% @urls.each do |url| %>
               <%= link_to url.name, url.name %><br>
             <% end %>
             <%= link_to 'Resubmit last URL', resubmit_usertask_path(@usertask), method: :post, class: 'btn btn-default' %>

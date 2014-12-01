@@ -1,9 +1,10 @@
-<%= form_for(@usertask, url: url_for(controller: :usertasks, action: 'review_task', id: @usertask)) do |usertask| %>
+<%= form_for(@usertask, url: url_for(controller: :usertasks, action: 'review_exercise', id: @usertask)) do |usertask| %>
 
   <div class="form-group">
     <%= usertask.label :comment, class: 'col-sm-3' %>
     <div class="col-sm-8">
       <%= usertask.text_area :comment, class: 'form-control', rows: 3, placeholder: "Click to add in a comment.." %>
+      <%= errors_for_field(@usertask, :comments) %>
     </div>
   </div>
 
@@ -12,11 +13,11 @@
     <div class="col-sm-8">
       <label class="col-sm-4">
         Accept
-        <%= radio_button_tag :task_status, 'accept' %>
+        <%= usertask.radio_button :task_status, 'accept' %>
       </label>
       <label class="col-sm-4">
         Reject
-        <%= radio_button_tag :task_status, 'reject', :checked => true %>
+        <%= usertask.radio_button :task_status, 'reject', checked: true %>
       </label>
     </div>
   </div>

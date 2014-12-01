@@ -1,4 +1,9 @@
 <div class='task_description'>
+  <h1>
+    <%= link_to @track.name, @track %> 
+    >> 
+    <%= link_to 'Tasks', manage_track_tasks_path(@track) %>
+  </h1>
   <%= link_to 'Back', 'javascript:history.go(-1);', class: 'btn btn-default pull-right m-right-2x' %>
   <h1 class='m-left-375x'>Task</h1>
   <div class='m-left-375x form-horizontal form-well col-sm-6' >
@@ -8,7 +13,7 @@
     <div class="form-group">
       <label class='col-sm-3'><strong>Solutions Submitted:</strong></label>
       <div class="col-sm-8 readonly">
-        <% @usertask.urls.each do |url| %>
+        <% @urls.each do |url| %>
           <%= link_to url.name %><br>
         <% end %>
       </div>

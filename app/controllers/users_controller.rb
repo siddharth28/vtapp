@@ -12,7 +12,7 @@ class UsersController < ResourceController
     # FIXME : sort params not correct
     ## FIXED
     ## FIXME_NISH move this logic params[:q] || { s: "name asc" } in a method.
-    @search = current_company.users.search(default_sort_order_if_sort_params_nil)
+    @search = specific_users.search(default_sort_order_if_sort_params_nil)
     @users = @search.result.includes(:roles, :company).page(params[:page])
   end
 
@@ -35,12 +35,8 @@ class UsersController < ResourceController
     end
   end
 
-  def mentees
-    ## FIXME_NISH this action has identical code as index, please look into it.
-    @search = @user.mentees.search(default_sort_order_if_sort_params_nil)
-    @mentees = @search.result.includes(:roles, :company).page(params[:page])
-  end
 
+    ## FIXME_NISH this action has identical code as index, please look into it.
   private
     def user_params
       params.require(:user).permit(:name, :email, :department, :mentor_id, :enabled, tracks_with_role_runner_ids: [])
@@ -73,4 +69,9 @@ class UsersController < ResourceController
     def default_sort_order_if_sort_params_nil
       params[:q] || { s: "name asc" }
     end
+
+    def specific_users
+      params[:type] == 'mentees' ? current_user.mentees : current_company.users
+    end
+
 end

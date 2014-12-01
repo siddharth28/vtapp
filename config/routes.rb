@@ -12,14 +12,11 @@ Rails.application.routes.draw do
       end
 
       root 'roles#home_page', as: :authenticated_root
-
+      get '/:type', to: 'users#index', constraints: { type: :mentees }
       resources :users do
         collection do
           get :autocomplete_user_name
           get :autocomplete_user_department
-        end
-        member do
-          get :mentees
         end
       end
 
@@ -33,7 +30,7 @@ Rails.application.routes.draw do
           post :resubmit
           put :assign_to_me
           get :review
-          patch :review_task
+          patch :review_exercise
           get :search
         end
       end
@@ -50,7 +47,6 @@ Rails.application.routes.draw do
         end
 
         get :autocomplete_user_name, on: :collection
-        get :search, on: :collection
 
         resources :tasks do
           collection do

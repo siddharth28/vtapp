@@ -125,7 +125,7 @@ class User < ActiveRecord::Base
     def assign_usertasks(role)
       if role.name == Track::ROLES[:track_runner]
         already_assigned_tasks = usertasks.pluck(:task_id)
-        tasks = role.resource.tasks.visible_tasks.where.not(id: already_assigned_tasks).includes(:actable)
+        tasks = role.resource.tasks.visible.where.not(id: already_assigned_tasks).includes(:actable)
         tasks.each { |task| usertasks.build(task: task) }
       end
     end

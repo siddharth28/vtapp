@@ -70,6 +70,7 @@ class TasksController < ResourceController
 
   # FIXME : Index and manage actions are almost same, follow DRY
   def manage
+    ## FIXED
     ## FIXME_NISH Please be specific about the permission for actions, don't just write manage.
     authorize! :update, @track
     @tasks = @track.tasks
@@ -108,12 +109,12 @@ class TasksController < ResourceController
 
   def to_review
     ## FIXME_NISH Use scopes.
-    @tasks = @track.tasks.includes(usertasks: :user, usertasks: :reviewer).where(usertasks: { reviewer_id: current_user.id, aasm_state: 'submitted' })
+    @tasks = @track.tasks.to_review(current_user)
   end
 
   def assigned_to_others_for_review
     ## FIXME_NISH Use scopes.
-    @tasks = @track.tasks.includes(usertasks: :user).where.not(usertasks: { reviewer_id: current_user.id }).where(usertasks: { aasm_state: 'submitted' })
+    @tasks = @track.tasks.assigned_to_others_for_review(current_user)
   end
 
   def list
