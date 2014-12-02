@@ -1,18 +1,10 @@
 class CompaniesController < ResourceController
-  ## FIXED
-  ## FIXME_NISH Don't add array for a single value for :only
   before_action :build_user, only: :new
   #rspec remaining
-  ## FIXED
-  ## FIXME_NISH Don't add array for a single value for :only
   skip_load_resource only: :create
 
   def index
-    ## FIXED
-    ## FIXME_NISH You don't need to explicitely specify 20, by default it will rake 25.
     @search = Company.search(params[:q])
-    ## FIXED
-    ## FIXME_NISH Lets move includes after result.
     @companies = @search.result.includes(:owner).page(params[:page])
   end
 

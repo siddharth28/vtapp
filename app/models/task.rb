@@ -11,11 +11,8 @@ class Task < ActiveRecord::Base
 
   validates :track, presence: true
 
-  ## FIXED
-  ## FIXME_NISH Please break the validation into multiple validations because this will fire a query even if there is nil value for title.
   validates :title, presence: true
-  validates :title, uniqueness: { scope: :track_id, case_sensitive: false }, allow_blank: true
-  validates :title, length: { maximum: 255 }
+  validates :title, uniqueness: { scope: :track_id, case_sensitive: false }, length: { maximum: 255 }, allow_blank: true
   validate :cannot_be_own_parent, on: :update
   validate :parent_cannot_be_exercise_task
 
@@ -25,25 +22,17 @@ class Task < ActiveRecord::Base
   scope :with_track, ->(track) { where(track: track) }
   scope :to_review, ->(user) { includes(usertasks: :user).where(usertasks: { reviewer: user, aasm_state: 'submitted' }) }
   scope :assigned_to_others_for_review, ->(user) { includes(usertasks: :user).where.not(usertasks: { reviewer_id: user.id }).where(usertasks: { aasm_state: 'submitted' }) }
-  ## FIXED
-  ## FIXME_NISH Please use appt. name for this scope.
   ## FIXME_NISH Please habe a look if we can do this with Arel Table.
   scope :visible, -> { joins("LEFT OUTER JOIN exercise_tasks ON exercise_tasks.id = tasks.actable_id").where("(tasks.actable_id IS NULL) OR (tasks.actable_id IS NOT NULL AND exercise_tasks.is_hidden = '0')") }
 
   strip_fields :title, :description
 
   delegate :is_hidden, :sample_solution, :instructions, :reviewer_id, :reviewer, :reviewer_name, to: :specific, allow_nil: true
-  delegate :title, :need_review?, to: :parent, prefix: :parent, allow_nil: true
+  delegate :title, :need_review?, to: :parent, prefix: true, allow_nil: true
 
   def need_review?
     actable_id?
   end
-
-
-  ## FIXED
-  ## FIXME_NISH make a delegate method to pluck title of the parent.
-
-  ## FIXME_NISH Please make it as an alias.
 
   private
     def cannot_be_own_parent
@@ -51,8 +40,6 @@ class Task < ActiveRecord::Base
     end
 
     def parent_cannot_be_exercise_task
-      ## FIXED
-      ## FIXME_NISH make a delegate method to pluck need_review? of the parent.
       parent_need_review? && errors.add(:parent, 'parent cannot be exercise task')
     end
 

@@ -58,16 +58,10 @@ class Usertask < ActiveRecord::Base
 
   private
     def add_start_time
-      # FIXED
-      # FIXME : Do not use Time.now, start using Time.current
       touch(:start_time)
     end
 
     def add_end_time
-      # FIXED
-      # Not fixed
-      # FIXED
-      # FIXME : Do not use Time.now, start using Time.current
       touch(:end_time)
     end
 
@@ -80,8 +74,8 @@ class Usertask < ActiveRecord::Base
     end
 
     def mark_parent_task_finished
-      ## FIXED
       ## FIXME_NISH we can add a check of parent_usertaks rather than using try.
+      ## FIXME_NISH move checking of all children completed to a new method and refector this one.
       if parent_task
         children_submitted = parent_task.children.all? { |task| task.usertasks.find_by(user: user).completed? }
         parent_usertask.try(:submit!) if parent_usertask && children_submitted && parent_usertask.in_progress?
@@ -89,8 +83,6 @@ class Usertask < ActiveRecord::Base
     end
 
     def mark_parent_task_started
-      ## FIXED
-      ## FIXME_NISH we can add a check of parent_usertaks rather than using try.
       parent_task && parent_usertask && parent_usertask.not_started? && parent_usertask.start!
     end
 

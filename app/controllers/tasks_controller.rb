@@ -27,8 +27,6 @@ class TasksController < ResourceController
   end
 
   def new
-    ## FIXED
-    ## FIXME_NISH Please be specific about the permission for actions, don't just write manage.
     authorize! :update, @track
     @task = @track.tasks.build
   end
@@ -59,19 +57,16 @@ class TasksController < ResourceController
   end
 
   def destroy
-    ## FIXED
-    ## FIXME_NISH what happens if task is not destroyed?
     if @task.destroy
       redirect_to manage_track_tasks_path, notice: "Task #{ @task.title } is successfully deleted."
     else
+      ## FIXME_NISH Please use error or alert in case task is not destroyed.
       redirect_to manage_track_tasks_path, notice: "Task #{ @task.title } cannot be deleted."
     end
   end
 
   # FIXME : Index and manage actions are almost same, follow DRY
   def manage
-    ## FIXED
-    ## FIXME_NISH Please be specific about the permission for actions, don't just write manage.
     authorize! :update, @track
     @tasks = @track.tasks
     if @tasks.blank?
@@ -88,8 +83,6 @@ class TasksController < ResourceController
   end
 
   def remove_sample_solution
-    ## FIXED
-    ## FIXME_NISH Please use update_attributes here and also handle the case if it is not updated.
     if @task.specific.update_attributes(sample_solution: nil)
       redirect_to edit_track_task_path
     else

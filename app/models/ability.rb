@@ -91,5 +91,4 @@ class Ability
         user_task.user_id == user.id
       end
     end
-
 end
