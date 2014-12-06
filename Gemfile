@@ -23,6 +23,7 @@ gem 'aasm',                                   '3.4.0'
 gem 'awesome_nested_set',                     '3.0.1'
 gem 'the_sortable_tree',                      '~> 2.5.0'
 gem 'coffee-rails',                           '4.0.1'
+gem 'unicorn',                                '4.8.3'
 
 group :assets do
   gem 'therubyracer',                         '0.12.1', platforms: :ruby
