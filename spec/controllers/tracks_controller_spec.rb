@@ -351,46 +351,6 @@ describe TracksController do
     end
   end
 
-  describe '#search' do
-    before do
-      allow(current_company).to receive(:tracks).and_return(tracks)
-      allow(tracks).to receive(:includes).with(:owner).and_return(tracks)
-      allow(tracks).to receive(:with_roles).with('track_owner', user).and_return(tracks)
-      allow(tracks).to receive(:search).with('example').and_return(tracks)
-      allow(tracks).to receive(:result).and_return(tracks)
-      allow(tracks).to receive(:page).with(nil).and_return(tracks)
-    end
-
-    def send_request
-      get :search, { type: 'track_owner', q: 'example',  page: nil }
-    end
-
-    describe 'expects to receive' do
-      it { expect(current_company).to receive(:tracks).and_return(tracks) }
-      it { expect(tracks).to receive(:includes).with(:owner).and_return(tracks) }
-      it { expect(tracks).to receive(:with_roles).with('track_owner', user).and_return(tracks) }
-      it { expect(tracks).to receive(:search).with('example').and_return(tracks) }
-      it { expect(tracks).to receive(:result).and_return(tracks) }
-      it { expect(tracks).to receive(:page).with(nil).and_return(tracks) }
-
-      after { send_request }
-    end
-
-    describe 'assigns' do
-      before { send_request }
-
-      it { expect(assigns(:tracks)).to eq(tracks) }
-    end
-
-    describe 'response' do
-      before { send_request }
-
-      it { expect(response).to render_template :index }
-      it { expect(response).to have_http_status(200) }
-      it { expect(flash[:notice]).to be_nil }
-    end
-  end
-
   describe '#runners' do
     before do
       allow(Track).to receive(:find).and_return(track)

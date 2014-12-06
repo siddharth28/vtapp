@@ -11,7 +11,7 @@ namespace :delayed_job do
   desc 'Stop the delayed_job process'
   task :stop do
     on roles(delayed_job_roles) do
-      within release_path do    
+      within release_path do
         with rails_env: fetch(:rails_env) do
           execute :'bin/delayed_job', :stop
         end

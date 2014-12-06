@@ -4,9 +4,9 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, %w{106.185.48.38}
-role :web, %w{106.185.48.38}
-role :db,  %w{106.185.48.38}
+role :app, %w{54.149.18.113}
+role :web, %w{54.149.18.113}
+role :db,  %w{54.149.18.113}
 
 
 # Extended Server Syntax
@@ -19,7 +19,7 @@ set :stage, :production
 
 # Replace 127.0.0.1 with your server's IP address!
 
-server '106.185.48.38', user: 'deploy', port: 22, roles: %w{web app db}
+server '54.149.18.113', user: 'deploy', port: 22, roles: %w{web app db}
 
 
 # server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value

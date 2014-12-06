@@ -23,6 +23,8 @@ describe UsertasksController do
     allow(ability).to receive(:attributes_for).and_return([])
     allow(ability).to receive(:has_block?).and_return(true)
     allow(Usertask).to receive(:find).and_return(usertask)
+    allow(usertask).to receive(:comments).and_return(comments)
+    allow(usertask).to receive(:urls).and_return(urls)
   end
 
   describe '#start' do
@@ -333,7 +335,7 @@ describe UsertasksController do
     end
   end
 
-  describe '#review_task' do
+  describe '#review_exercise' do
     before do
       allow(usertask).to receive(:submitted?).and_return(true)
       allow(usertask).to receive(:comments).and_return(comments)
@@ -345,7 +347,7 @@ describe UsertasksController do
       before { allow(usertask).to receive(:accept!).and_return(true) }
 
       def send_request
-        patch :review_task, id: usertask.id, usertask: { comment: 'comment' }, task_status: 'accept'
+        patch :review_exercise, id: usertask.id, usertask: { comment: 'comment' }, task_status: 'accept'
       end
 
       describe 'expects to receive' do
@@ -370,7 +372,7 @@ describe UsertasksController do
       before { allow(usertask).to receive(:reject!).and_return(true) }
 
       def send_request
-        patch :review_task, id: usertask.id, usertask: { comment: 'comment' }, task_status: 'reject'
+        patch :review_exercise, id: usertask.id, usertask: { comment: 'comment' }, task_status: 'reject'
       end
 
       describe 'expects to receive' do

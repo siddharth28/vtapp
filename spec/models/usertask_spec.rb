@@ -81,16 +81,6 @@ describe Usertask do
 
   describe '#instance_methods' do
 
-    describe '#check_exercise?' do
-      context 'normal theory exercise' do
-        it { expect(usertask.send(:check_exercise?)).to eql(false) }
-      end
-
-      context 'exercise' do
-        it { expect(exercise_usertask.send(:check_exercise?)).to eql(true) }
-      end
-    end
-
     describe '#add_start_time' do
       let(:usertask) { build(:usertask, user: user, task: task) }
 

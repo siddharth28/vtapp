@@ -217,41 +217,4 @@ describe UsersController do
     end
   end
 
-  describe '#mentees' do
-    before do
-      allow(User).to receive(:find).and_return(user)
-      allow(user).to receive(:mentees).and_return(users)
-      allow(users).to receive(:includes).with(:roles, :company).and_return(users)
-      allow(users).to receive(:search).with({ s: "name asc" }).and_return(users)
-      allow(users).to receive(:result).and_return(users)
-      allow(users).to receive(:page).with(nil).and_return(users)
-    end
-
-    def send_request
-      get :mentees, id: user.id
-    end
-
-    describe 'expects to receive' do
-      it { expect(user).to receive(:mentees).and_return(users) }
-      it { expect(users).to receive(:includes).with(:roles, :company).and_return(users) }
-      it { expect(users).to receive(:search).with({ s: "name asc" }).and_return(users) }
-      it { expect(users).to receive(:result).and_return(users) }
-      it { expect(users).to receive(:page).with(nil).and_return(users) }
-
-      after { send_request }
-    end
-
-    describe 'assigns' do
-      before { send_request }
-      it { expect(assigns(:search)).to eq(users) }
-      it { expect(assigns(:mentees)).to eq(users) }
-    end
-
-    describe 'response' do
-      before { send_request }
-      it { expect(response).to have_http_status(200) }
-      it { expect(response).to render_template :mentees }
-    end
-  end
-
 end

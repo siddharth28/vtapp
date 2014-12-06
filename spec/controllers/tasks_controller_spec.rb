@@ -572,8 +572,7 @@ describe TasksController do
 
     before do
       allow(track).to receive(:tasks).and_return(tasks)
-      allow(tasks).to receive(:includes).with(usertasks: :user, usertasks: :reviewer).and_return(tasks)
-      allow(tasks).to receive(:where).with({usertasks: { aasm_state: 'submitted', reviewer_id: user.id }}).and_return(tasks)
+      allow(tasks).to receive(:to_review).with(user).and_return(tasks)
     end
 
     def send_request
@@ -582,8 +581,7 @@ describe TasksController do
 
     describe 'expects to receive' do
       it { expect(track).to receive(:tasks).and_return(tasks) }
-      it { expect(tasks).to receive(:includes).with(usertasks: :user, usertasks: :reviewer).and_return(tasks) }
-      it { expect(tasks).to receive(:where).with({usertasks: { aasm_state: 'submitted', reviewer_id: user.id }}).and_return(tasks) }
+      it { expect(tasks).to receive(:to_review).with(user).and_return(tasks) }
 
       after { send_request }
     end
@@ -606,9 +604,7 @@ describe TasksController do
 
     before do
       allow(track).to receive(:tasks).and_return(tasks)
-      allow(tasks).to receive(:includes).with(usertasks: :user).and_return(tasks)
-      allow(tasks).to receive(:where).and_return(tasks)
-      allow(tasks).to receive(:not).with({usertasks: { reviewer_id: user.id }}).and_return(tasks)
+      allow(tasks).to receive(:assigned_to_others_for_review).with(user).and_return(tasks)
     end
 
     def send_request
@@ -617,9 +613,7 @@ describe TasksController do
 
     describe 'expects to receive' do
       it { expect(track).to receive(:tasks).and_return(tasks) }
-      it { expect(tasks).to receive(:includes).with(usertasks: :user).and_return(tasks) }
-      it { expect(tasks).to receive(:where).and_return(tasks) }
-      it { expect(tasks).to receive(:not).with({usertasks: { reviewer_id: user.id }}).and_return(tasks) }
+      it { expect(tasks).to receive(:assigned_to_others_for_review).with(user).and_return(tasks) }
 
       after { send_request }
     end
