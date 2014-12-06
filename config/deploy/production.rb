@@ -19,7 +19,7 @@ set :stage, :production
 
 # Replace 127.0.0.1 with your server's IP address!
 
-server '54.149.18.113', user: 'deploy', port: 22, roles: %w{web app db}
+server '54.149.18.113', user: 'siddharth', port: 22, roles: %w{web app db}
 
 
 # server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value

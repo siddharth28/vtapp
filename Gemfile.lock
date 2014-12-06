@@ -268,4 +268,4 @@ DEPENDENCIES
   the_sortable_tree (~> 2.5.0)
   therubyracer (= 0.12.1)
   uglifier (>= 1.3.0)
-  unicorn
+  unicorn (= 4.8.3)
