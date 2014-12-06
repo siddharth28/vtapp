@@ -95,15 +95,15 @@ set :keep_releases, 15
 namespace :deploy do
   after :publishing, :restart
 
-  # after :restart, :unicorn_restart do
-  #   on roles(:web), in: :parallel do
-  #     within current_path do
-  #       with rails_env: fetch(:rails_env) do
-  #         Rake::Task[:'unicorn:hard_restart'].invoke
-  #       end
-  #     end
-  #   end
-  # end
+  after :restart, :unicorn_restart do
+    on roles(:web), in: :parallel do
+      within current_path do
+        with rails_env: fetch(:rails_env) do
+          Rake::Task[:'unicorn:hard_restart'].invoke
+        end
+      end
+    end
+  end
 end
 
 namespace :unicorn do
